@@ -54,6 +54,7 @@
     "fbjs-scripts": "^0.6.0",
     "jsdom": "^8.4.0",
     "json-loader": "^0.5.4",
+    "less": "^2.6.1",
     "minimist": "^1.2.0",
     "mocha": "^2.4.5",
     "node-libs-browser": "^1.0.0",
@@ -70,9 +71,11 @@
     "webpack-hot-middleware": "^2.10.0"
   },
   "dependencies": {
+    "antd": "^0.12.16",
     "css-modules-require-hook": "^4.0.0",
     "electron-debug": "^0.6.0",
     "font-awesome": "^4.6.1",
+    "less-loader": "^2.2.3",
     "postcss": "^5.0.19",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
