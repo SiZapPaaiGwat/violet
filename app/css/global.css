@@ -12,3 +12,27 @@
 .pure-form input {
   min-width: 240px;
 }
+
+.container-padding {
+  padding: 1rem;
+}
+
+textarea.md-zone {
+  height: 360px;
+}
+
+.md-zone, .md-title {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.sync-list {
+  margin-top: 1rem;
+}
+
+.sync-list img {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}

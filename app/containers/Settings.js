@@ -3,16 +3,18 @@ import {Tabs, Alert} from 'antd'
 import {encrypt, decrypt} from '../helpers/aes'
 import AccountPasswordForm from '../components/Form'
 import Todo from '../components/Todo'
+import {SYNC_PLATFORMS, PLATFORM_INFO} from '../helpers/const'
+
+export let accountMap = {}
 
 const TabPane = Tabs.TabPane
-const ACCOUNT_MAP = {}
 const SPLIT_FLAG = '\n'
 
 // 获取帐号配置信息
-'zhihu,github,medium,jianshu'.split(',').forEach((platform) => {
+SYNC_PLATFORMS.forEach((platform) => {
   let pair = localStorage.getItem(platform) || ''
   pair = pair && decrypt(pair).split(SPLIT_FLAG)
-  ACCOUNT_MAP[platform] = {
+  accountMap[platform] = {
     userName: pair && pair[0],
     password: pair && pair[1]
   }
@@ -24,7 +26,15 @@ function savePlatformAccount(platform, userName, password) {
   }
 
   localStorage.setItem(platform, encrypt(`${userName}${SPLIT_FLAG}${password}`))
+  accountMap[platform].userName = userName
+  accountMap[platform].password = password
 }
+
+function removePlatform(platform) {
+  accountMap[platform] = {userName: '', password: ''}
+  localStorage.removeItem(platform)
+}
+
 
 export default React.createClass({
   handleZhihu(userName, password) {
@@ -35,9 +45,17 @@ export default React.createClass({
     savePlatformAccount('github', userName, password)
   },
 
+  cancelZhihu() {
+    removePlatform('zhihu')
+  },
+
+  cancelGitHub() {
+    removePlatform('github')
+  },
+
   render() {
     return (
-      <div style={{padding: '1rem'}}>
+      <div className="container-padding">
         <Alert
           message="同步设置"
           description="同步的各个平台帐号和密码使用加密技术存储在本地，无需担心密码泄露"
@@ -45,24 +63,26 @@ export default React.createClass({
         />
 
         <Tabs defaultActiveKey="1">
-          <TabPane tab="知乎" key="1">
+          <TabPane tab={PLATFORM_INFO.zhihu.name} key="1">
             <AccountPasswordForm
               handleSubmit={this.handleZhihu}
-              userName={ACCOUNT_MAP.zhihu.userName}
-              password={ACCOUNT_MAP.zhihu.password}
+              handleCancel={this.cancelZhihu}
+              userName={accountMap.zhihu.userName}
+              password={accountMap.zhihu.password}
             />
           </TabPane>
-          <TabPane tab="GitHub" key="2">
+          <TabPane tab={PLATFORM_INFO.github.name} key="2">
             <AccountPasswordForm
               handleSubmit={this.handleGitHub}
-              userName={ACCOUNT_MAP.github.userName}
-              password={ACCOUNT_MAP.github.password}
+              handleCancel={this.cancelGitHub}
+              userName={accountMap.github.userName}
+              password={accountMap.github.password}
             />
           </TabPane>
-          <TabPane tab="Medium" key="3">
+          <TabPane tab={PLATFORM_INFO.medium.name} key="3">
             <Todo />
           </TabPane>
-          <TabPane tab="简书" key="4">
+          <TabPane tab={PLATFORM_INFO.jianshu.name} key="4">
             <Todo />
           </TabPane>
         </Tabs>
