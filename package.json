@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "hot-server": "node -r babel-register server.js",
+    "serve-hot": "node -r babel-register server.js",
+    "serve": "node -r babel-register node_modules/webpack-dev-server/bin/webpack-dev-server --config=webpack.config.development.js --port=3000",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./main.development.js",
     "start": "cross-env NODE_ENV=production electron ./"
   },
@@ -69,6 +70,7 @@
     "style-loader": "^0.13.1",
     "webpack": "^1.13.0",
     "webpack-dev-middleware": "^1.6.1",
+    "webpack-dev-server": "^1.14.1",
     "webpack-hot-middleware": "^2.10.0"
   },
   "dependencies": {
