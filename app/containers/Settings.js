@@ -1,18 +1,20 @@
 import React from 'react'
 import {Tabs, Alert} from 'antd'
+import {encrypt, decrypt} from '../helpers/aes'
 import AccountPasswordForm from '../components/Form'
 import Todo from '../components/Todo'
 
 const TabPane = Tabs.TabPane
 const ACCOUNT_MAP = {}
+const SPLIT_FLAG = '\n'
 
 // 获取帐号配置信息
 'zhihu,github,medium,jianshu'.split(',').forEach((platform) => {
   let pair = localStorage.getItem(platform) || ''
-  pair = pair.split(' ')
+  pair = pair && decrypt(pair).split(SPLIT_FLAG)
   ACCOUNT_MAP[platform] = {
-    userName: pair[0] || '',
-    password: pair[1] || ''
+    userName: pair && pair[0],
+    password: pair && pair[1]
   }
 })
 
@@ -21,8 +23,7 @@ function savePlatformAccount(platform, userName, password) {
     return
   }
 
-  // TODO 密码加密存储
-  localStorage.setItem(platform, `${userName} ${password}`)
+  localStorage.setItem(platform, encrypt(`${userName}${SPLIT_FLAG}${password}`))
 }
 
 export default React.createClass({
