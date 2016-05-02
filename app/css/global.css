@@ -1,0 +1,10 @@
+.purchase-button-wrapper {
+  text-align: center;
+  position: fixed;
+  bottom: 1rem;
+  width: 12.5%;
+}
+
+.pure-menu-item a{
+  font-size: 14px;
+}
