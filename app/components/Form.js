@@ -2,14 +2,16 @@ import React, {PropTypes} from 'react'
 
 export default React.createClass({
   propTypes: {
-    handleSubmit: PropTypes.func.required,
+    handleSubmit: PropTypes.func,
     userName: PropTypes.string,
     password: PropTypes.string
   },
 
   handleSubmit(e) {
     e.preventDefault()
-    this.props.handleSubmit(this.refs.userName.value, this.refs.password.value)
+    if (this.props.handleSubmit) {
+      this.props.handleSubmit(this.refs.userName.value, this.refs.password.value)
+    }
   },
 
   render() {
