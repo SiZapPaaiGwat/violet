@@ -1,11 +1,39 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {Tabs, Alert} from 'antd'
 import AccountPasswordForm from '../components/Form'
 import Todo from '../components/Todo'
 
 const TabPane = Tabs.TabPane
+const ACCOUNT_MAP = {}
 
-export default class Settings extends Component {
+// 获取帐号配置信息
+'zhihu,github,medium,jianshu'.split(',').forEach((platform) => {
+  let pair = localStorage.getItem(platform) || ''
+  pair = pair.split(' ')
+  ACCOUNT_MAP[platform] = {
+    userName: pair[0] || '',
+    password: pair[1] || ''
+  }
+})
+
+function savePlatformAccount(platform, userName, password) {
+  if (!userName || !password) {
+    return
+  }
+
+  // TODO 密码加密存储
+  localStorage.setItem(platform, `${userName} ${password}`)
+}
+
+export default React.createClass({
+  handleZhihu(userName, password) {
+    savePlatformAccount('zhihu', userName, password)
+  },
+
+  handleGitHub(userName, password) {
+    savePlatformAccount('github', userName, password)
+  },
+
   render() {
     return (
       <div style={{padding: '1rem'}}>
@@ -17,10 +45,18 @@ export default class Settings extends Component {
 
         <Tabs defaultActiveKey="1">
           <TabPane tab="知乎" key="1">
-            <AccountPasswordForm />
+            <AccountPasswordForm
+              handleSubmit={this.handleZhihu}
+              userName={ACCOUNT_MAP.zhihu.userName}
+              password={ACCOUNT_MAP.zhihu.password}
+            />
           </TabPane>
           <TabPane tab="GitHub" key="2">
-            <AccountPasswordForm />
+            <AccountPasswordForm
+              handleSubmit={this.handleGitHub}
+              userName={ACCOUNT_MAP.github.userName}
+              password={ACCOUNT_MAP.github.password}
+            />
           </TabPane>
           <TabPane tab="Medium" key="3">
             <Todo />
@@ -32,4 +68,4 @@ export default class Settings extends Component {
       </div>
     )
   }
-}
+})

@@ -1,42 +1,40 @@
 import React, {PropTypes} from 'react'
-import {Form, Input, Button} from 'antd'
 
-const FormItem = Form.Item
-
-let AccountPasswordForm = React.createClass({
+export default React.createClass({
   propTypes: {
-    handleSubmit: PropTypes.func,
-    form: PropTypes.any
+    handleSubmit: PropTypes.func.required,
+    userName: PropTypes.string,
+    password: PropTypes.string
   },
 
   handleSubmit(e) {
     e.preventDefault()
-    this.props.handleSubmit(e, this.props.form.getFieldsValue())
+    this.props.handleSubmit(this.refs.userName.value, this.refs.password.value)
   },
 
   render() {
-    const {getFieldProps} = this.props.form
     return (
-      <Form vertical onSubmit={this.handleSubmit}>
-        <FormItem
-          label="登录帐号"
-        >
-          <Input
-            placeholder="请输入平台登录帐号"
-            {...getFieldProps('userName')}
-          />
-        </FormItem>
-        <FormItem
-          label="密码"
-        >
-          <Input type="password" placeholder="请输入密码"
-            {...getFieldProps('password')}
-          />
-        </FormItem>
-        <Button type="ghost" htmlType="submit">立即保存</Button>
-      </Form>
+      <form className="pure-form pure-form-aligned" onSubmit={this.handleSubmit}>
+        <fieldset>
+            <div className="pure-control-group">
+              <label htmlFor="name">帐号</label>
+              <input ref="userName" type="text" placeholder="请输入登录帐号" required
+                defaultValue={this.props.userName}
+              />
+            </div>
+
+            <div className="pure-control-group">
+              <label htmlFor="password">密码</label>
+              <input ref="password" type="password" placeholder="请输入密码" required
+                defaultValue={this.props.password}
+              />
+            </div>
+
+            <div className="pure-controls">
+              <button type="submit" className="pure-button pure-button-primary">立即保存</button>
+            </div>
+        </fieldset>
+      </form>
     )
   }
 })
-
-export default Form.create()(AccountPasswordForm)
