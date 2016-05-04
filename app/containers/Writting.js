@@ -1,7 +1,8 @@
 import React from 'react'
 import {Alert} from 'antd'
-import {SYNC_PLATFORMS, PLATFORM_INFO} from '../helpers/const'
+import {SYNC_PLATFORMS, PLATFORM_INFO, MOBILE_UA} from '../helpers/const'
 import {accountMap} from './Settings'
+import syncArticle from '../helpers/electron'
 
 function getSyncPlatforms() {
   let syncNum = 0
@@ -18,12 +19,52 @@ function getSyncPlatforms() {
 }
 
 export default React.createClass({
-  handleSubmit() {
-    // Todo 发布流程
-    console.log('syncing...')
+  getInitialState() {
+    return {
+      showWebview: false,
+      loading: true
+    }
   },
 
-  render() {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.showWebview && this.state.loading) {
+      let webview = this.refs.webview
+      webview.addEventListener('dom-ready', () => {
+        this.setState({
+          loading: false
+        })
+
+        webview.addEventListener('will-navigate', (e) => {
+          // 允许退出登录，方便调试
+          // if (e.url !== 'https://www.zhihu.com/logout') {
+          //   e.preventDefault()
+          //   this.setState({
+          //     loading: true,
+          //     showWebview: false
+          //   })
+          // }
+          // webview.getWebContents().session.cookies.get({}, function(error, cookies) {
+          //   if (error) throw error
+          //   for (let i = cookies.length - 1; i >= 0; i--) {
+          //     console.log(cookies[i])
+          //   }
+          // })
+        })
+      })
+    }
+  },
+
+  handleSubmit() {
+    this.setState({
+      showWebview: true
+    })
+
+    syncArticle(this.refs.title.value, this.refs.content.value, accountMap, (e, result) => {
+      console.log(`sync finished: ${result}`)
+    })
+  },
+
+  renderWrittingPage() {
     let syncTip = getSyncPlatforms()
     if (syncTip) {
       syncTip = (
@@ -60,7 +101,7 @@ export default React.createClass({
     }
 
     return (
-      <div className="container-padding">
+      <div>
         <Alert
           message="开始创作"
           description="使用Markdown格式写作，一键同步发布到多个平台"
@@ -80,6 +121,29 @@ export default React.createClass({
         />
 
         {syncTip}
+      </div>
+    )
+  },
+
+  renderWebview() {
+    return (
+      <div>
+        {this.state.loading && <div style={{textAlign: 'center'}}>loading...</div>}
+        <webview
+          ref="webview"
+          src="https://www.zhihu.com/#signin"
+          useragent={MOBILE_UA}
+          disablewebsecurity
+          partition="persist:zhihu"
+        />
+      </div>
+    )
+  },
+
+  render() {
+    return (
+      <div className="container-padding" style={{position: 'relative'}}>
+        {this.state.showWebview ? this.renderWebview() : this.renderWrittingPage()}
       </div>
     )
   }

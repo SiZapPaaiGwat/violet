@@ -1,4 +1,8 @@
-import {app, BrowserWindow, Menu, crashReporter, shell} from 'electron'
+import {app, BrowserWindow, Menu, crashReporter, shell, ipcMain} from 'electron'
+
+ipcMain.on('sync-start', function(event, title, content, accountMap) {
+  event.sender.send('sync-finish', `your title is ${title}`)
+})
 
 let menu
 let template
@@ -10,11 +14,9 @@ if (process.env.NODE_ENV === 'development') {
   require('electron-debug')()
 }
 
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
-
 
 app.on('ready', () => {
   mainWindow = new BrowserWindow({

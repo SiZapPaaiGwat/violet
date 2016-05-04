@@ -36,3 +36,7 @@ textarea.md-zone {
   height: 16px;
   margin-right: 10px;
 }
+
+webview {
+  min-height: 600px;
+}
