@@ -1,7 +1,10 @@
 import {app, BrowserWindow, Menu, crashReporter, shell, ipcMain} from 'electron'
+import {getZhihuDrafts} from './app/helpers/electron_main'
 
-ipcMain.on('sync-start', function(event, title, content, accountMap) {
-  event.sender.send('sync-finish', `your title is ${title}`)
+ipcMain.on('sync-start', function(event, {cookie, token}) {
+  getZhihuDrafts(cookie, token).then(function(result) {
+    event.sender.send('sync-finish', result)
+  })
 })
 
 let menu

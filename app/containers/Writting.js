@@ -2,7 +2,8 @@ import React from 'react'
 import {Alert} from 'antd'
 import {SYNC_PLATFORMS, PLATFORM_INFO, MOBILE_UA} from '../helpers/const'
 import {accountMap} from './Settings'
-import syncArticle from '../helpers/electron'
+import {syncArticle, parseWebviewCookiesByDomain} from '../helpers/electron_render'
+import {getCookieByName} from '../helpers/utils'
 
 function getSyncPlatforms() {
   let syncNum = 0
@@ -34,21 +35,12 @@ export default React.createClass({
           loading: false
         })
 
-        webview.addEventListener('will-navigate', (e) => {
-          // 允许退出登录，方便调试
-          // if (e.url !== 'https://www.zhihu.com/logout') {
-          //   e.preventDefault()
-          //   this.setState({
-          //     loading: true,
-          //     showWebview: false
-          //   })
-          // }
-          // webview.getWebContents().session.cookies.get({}, function(error, cookies) {
-          //   if (error) throw error
-          //   for (let i = cookies.length - 1; i >= 0; i--) {
-          //     console.log(cookies[i])
-          //   }
-          // })
+        let session = webview.getWebContents().session
+        parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
+          let token = getCookieByName(cookie, 'XSRF-TOKEN')
+          return syncArticle({cookie, token})
+        }).then(function(result) {
+          console.log(result)
         })
       })
     }
@@ -57,10 +49,6 @@ export default React.createClass({
   handleSubmit() {
     this.setState({
       showWebview: true
-    })
-
-    syncArticle(this.refs.title.value, this.refs.content.value, accountMap, (e, result) => {
-      console.log(`sync finished: ${result}`)
     })
   },
 
@@ -131,7 +119,7 @@ export default React.createClass({
         {this.state.loading && <div style={{textAlign: 'center'}}>loading...</div>}
         <webview
           ref="webview"
-          src="https://www.zhihu.com/#signin"
+          src="https://zhuanlan.zhihu.com/write"
           useragent={MOBILE_UA}
           disablewebsecurity
           partition="persist:zhihu"
