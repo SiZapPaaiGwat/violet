@@ -2,8 +2,7 @@ import {ipcRenderer} from 'electron'
 
 export function syncPost(args) {
   if (typeof args !== 'object') {
-    console.error('参数必须传对象')
-    return null
+    return Promise.reject(new Error('参数必须传对象'))
   }
 
   return new Promise(function(resolve, reject) {
