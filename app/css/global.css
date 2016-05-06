@@ -40,3 +40,8 @@ textarea.md-zone {
 webview {
   min-height: 600px;
 }
+
+webview.hide {
+  width: 0px;
+  height: 0px;
+}

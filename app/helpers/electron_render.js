@@ -1,14 +1,16 @@
 import {ipcRenderer} from 'electron'
 
-/**
- * 同步文章
- */
-export function syncArticle(args) {
+export function syncPost(args) {
+  if (typeof args !== 'object') {
+    console.error('参数必须传对象')
+    return null
+  }
+
   return new Promise(function(resolve, reject) {
-    ipcRenderer.on('sync-finish', function(e, arg) {
+    ipcRenderer.on('sync-post-finish', function(e, arg) {
       resolve(arg)
     })
-    ipcRenderer.send('sync-start', args)
+    ipcRenderer.send('sync-post-start', args)
   })
 }
 

@@ -2,7 +2,9 @@ import React from 'react'
 import {Alert} from 'antd'
 import {SYNC_PLATFORMS, PLATFORM_INFO, MOBILE_UA} from '../helpers/const'
 import {accountMap} from './Settings'
-import {syncArticle, parseWebviewCookiesByDomain} from '../helpers/electron_render'
+import {
+  syncPost, parseWebviewCookiesByDomain
+} from '../helpers/electron_render'
 import {getCookieByName} from '../helpers/utils'
 
 function getSyncPlatforms() {
@@ -22,33 +24,25 @@ function getSyncPlatforms() {
 export default React.createClass({
   getInitialState() {
     return {
-      showWebview: false,
-      loading: true
     }
   },
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.showWebview && this.state.loading) {
-      let webview = this.refs.webview
-      webview.addEventListener('dom-ready', () => {
-        this.setState({
-          loading: false
-        })
-
-        let session = webview.getWebContents().session
-        parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
-          let token = getCookieByName(cookie, 'XSRF-TOKEN')
-          return syncArticle({cookie, token})
-        }).then(function(result) {
-          console.log(result)
-        })
-      })
-    }
+  componentDidMount(prevProps, prevState) {
   },
 
   handleSubmit() {
-    this.setState({
-      showWebview: true
+    let title = this.refs.title.value.trim()
+    let content = this.refs.content.value.trim()
+    if (!title || !content) {
+      return
+    }
+
+    let webview = this.refs.webview
+    let session = webview.getWebContents().session
+    parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
+      return syncPost({cookie, token: getCookieByName(cookie, 'XSRF-TOKEN')})
+    }).then(function([draftInfo, availableColumns]) {
+      console.log(draftInfo, availableColumns)
     })
   },
 
@@ -114,10 +108,11 @@ export default React.createClass({
   },
 
   renderWebview() {
+    // TODO 如果没有登录态则展示webview
     return (
       <div>
-        {this.state.loading && <div style={{textAlign: 'center'}}>loading...</div>}
         <webview
+          className="hide"
           ref="webview"
           src="https://zhuanlan.zhihu.com/write"
           useragent={MOBILE_UA}
@@ -131,7 +126,8 @@ export default React.createClass({
   render() {
     return (
       <div className="container-padding" style={{position: 'relative'}}>
-        {this.state.showWebview ? this.renderWebview() : this.renderWrittingPage()}
+        {this.renderWrittingPage()}
+        {this.renderWebview()}
       </div>
     )
   }

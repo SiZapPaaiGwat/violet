@@ -1,9 +1,24 @@
 import {app, BrowserWindow, Menu, crashReporter, shell, ipcMain} from 'electron'
-import {getZhihuDrafts} from './app/helpers/electron_main'
+import {getZhihuDrafts, getZhihuColumns} from './app/helpers/electron_main'
 
-ipcMain.on('sync-start', function(event, {cookie, token}) {
+ipcMain.on('get-draftid-start', function(event, {cookie, token}) {
   getZhihuDrafts(cookie, token).then(function(result) {
-    event.sender.send('sync-finish', result)
+    event.sender.send('get-draftid-finish', result)
+  })
+})
+
+ipcMain.on('get-topics-start', function(event, {cookie, token}) {
+  getZhihuColumns(cookie, token).then(function(result) {
+    event.sender.send('get-topics-finish', result)
+  })
+})
+
+ipcMain.on('sync-post-start', function(event, {cookie, token}) {
+  Promise.all([
+    getZhihuDrafts(cookie, token),
+    getZhihuColumns(cookie, token)
+  ]).then(function(info) {
+    event.sender.send('sync-post-finish', info)
   })
 })
 
