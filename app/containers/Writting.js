@@ -40,9 +40,19 @@ export default React.createClass({
     let webview = this.refs.webview
     let session = webview.getWebContents().session
     parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
-      return syncPost({cookie, token: getCookieByName(cookie, 'XSRF-TOKEN')})
-    }).then(function([draftInfo, availableColumns]) {
-      console.log(draftInfo, availableColumns)
+      return syncPost({
+        cookie,
+        token: getCookieByName(cookie, 'XSRF-TOKEN'),
+        title,
+        content
+      })
+    }).catch(function(err, result) {
+      if (err) {
+        alert('发布文章失败')
+        return
+      }
+
+      alert('文章发布成功')
     })
   },
 
