@@ -1,10 +1,8 @@
 import React from 'react'
 import {Alert} from 'antd'
-import {SYNC_PLATFORMS, PLATFORM_INFO, MOBILE_UA} from '../helpers/const'
+import {SYNC_PLATFORMS, PLATFORM_INFO} from '../helpers/const'
 import {accountMap} from './Settings'
-import {
-  syncPost, parseWebviewCookiesByDomain
-} from '../helpers/electron_render'
+import {syncPost, parseWebviewCookiesByDomain} from '../helpers/electron_render'
 import {getCookieByName} from '../helpers/utils'
 
 function getSyncPlatforms() {
@@ -41,18 +39,22 @@ export default React.createClass({
     let session = webview.getWebContents().session
     parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
       return syncPost({
-        cookie,
-        token: getCookieByName(cookie, 'XSRF-TOKEN'),
         title,
-        content
+        content,
+        zhihu: {
+          cookie,
+          token: getCookieByName(cookie, 'XSRF-TOKEN')
+        },
+        github: {
+          username: accountMap.github.userName,
+          password: accountMap.github.password,
+          repo: `${accountMap.github.userName}.github.com`
+        }
       })
-    }).catch(function(err, result) {
-      if (err) {
-        alert('发布文章失败')
-        return
-      }
-
+    }).then(function() {
       alert('文章发布成功')
+    }).catch(function(err) {
+      alert('发布文章失败')
     })
   },
 
@@ -125,7 +127,6 @@ export default React.createClass({
           className="hide"
           ref="webview"
           src="https://zhuanlan.zhihu.com/write"
-          useragent={MOBILE_UA}
           disablewebsecurity
           partition="persist:zhihu"
         />

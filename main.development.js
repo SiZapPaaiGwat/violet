@@ -1,8 +1,8 @@
 import {app, BrowserWindow, Menu, crashReporter, shell, ipcMain} from 'electron'
 import {publishPost} from './app/helpers/electron_main'
 
-ipcMain.on('sync-post-start', function(event, {cookie, token, title, content}) {
-  publishPost(cookie, token, title, content).then(function(info) {
+ipcMain.on('sync-post-start', function(event, args) {
+  publishPost(args).then(function(info) {
     event.sender.send('sync-post-finish', info)
   })
 })
