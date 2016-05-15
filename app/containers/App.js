@@ -1,10 +1,13 @@
 import React, {Component, PropTypes} from 'react'
-import {Row, Col} from 'antd'
-import SideBar from '../components/SideBar'
+import PostList from '../components/PostList'
+import BottomSettings from '../components/BottomSettings'
+import SettingsContent from '../components/SettingsContent'
+import MarkdownArea from '../components/MarkdownArea'
 
 export default class App extends Component {
   static propTypes = {
-    children: PropTypes.element.isRequired
+    children: PropTypes.element.isRequired,
+    states: PropTypes.object
   }
 
   render() {
@@ -17,12 +20,10 @@ export default class App extends Component {
 
     return (
       <div>
-        <Row>
-          <Col span="4">
-            <SideBar />
-          </Col>
-          <Col span="20">{this.props.children}</Col>
-        </Row>
+        <PostList />
+        <BottomSettings />
+        <MarkdownArea />
+        {this.props.states.showSettings && <SettingsContent />}
       </div>
     )
   }

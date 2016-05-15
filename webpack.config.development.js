@@ -29,7 +29,7 @@ const config = {
         test: /\.css$/,
         loaders: [
           'style-loader',
-          'css-loader?sourceMap'
+          'css-loader?sourceMap&modules'
         ]
       },
       {

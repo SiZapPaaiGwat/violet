@@ -1,0 +1,7 @@
+.bottomSettingsContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 240px;
+  height: 32px;
+}
