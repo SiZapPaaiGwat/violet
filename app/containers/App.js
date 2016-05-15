@@ -1,14 +1,13 @@
-import React, {Component, PropTypes} from 'react'
+import React, {PropTypes} from 'react'
 import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import SettingsContent from '../components/SettingsContent'
 import MarkdownArea from '../components/MarkdownArea'
 
-export default class App extends Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    states: PropTypes.object
-  }
+export default React.createClass({
+  propTypes: {
+    states: PropTypes.object.isRequired
+  },
 
   render() {
     // let devTools
@@ -20,11 +19,11 @@ export default class App extends Component {
 
     return (
       <div>
-        <PostList />
-        <BottomSettings />
-        <MarkdownArea />
-        {this.props.states.showSettings && <SettingsContent />}
+        <PostList {...this.props} />
+        <BottomSettings {...this.props} />
+        <MarkdownArea {...this.props} />
+        {this.props.states.settings.showSettings && <SettingsContent {...this.props} />}
       </div>
     )
   }
-}
+})

@@ -1,8 +1,8 @@
 import _ from 'lodash'
-import * as appActions from './counter.js'
+import * as settings from './settings.js'
 
 const actions = {
-  app: appActions
+  settings
 }
 
 function convert(actionCreators) {
