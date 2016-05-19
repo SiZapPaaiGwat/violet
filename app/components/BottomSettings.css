@@ -1,8 +1,10 @@
+@import "../css/var.css";
+
 .bottomSettingsContainer {
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 320px;
+  width: var(--postContainerWidth);
   height: 24px;
 }
 

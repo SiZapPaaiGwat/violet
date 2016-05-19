@@ -1,8 +1,10 @@
+@import "../css/var.css";
+
 .postContainer {
+  width: var(--postContainerWidth);
   position: fixed;
   left: 0;
   top: 0;
-  width: 320px;
   bottom: 40px;
   font-size: 14px;
 }

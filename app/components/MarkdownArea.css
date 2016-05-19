@@ -1,8 +1,10 @@
+@import "../css/var.css";
+
 .markdownContainer {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
-  left: 320px;
+  left: var(--postContainerWidth);
   border-left: 1px solid #efefef;
 }

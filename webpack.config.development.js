@@ -1,6 +1,8 @@
 /* eslint max-len: 0 */
 import webpack from 'webpack'
 import baseConfig from './webpack.config.base'
+import postcssImport from 'postcss-import'
+import postcssCssnext from 'postcss-cssnext'
 
 const config = {
   ...baseConfig,
@@ -29,12 +31,8 @@ const config = {
         test: /\.css$/,
         loaders: [
           'style-loader',
-          'css-loader?sourceMap&modules'
+          'css-loader?sourceMap&modules!postcss-loader'
         ]
-      },
-      {
-        test: /\.less$/,
-        loader: 'style!css!less'
       }
     ]
   },
@@ -50,6 +48,13 @@ const config = {
       }
     })
   ],
+
+  postcss() {
+    return [
+      postcssImport({path: `${__dirname}/app`}),
+      postcssCssnext(),
+    ]
+  },
 
   target: 'electron-renderer'
 }
