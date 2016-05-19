@@ -6,8 +6,7 @@ import {syncHistoryWithStore} from 'react-router-redux'
 import routes from './routes'
 import configureStore from './store/configureStore'
 import initialState from './helpers/initial_state'
-import './css/pure.css'
-import 'antd/style/index.less'
+import 'normalize.css'
 import './css/global.css'
 
 const store = configureStore(initialState)

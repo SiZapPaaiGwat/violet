@@ -2,6 +2,7 @@
   "name": "sync-editor",
   "version": "1.0.0",
   "main": "main.js",
+  "private": true,
   "scripts": {
     "serve-hot": "node -r babel-register server.js",
     "serve": "node -r babel-register node_modules/webpack-dev-server/bin/webpack-dev-server --config=webpack.config.development.js --port=3000",
@@ -71,8 +72,10 @@
     "css-modules-require-hook": "^4.0.0",
     "gibberish-aes": "^1.0.0",
     "github": "^0.2.4",
+    "github-markdown-css": "^2.3.0",
     "lodash": "^4.11.1",
     "marked": "^0.3.5",
+    "normalize.css": "^4.1.1",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "react-redux": "^4.4.5",

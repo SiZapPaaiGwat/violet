@@ -11,7 +11,13 @@ let menu
 let template
 let mainWindow = null
 
-crashReporter.start()
+crashReporter.start({
+  productName: 'Purple Editor',
+  companyName: 'Purple',
+  autoSubmit: true,
+  // TODO 增加接口接受崩溃日志
+  submitURL: 'https://your-domain.com/url-to-submit'
+})
 
 if (process.env.NODE_ENV === 'development') {
   require('electron-debug')()
@@ -111,7 +117,7 @@ app.on('ready', () => {
         label: 'Reload',
         accelerator: 'Command+R',
         click() {
-          mainWindow.restart()
+          mainWindow.reload()
         }
       }, {
         label: 'Toggle Full Screen',
@@ -194,7 +200,7 @@ app.on('ready', () => {
         label: '&Reload',
         accelerator: 'Ctrl+R',
         click() {
-          mainWindow.restart()
+          mainWindow.reload()
         }
       }, {
         label: 'Toggle &Full Screen',

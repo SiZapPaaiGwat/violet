@@ -13,11 +13,17 @@ export default React.createClass({
   render() {
     return (
       <div className={styles.bottomSettingsContainer}>
-        <a href="javascript:;" onClick={this.showSettingsContent}>
+        <a
+          href="javascript:;"
+          onClick={this.showSettingsContent}
+          style={{marginLeft: '12px'}}
+        >
           <i className={styles.iconfont}>&#xe62d;</i>
         </a>
-        <a href="javascript:;">
-          <i className={styles.iconfont} style={{cssFloat: 'right'}}>&#xe677;</i>
+        <a href="javascript:;"
+          style={{marginRight: '12px', cssFloat: 'right'}}
+        >
+          <i className={styles.iconfont}>&#xe677;</i>
         </a>
       </div>
     )

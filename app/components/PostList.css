@@ -2,6 +2,36 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 240px;
+  width: 320px;
   bottom: 40px;
+  font-size: 14px;
+}
+
+.postItem {
+  padding: 10px 15px;
+  border-bottom: 1px solid #dedede;
+  list-style: none;
+  display: block;
+  cursor: pointer;
+}
+
+.postItem:hover {
+  background-color: #efefef;
+}
+
+.postTitle {
+  margin-bottom: 8px;
+  color: #454545;
+}
+
+.postPubDate {
+  color: #9a9a9a;
+  margin-right: 12px;
+  font-size: 12px;
+}
+
+.postPlatform {
+  margin-right: 8px;
+  display: inline-block;
+  font-size: 12px;
 }
