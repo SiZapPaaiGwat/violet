@@ -7,4 +7,9 @@
   bottom: 0;
   left: var(--postContainerWidth);
   border-left: 1px solid #efefef;
+  padding: 10px 16px;
+}
+
+.aceEditor {
+  /*margin: 15px 10px;*/
 }
