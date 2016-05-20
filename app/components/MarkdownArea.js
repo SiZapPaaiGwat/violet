@@ -29,8 +29,8 @@ export default React.createClass({
   resizeEditorWH() {
     let el = this.refs.container
     this.setState({
-      width: `${el.offsetWidth - 16 * 2}px`,
-      height: `${el.offsetHeight - 10 * 2}px`
+      width: `${el.offsetWidth - parseInt(styles.paddingHoriz, 10) * 2}px`,
+      height: `${el.offsetHeight - parseInt(styles.paddingVertical, 10) * 2}px`
     })
   },
 
@@ -57,7 +57,7 @@ export default React.createClass({
         height={this.state.height}
         mode="markdown"
         theme="github"
-        value={INITIAL_VALUE}
+        value={INITIAL_VALUE.trim()}
         name="editor"
         showGutter={false}
         setOptions={{fontSize: 16, wrap: true}}

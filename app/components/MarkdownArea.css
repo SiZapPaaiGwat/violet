@@ -1,5 +1,8 @@
 @import "../css/var.css";
 
+@value paddingHoriz: 16px;
+@value paddingVertical: 10px;
+
 .markdownContainer {
   position: fixed;
   top: 0;
@@ -7,9 +10,5 @@
   bottom: 0;
   left: var(--postContainerWidth);
   border-left: 1px solid #efefef;
-  padding: 10px 16px;
-}
-
-.aceEditor {
-  /*margin: 15px 10px;*/
+  padding: var(paddingVertical) var(paddingHoriz);
 }
