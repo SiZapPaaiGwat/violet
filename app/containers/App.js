@@ -3,7 +3,6 @@ import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import SettingsContent from '../components/SettingsContent'
 import MarkdownArea from '../components/MarkdownArea'
-import MarkdownTools from '../components/MarkdownTools'
 
 export default React.createClass({
   propTypes: {
@@ -23,7 +22,6 @@ export default React.createClass({
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
         <MarkdownArea {...this.props} />
-        <MarkdownTools />
         {this.props.states.settings.showSettings && <SettingsContent {...this.props} />}
       </div>
     )

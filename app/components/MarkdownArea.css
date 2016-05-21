@@ -9,3 +9,12 @@
   border-left: 1px solid #efefef;
   padding: var(--paddingVertical) var(--paddingHoriz);
 }
+
+.container {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  width: 17px;
+  height: 17px;
+  z-index: 9;
+}

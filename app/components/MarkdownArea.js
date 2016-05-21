@@ -5,13 +5,15 @@ import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/github'
 import styles from './MarkdownArea.css'
+import globalStyles from '../css/global.css'
 import variables from '../css/var.css'
 
 export default React.createClass({
   getInitialState() {
     return {
-      width: 0,
-      height: 0
+      width: null,
+      height: null,
+      value: EDITOR_INITIAL_VALUE
     }
   },
 
@@ -27,15 +29,18 @@ export default React.createClass({
     this.resizeEditorWH()
   },
 
-  handleChange(newValue) {
-    console.log('change', newValue)
+  syncPost() {
+    // TODO 同步内容到各大平台
+    let content = this.refs.aceEditor.editor.getValue()
+    console.log('syncing post ...')
+    console.log(content)
   },
 
   render() {
     let el = this.state.width ? (
       <AceEditor
+        ref="aceEditor"
         className={styles.aceEditor}
-        onChange={this.handleChange}
         width={this.state.width}
         height={this.state.height}
         mode="markdown"
@@ -46,8 +51,15 @@ export default React.createClass({
         setOptions={{fontSize: 16, wrap: true}}
       />
     ) : null
+
     return (
       <div ref="container" className={styles.markdownContainer}>
+        <div className={styles.container}>
+          <a href="javascript:;" title="开始同步文章" onClick={this.syncPost}>
+            <i className={globalStyles.iconfont}>&#xe6a2;</i>
+          </a>
+        </div>
+
         {el}
       </div>
     )
