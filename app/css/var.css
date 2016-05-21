@@ -1,3 +1,9 @@
+@value postContainerWidth: 320px;
+@value paddingHoriz: 16px;
+@value paddingVertical: 10px;
+
 :root {
-  --postContainerWidth: 320px;
+  --postContainerWidth: postContainerWidth;
+  --paddingHoriz: paddingHoriz;
+  --paddingVertical: paddingVertical;
 }

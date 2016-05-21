@@ -1,9 +1,10 @@
 import React from 'react'
-import styles from './MarkdownArea.css'
+import AceEditor from 'react-ace'
 import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/github'
-import AceEditor from 'react-ace'
+import styles from './MarkdownArea.css'
+import variables from '../css/var.css'
 
 const INITIAL_VALUE = `
 # 努力的区别
@@ -29,8 +30,8 @@ export default React.createClass({
   resizeEditorWH() {
     let el = this.refs.container
     this.setState({
-      width: `${el.offsetWidth - parseInt(styles.paddingHoriz, 10) * 2}px`,
-      height: `${el.offsetHeight - parseInt(styles.paddingVertical, 10) * 2}px`
+      width: `${el.offsetWidth - parseInt(variables.paddingHoriz, 10) * 2}px`,
+      height: `${el.offsetHeight - parseInt(variables.paddingVertical, 10) * 2}px`
     })
   },
 
