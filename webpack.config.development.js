@@ -3,6 +3,7 @@ import webpack from 'webpack'
 import baseConfig from './webpack.config.base'
 import postcssImport from 'postcss-import'
 import postcssCssnext from 'postcss-cssnext'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
 const config = {
   ...baseConfig,
@@ -29,10 +30,9 @@ const config = {
       ...baseConfig.module.loaders,
       {
         test: /\.css$/,
-        loaders: [
-          'style-loader',
-          'css-loader?sourceMap&modules!postcss-loader'
-        ]
+        loader: ExtractTextPlugin.extract('style-loader',
+          'css-loader?sourceMap&modules&importLoaders=1!postcss-loader'
+        )
       }
     ]
   },
@@ -46,7 +46,8 @@ const config = {
       'process.env': {
         NODE_ENV: JSON.stringify('development')
       }
-    })
+    }),
+    new ExtractTextPlugin('style.css', {allChunks: true})
   ],
 
   postcss() {

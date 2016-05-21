@@ -2,7 +2,7 @@
 
 .markdownContainer {
   position: fixed;
-  top: 0;
+  top: 17px;
   right: 0;
   bottom: 0;
   left: var(--postContainerWidth);

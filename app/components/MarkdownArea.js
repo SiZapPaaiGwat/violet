@@ -1,23 +1,11 @@
 import React from 'react'
 import AceEditor from 'react-ace'
+import {EDITOR_INITIAL_VALUE} from '../helpers/const'
 import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/github'
 import styles from './MarkdownArea.css'
 import variables from '../css/var.css'
-
-const INITIAL_VALUE = `
-# 努力的区别
-
-> 我每天很辛苦的工作 ，我身边的朋友也是每天忙忙碌碌的，可是并没有感觉自己很
-  优秀。 而且我看到一些人，感觉他们好像并没有怎么努力，就可以过的很好，收入比我高两三倍，
-  要怎样才可以让自己变得更优秀？努力就可以变得更优秀吗？问题到底出在哪里？
-
-* BTC
-* LTC
-* ETH
-
-`
 
 export default React.createClass({
   getInitialState() {
@@ -36,13 +24,7 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    if (document.readyState === 'complete') {
-      this.resizeEditorWH()
-    } else {
-      window.addEventListener('load', () => {
-        this.resizeEditorWH()
-      })
-    }
+    this.resizeEditorWH()
   },
 
   handleChange(newValue) {
@@ -58,7 +40,7 @@ export default React.createClass({
         height={this.state.height}
         mode="markdown"
         theme="github"
-        value={INITIAL_VALUE.trim()}
+        value={EDITOR_INITIAL_VALUE}
         name="editor"
         showGutter={false}
         setOptions={{fontSize: 16, wrap: true}}
