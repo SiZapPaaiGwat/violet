@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/simongfxu/sync-editor.git"
+    "url": "git+ssh://git@github.com/simongfxu/violet.git"
   },
   "keywords": [
     "electron",
