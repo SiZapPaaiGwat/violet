@@ -1,6 +1,6 @@
 {
-  "name": "sync-editor",
-  "version": "1.0.0",
+  "name": "violet",
+  "version": "0.0.1",
   "main": "main.js",
   "private": true,
   "scripts": {
@@ -39,8 +39,6 @@
     "babel-register": "^6.7.2",
     "cross-env": "^1.0.7",
     "css-loader": "^0.23.1",
-    "css-modules-require-hook": "^4.0.0",
-    "del": "^2.2.0",
     "electron-debug": "latest",
     "electron-packager": "latest",
     "electron-prebuilt": "latest",
@@ -53,9 +51,6 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "json-loader": "^0.5.4",
-    "less": "^2.6.1",
-    "less-loader": "^2.2.3",
-    "minimist": "^1.2.0",
     "postcss": "^5.0.19",
     "postcss-cssnext": "^2.5.2",
     "postcss-import": "^8.1.0",
@@ -65,7 +60,6 @@
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-devtools-log-monitor": "^1.0.11",
     "redux-logger": "^2.6.1",
-    "source-map-support": "^0.4.0",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.0",
     "webpack-dev-middleware": "^1.6.1",
@@ -73,7 +67,6 @@
     "webpack-hot-middleware": "^2.10.0"
   },
   "dependencies": {
-    "antd": "^0.12.16",
     "brace": "^0.8.0",
     "gibberish-aes": "^1.0.0",
     "github": "^0.2.4",
@@ -90,5 +83,14 @@
     "redux-thunk": "^2.0.1",
     "superagent": "^1.8.3",
     "to-markdown": "^3.0.0"
+  },
+  "babel": {
+    "presets": ["es2015", "stage-0", "react"],
+    "plugins": ["add-module-exports"],
+    "env": {
+      "development": {
+        "presets": ["react-hmre"]
+      }
+    }
   }
 }
