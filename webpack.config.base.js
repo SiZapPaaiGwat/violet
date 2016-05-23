@@ -12,7 +12,7 @@ export default {
         loader: 'json-loader'
       }, {
         test: /\.woff$/,
-        loader: 'file-loader'
+        loader: 'file-loader?name=[name]-[sha512:hash:base64:7].[ext]'
       }
     ]
   },
