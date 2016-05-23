@@ -7,16 +7,13 @@ export default React.createClass({
     actions: PropTypes.object.isRequired
   },
 
-  showSettingsContent() {
-    this.props.actions.settingsShow()
-  },
-
   render() {
+    // TODO 加载设置页面
     return (
       <div className={styles.bottomSettingsContainer}>
         <a
           href="javascript:;"
-          onClick={this.showSettingsContent}
+          onClick={this.toggleModal}
           style={{marginLeft: '12px'}}
         >
           <i className={globalStyles.iconfont}>&#xe62d;</i>
@@ -26,6 +23,7 @@ export default React.createClass({
         >
           <i className={globalStyles.iconfont}>&#xe677;</i>
         </a>
+
       </div>
     )
   }

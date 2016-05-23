@@ -85,11 +85,19 @@
     "to-markdown": "^3.0.0"
   },
   "babel": {
-    "presets": ["es2015", "stage-0", "react"],
-    "plugins": ["add-module-exports"],
+    "presets": [
+      "es2015",
+      "stage-0",
+      "react"
+    ],
+    "plugins": [
+      "add-module-exports"
+    ],
     "env": {
       "development": {
-        "presets": ["react-hmre"]
+        "presets": [
+          "react-hmre"
+        ]
       }
     }
   }

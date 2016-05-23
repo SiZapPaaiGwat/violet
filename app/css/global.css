@@ -83,8 +83,3 @@ a {
 .icon-home:before { content: "\e64f"; }
 .icon-pluscircle:before { content: "\e677"; }
 .icon-cog:before { content: "\e62d"; }
-
-@font-face {
-  font-family: 'noto sans jk';
-  src: url('../fonts/noto-sans-jk.woff') format('woff');
-}
