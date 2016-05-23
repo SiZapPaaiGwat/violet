@@ -18,7 +18,7 @@ export default React.createClass({
         <ul>
           <li className={styles.postItem}>
             <div className={styles.postTitle}>
-              <strong>持续集成（软件质量改进和风险降低之道）之二</strong>
+              <span>持续集成（软件质量改进和风险降低之道）之二</span>
             </div>
             <div>
               <span className={styles.postPubDate}>2016-05-05</span>
@@ -30,7 +30,7 @@ export default React.createClass({
           </li>
           <li className={styles.postItem}>
             <div className={styles.postTitle}>
-              <strong>持续集成（软件质量改进和风险降低之道）之二</strong>
+              <span>持续集成（软件质量改进和风险降低之道）之二</span>
             </div>
             <div>
               <span className={styles.postPubDate}>2016-05-05</span>

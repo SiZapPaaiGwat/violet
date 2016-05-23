@@ -24,7 +24,11 @@ time, mark, audio, video {
 	padding: 0;
 	border: 0;
 	font-size: 100%;
-	font: inherit;
+  /*https://github.com/zenozeng/fonts.css*/
+  font-family: -apple-system, "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial,
+     "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN",
+     "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei",
+     "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
 	vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -67,7 +71,6 @@ a {
   font-style:normal;
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .icon-upload:before { content: "\e6a2"; }
@@ -80,3 +83,8 @@ a {
 .icon-home:before { content: "\e64f"; }
 .icon-pluscircle:before { content: "\e677"; }
 .icon-cog:before { content: "\e62d"; }
+
+@font-face {
+  font-family: 'noto sans jk';
+  src: url('../fonts/noto-sans-jk.woff') format('woff');
+}
