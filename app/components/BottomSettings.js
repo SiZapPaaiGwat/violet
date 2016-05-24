@@ -7,13 +7,17 @@ export default React.createClass({
     actions: PropTypes.object.isRequired
   },
 
+  showContentPage() {
+    this.props.actions.settingsShow()
+  },
+
   render() {
     // TODO 加载设置页面
     return (
       <div className={styles.bottomSettingsContainer}>
         <a
           href="javascript:;"
-          onClick={this.toggleModal}
+          onClick={this.showContentPage}
           style={{marginLeft: '12px'}}
         >
           <i className={globalStyles.iconfont}>&#xe62d;</i>
