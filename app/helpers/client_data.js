@@ -29,3 +29,11 @@ export function updateAccount(platform, userName, password) {
 export function removeAccountByPlatform(platform) {
   localStorage.removeItem(platform)
 }
+
+export function getCookiesByPlatform(platform = 'zhihu') {
+  if (platform) {
+    return localStorage.getItem(`${platform}_cookie`)
+  }
+
+  return null
+}
