@@ -1,18 +1,6 @@
 import request from 'superagent'
 import GitHubAPI from 'github'
 import {getCookieByName, cookieTokenUtil} from '../helpers/utils'
-import marked from 'marked'
-
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
-})
 
 /**
  * 用于请求知乎的相关接口
@@ -126,29 +114,45 @@ export function publishZhihu(cookie, token, title, content) {
   })
 }
 
-/**
-  知乎参考格式
-  <b>加粗</b><p><i>斜体</i></p><p><u>下划线</u></p><h2>标题</h2>
-  <blockquote>引用</blockquote><p></p>
-  <ol><li><span style=\"line-height: 1.7;\">1</span><br></li>
-  <li><span style=\"line-height: 1.7;\">2</span><br></li>
-  <li><span style=\"line-height: 1.7;\">3</span><br></li>
-  </ol><p></p>
-  <ul><li><span style=\"line-height: 1.7;\">ol</span><br></li>
-  <li><span style=\"line-height: 1.7;\">ol</span><br></li>
-  <li><span style=\"line-height: 1.7;\">ol</span></li>
-  </ul><br><p></p><br><p></p>
-  <pre lang=\"\">var a = 1;\nfunction A() {\n    console.log(123)\n}\n</pre><p></p>
- */
-export function publishPost({title, content, github, zhihu}) {
-  return Promise.all([
-    publishGitHub({
-      title,
-      content,
-      username: github.username,
-      password: github.password,
-      repo: github.repo
-    }),
-    publishZhihu(zhihu.cookie, zhihu.token, title, marked(content))
-  ])
+// 检测知乎是否正确登录
+export function isZhihuLoggin() {
+  return new Promise((resolve, reject) => {
+    request.get('https://zhuanlan.zhihu.com/api/me').end((err, res) => {
+      if (!err) {
+        try {
+          let result = JSON.parse(res.text)
+          if (result && result.email) {
+            resolve(true)
+          }
+        } catch (e) {
+          resolve(false)
+        }
+      } else {
+        resolve(false)
+      }
+    })
+  })
+}
+
+export function isGitHubLoggin({username, password}) {
+  return new Promise(function(resolve, reject) {
+    let github = new GitHubAPI({
+      version: '3.0.0',
+      protocol: 'https',
+      timeout: 15000
+    })
+    github.authenticate({
+      type: 'basic',
+      username,
+      password
+    })
+    github.user.getEmails({}, function(err, result) {
+      if (err) {
+        resolve(false)
+        return
+      }
+
+      resolve(true)
+    })
+  })
 }

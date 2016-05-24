@@ -1,11 +1,14 @@
 import React from 'react'
 import ReactTabs from 'react-tabs'
+import * as DataUtils from '../helpers/client_data'
 import styles from './SettingsContent.css'
 
 let Tab = ReactTabs.Tab
 let Tabs = ReactTabs.Tabs
 let TabList = ReactTabs.TabList
 let TabPanel = ReactTabs.TabPanel
+
+export let accountMap = DataUtils.getAccountMap()
 
 export default React.createClass({
   render() {

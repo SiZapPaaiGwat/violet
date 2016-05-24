@@ -49,7 +49,7 @@ export default React.createClass({
                 href="javascript:;"
                 style={{marginLeft: '2rem'}} onClick={this.handleCancel}
               >
-                取消同步
+                移除
               </a>
             </div>
         </fieldset>
