@@ -33,3 +33,13 @@ export function parseWebviewCookiesByDomain(session, domain) {
     })
   })
 }
+
+export function detectLoginStatus(args) {
+  return new Promise((resolve, reject) => {
+    console.log('start render')
+    ipcRenderer.on('detect-login-status-finish', function(e, arg) {
+      resolve(arg)
+    })
+    ipcRenderer.send('detect-login-status-start', args)
+  })
+}

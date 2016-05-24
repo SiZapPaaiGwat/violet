@@ -1,4 +1,5 @@
 import {app, BrowserWindow, Menu, crashReporter, shell} from 'electron'
+import './ipc_main'
 
 const ENTRY_FILE_APTH = `file://${__dirname}/../app/app.html`
 

@@ -1,6 +1,6 @@
 import request from 'superagent'
 import GitHubAPI from 'github'
-import {getCookieByName, cookieTokenUtil} from '../helpers/utils'
+import {getCookieByName, cookieTokenUtil} from '../app/helpers/utils'
 
 /**
  * 用于请求知乎的相关接口
@@ -115,9 +115,12 @@ export function publishZhihu(cookie, token, title, content) {
 }
 
 // 检测知乎是否正确登录
-export function isZhihuLoggin() {
+export function isZhihuLoggin(cookie) {
   return new Promise((resolve, reject) => {
-    request.get('https://zhuanlan.zhihu.com/api/me').end((err, res) => {
+    request.get('https://zhuanlan.zhihu.com/api/me')
+    .set('Cookie', cookie)
+    .set('Content-Type', 'application/json;charset=UTF-8')
+    .end((err, res) => {
       if (!err) {
         try {
           let result = JSON.parse(res.text)
@@ -134,13 +137,20 @@ export function isZhihuLoggin() {
   })
 }
 
-export function isGitHubLoggin({username, password}) {
-  return new Promise(function(resolve, reject) {
+export function isGitHubLoggin(username, password) {
+  return new Promise((resolve, reject) => {
     let github = new GitHubAPI({
       version: '3.0.0',
       protocol: 'https',
       timeout: 15000
     })
+
+    // github api will throw error, just resolve asap
+    if (!username || !password) {
+      resolve(false)
+      return
+    }
+
     github.authenticate({
       type: 'basic',
       username,

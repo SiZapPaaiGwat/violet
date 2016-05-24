@@ -28,7 +28,7 @@ marked.setOptions({
 </ul><br><p></p><br><p></p>
 <pre lang=\"\">var a = 1;\nfunction A() {\n    console.log(123)\n}\n</pre><p></p>
  */
-ipcMain.on('sync-post-start', function(event, {title, content, github, zhihu}) {
+ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
   Promise.all([
     RequestHandler.publishGitHub({
       title,
@@ -38,7 +38,7 @@ ipcMain.on('sync-post-start', function(event, {title, content, github, zhihu}) {
       repo: github.repo
     }),
     RequestHandler.publishZhihu(zhihu.cookie, zhihu.token, title, marked(content))
-  ]).then(function(info) {
+  ]).then(info => {
     event.sender.send('sync-post-finish', info)
   })
 })
@@ -46,15 +46,16 @@ ipcMain.on('sync-post-start', function(event, {title, content, github, zhihu}) {
 /**
  * 检测各个平台的登录情况
  */
-ipcMain.on('detect-login-status-start', (e) => {
+ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
   Promise.all([
-    RequestHandler.isZhihuLoggin(),
-    RequestHandler.isGitHubLoggin()
-  ]).then((result) => {
-    console.log(`login status result: ${result}`)
+    RequestHandler.isZhihuLoggin(zhihu.cookie),
+    RequestHandler.isGitHubLoggin(github.username, github.password)
+  ]).then(result => {
     event.sender.send('detect-login-status-finish', {
       zhihu: result[0],
       github: result[1]
     })
+  }).catch(err => {
+    console.error(err)
   })
 })
