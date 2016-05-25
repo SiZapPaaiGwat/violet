@@ -4,34 +4,42 @@ export default React.createClass({
   propTypes: {
     handleSubmit: PropTypes.func,
     handleCancel: PropTypes.func,
-    userName: PropTypes.string,
+    username: PropTypes.string,
     password: PropTypes.string
   },
 
   handleSubmit(e) {
     e.preventDefault()
     if (this.props.handleSubmit) {
-      this.props.handleSubmit(this.refs.userName.value, this.refs.password.value)
+      this.props.handleSubmit(this.refs.username.value, this.refs.password.value)
     }
   },
 
   handleCancel() {
     if (this.props.handleCancel) {
       this.props.handleCancel()
-      this.refs.userName.value = ''
+      this.refs.username.value = ''
       this.refs.password.value = ''
     }
   },
 
   render() {
+    let removeLink = this.props.username ? (
+      <a href="javascript:;"
+        style={{marginLeft: '2rem'}} onClick={this.handleCancel}
+      >
+        移除
+      </a>
+    ) : null
+
     return (
       <form onSubmit={this.handleSubmit}>
         <fieldset>
             <div >
               <label htmlFor="name">帐号</label>
-              <input ref="userName" type="text" placeholder="请输入登录帐号" required
+              <input ref="username" type="text" placeholder="请输入登录帐号" required
                 className="md-title ant-input ant-input-lg"
-                defaultValue={this.props.userName}
+                defaultValue={this.props.username}
               />
             </div>
 
@@ -45,12 +53,7 @@ export default React.createClass({
 
             <div>
               <button type="submit" className="pure-button pure-button-primary">立即保存</button>
-              <a
-                href="javascript:;"
-                style={{marginLeft: '2rem'}} onClick={this.handleCancel}
-              >
-                移除
-              </a>
+              {removeLink}
             </div>
         </fieldset>
       </form>

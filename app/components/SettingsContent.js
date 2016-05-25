@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactTabs from 'react-tabs'
 import Loading from './Loading'
+import LoginStatus from './LoginStatus'
+import Form from './Form'
 import {detectLoginStatus} from '../../electron/ipc_render'
 import * as DataUtils from '../helpers/client_data'
 import styles from './SettingsContent.css'
@@ -48,12 +50,12 @@ export default React.createClass({
 
           <TabPanel>
             <Loading status={this.state.zhihu}>
-              Hello world 1!
+              {this.state.zhihu ? <LoginStatus username={accountMap.zhihu.username} /> : <Form />}
             </Loading>
           </TabPanel>
           <TabPanel>
             <Loading status={this.state.github}>
-              Hello world 2!
+              {this.state.github ? <LoginStatus username={accountMap.github.username} /> : <Form />}
             </Loading>
           </TabPanel>
         </Tabs>
