@@ -42,3 +42,12 @@ export function detectLoginStatus(args) {
     ipcRenderer.send('detect-login-status-start', args)
   })
 }
+
+export function whoAmI(args) {
+  return new Promise((resolve, reject) => {
+    ipcRenderer.on('zhihu-whoami-finish', function(e, arg) {
+      resolve(arg)
+    })
+    ipcRenderer.send('zhihu-whoami-start', args)
+  })
+}

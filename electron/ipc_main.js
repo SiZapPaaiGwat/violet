@@ -59,3 +59,11 @@ ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
     console.error(err)
   })
 })
+
+ipcMain.on('zhihu-whoami-start', (event, args) => {
+  RequestHandler.whoAmI(args).then(json => {
+    event.sender.send('zhihu-whoami-finish', json)
+  }).catch(err => {
+    console.error(err)
+  })
+})

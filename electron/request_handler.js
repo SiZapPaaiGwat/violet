@@ -28,6 +28,15 @@ export function requestWithParams({url, cookie, token, formData, method}) {
   })
 }
 
+export function whoAmI({cookie, token}) {
+  return requestWithParams({
+    url: 'https://zhuanlan.zhihu.com/api/me',
+    method: 'get',
+    cookie,
+    token
+  })
+}
+
 /**
  * 获取知乎草稿id
  */

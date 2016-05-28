@@ -10,7 +10,7 @@ export function getAccountMap() {
     let pair = localStorage.getItem(platform) || ''
     pair = pair && decrypt(pair).split(SPLIT_FLAG)
     accountMap[platform] = {
-      userName: pair && pair[0],
+      username: pair && pair[0],
       password: pair && pair[1]
     }
   })
@@ -36,4 +36,12 @@ export function getCookiesByPlatform(platform = 'zhihu') {
   }
 
   return null
+}
+
+export function setCookiesByPlatform(platform, cookie) {
+  if (platform && cookie) {
+    localStorage.setItem(`${platform}_cookie`, cookie)
+  } else {
+    localStorage.removeItem(`${platform}_cookie`)
+  }
 }

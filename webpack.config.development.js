@@ -31,7 +31,7 @@ const config = {
       {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('style-loader',
-          'css-loader?sourceMap&modules&importLoaders=1!postcss-loader'
+          'css-loader?modules&importLoaders=1!postcss-loader'
         )
       }
     ]
