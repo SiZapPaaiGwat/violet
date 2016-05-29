@@ -127,6 +127,36 @@ export default React.createClass({
     )
   },
 
+  handleGitHubLogout() {
+    DataUtils.removeAccountByPlatform('github')
+    accountMap.github.username = ''
+    accountMap.github.password = ''
+    this.setState({
+      github: false
+    })
+  },
+
+  saveGithubAccount(username, password) {
+    debugger
+    detectLoginStatus({
+      github: {username, password}
+    }).then(isLogin => {
+      debugger
+      if (isLogin) {
+        DataUtils.updateAccount('github', username, password)
+        accountMap.github.username = username
+        accountMap.github.password = password
+        this.setState({
+          github: true
+        })
+      } else {
+        alert('验证失败')
+      }
+    }).catch(err => {
+      alert(err.message)
+    })
+  },
+
   render() {
     // TODO 已登录展示帐号信息,可以退出;未登录则提供输入(知乎使用webview,github使用输入框)
     return (
@@ -144,7 +174,12 @@ export default React.createClass({
           </TabPanel>
           <TabPanel>
             <Loading status={this.state.github}>
-              {this.state.github ? <LoginStatus username={accountMap.github.username} /> : <Form />}
+              {this.state.github ? (
+                <LoginStatus
+                  username={accountMap.github.username}
+                  onLogout={this.handleGitHubLogout}
+                />
+            ) : <Form onSubmit={this.saveGithubAccount} />}
             </Loading>
           </TabPanel>
         </Tabs>

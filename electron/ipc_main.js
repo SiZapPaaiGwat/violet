@@ -47,14 +47,20 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
  * 检测各个平台的登录情况
  */
 ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
-  Promise.all([
-    RequestHandler.isZhihuLoggin(zhihu.cookie),
-    RequestHandler.isGitHubLoggin(github.username, github.password)
-  ]).then(result => {
-    event.sender.send('detect-login-status-finish', {
+  let tasks = []
+  if (zhihu) {
+    tasks.push(RequestHandler.isZhihuLoggin(zhihu.cookie))
+  }
+
+  if (github) {
+    tasks.push(RequestHandler.isGitHubLoggin(github.username, github.password))
+  }
+  Promise.all(tasks).then(result => {
+    let ret = tasks.length === 2 ? {
       zhihu: result[0],
       github: result[1]
-    })
+    } : result[0]
+    event.sender.send('detect-login-status-finish', ret)
   }).catch(err => {
     console.error(err)
   })

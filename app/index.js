@@ -7,7 +7,6 @@ import routes from './routes'
 import configureStore from './store/configureStore'
 import initialState from './helpers/initial_state'
 import 'normalize.css'
-import './css/global.css'
 
 const store = configureStore(initialState)
 const history = syncHistoryWithStore(hashHistory, store)
