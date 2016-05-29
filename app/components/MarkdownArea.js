@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {PropTypes} from 'react'
 import AceEditor from 'react-ace'
 import {EDITOR_INITIAL_VALUE} from '../helpers/const'
+import * as DbUtils from '../helpers/database'
 import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/monokai'
@@ -9,6 +10,11 @@ import globalStyles from '../css/global.css'
 import variables from '../css/var.css'
 
 export default React.createClass({
+  propTypes: {
+    actions: PropTypes.object.isRequired,
+    states: PropTypes.object.isRequired
+  },
+
   getInitialState() {
     return {
       width: null,
@@ -36,16 +42,38 @@ export default React.createClass({
     console.log(content)
   },
 
+  handleChange(value) {
+    clearTimeout(this.timer)
+    this.timer = setTimeout(() => {
+      let post = this.props.states.posts.selected
+      DbUtils.updatePost(post.id, {
+        title: value,
+        content: value
+      }).then(updated => {
+        if (!updated) return
+
+        this.props.actions.postsUpdate({
+          id: post.id,
+          title: value,
+          content: value
+        })
+      })
+    }, 600)
+  },
+
   render() {
+    let post = this.props.states.posts.selected
+    let editorValue = post ? post.content : EDITOR_INITIAL_VALUE
     let el = this.state.width ? (
       <AceEditor
         ref="aceEditor"
+        onChange={this.handleChange}
         className={styles.aceEditor}
         width={this.state.width}
         height={this.state.height}
         mode="markdown"
         theme="github"
-        value={EDITOR_INITIAL_VALUE}
+        value={editorValue}
         name="editor"
         showGutter={false}
         setOptions={{fontSize: 16, wrap: true}}

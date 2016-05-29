@@ -1,46 +1,44 @@
 import React, {PropTypes} from 'react'
+import * as DbUtils from '../helpers/database'
 import styles from './PostList.css'
 
 export default React.createClass({
   propTypes: {
-    posts: PropTypes.array
+    actions: PropTypes.object.isRequired,
+    states: PropTypes.object.isRequired
   },
 
-  getDefaultProps() {
-    return {
-      posts: []
-    }
+  componentDidMount() {
+    DbUtils.listPosts().then((posts) => {
+      this.props.actions.postsList({
+        posts: posts.reverse()
+      })
+    })
   },
 
   render() {
+    let list = this.props.states.posts.datasource.map((post, i) => {
+      let handleClick = () => {
+        this.props.actions.postsSelect(post)
+      }
+      return (
+        <li className={styles.postItem} key={post.id} onClick={handleClick}>
+          <div className={styles.postTitle}>
+            <span>{post.title}</span>
+          </div>
+          <div>
+            <span className={styles.postPubDate}>{post.id}</span>
+            <span>
+              <em className={styles.postPlatform}>知乎</em>
+              <em className={styles.postPlatform}>GitHub</em>
+            </span>
+          </div>
+        </li>
+      )
+    })
     return (
       <div className={styles.postContainer}>
-        <ul>
-          <li className={styles.postItem}>
-            <div className={styles.postTitle}>
-              <span>持续集成（软件质量改进和风险降低之道）之二</span>
-            </div>
-            <div>
-              <span className={styles.postPubDate}>2016-05-05</span>
-              <span>
-                <em className={styles.postPlatform}>知乎</em>
-                <em className={styles.postPlatform}>GitHub</em>
-              </span>
-            </div>
-          </li>
-          <li className={styles.postItem}>
-            <div className={styles.postTitle}>
-              <span>持续集成（软件质量改进和风险降低之道）之二</span>
-            </div>
-            <div>
-              <span className={styles.postPubDate}>2016-05-05</span>
-              <span>
-                <em className={styles.postPlatform}>知乎</em>
-                <em className={styles.postPlatform}>GitHub</em>
-              </span>
-            </div>
-          </li>
-        </ul>
+        <ul>{list}</ul>
       </div>
     )
   }
