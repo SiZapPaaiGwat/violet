@@ -1,5 +1,6 @@
 import {encrypt, decrypt} from './aes'
 import {SYNC_PLATFORMS} from '../helpers/const'
+import {detectLoginStatus} from '../../electron/ipc_render'
 
 const SPLIT_FLAG = '\n'
 
@@ -44,4 +45,16 @@ export function setCookiesByPlatform(platform, cookie) {
   } else {
     localStorage.removeItem(`${platform}_cookie`)
   }
+}
+
+export function getLoginDetails(accountMap) {
+  return detectLoginStatus({
+    zhihu: {
+      cookie: getCookiesByPlatform('zhihu')
+    },
+    github: {
+      username: accountMap.github.username,
+      password: accountMap.github.password
+    }
+  })
 }

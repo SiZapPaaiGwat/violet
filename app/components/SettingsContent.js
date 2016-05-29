@@ -28,15 +28,7 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    detectLoginStatus({
-      zhihu: {
-        cookie: DataUtils.getCookiesByPlatform('zhihu')
-      },
-      github: {
-        username: accountMap.github.username,
-        password: accountMap.github.password
-      }
-    }).then(result => {
+    DataUtils.getLoginDetails(accountMap).then(result => {
       this.setState(result)
     }).catch(err => {
       console.log(err)
@@ -137,11 +129,9 @@ export default React.createClass({
   },
 
   saveGithubAccount(username, password) {
-    debugger
     detectLoginStatus({
       github: {username, password}
     }).then(isLogin => {
-      debugger
       if (isLogin) {
         DataUtils.updateAccount('github', username, password)
         accountMap.github.username = username
@@ -158,7 +148,6 @@ export default React.createClass({
   },
 
   render() {
-    // TODO 已登录展示帐号信息,可以退出;未登录则提供输入(知乎使用webview,github使用输入框)
     return (
       <div className={styles.contentContainer} style={{display: 'block'}}>
         <Tabs onSelect={this.handleSelect}>
@@ -172,6 +161,7 @@ export default React.createClass({
               {this.renderZhihu()}
             </Loading>
           </TabPanel>
+
           <TabPanel>
             <Loading status={this.state.github}>
               {this.state.github ? (
