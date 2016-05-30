@@ -46,9 +46,9 @@ export default React.createClass({
   },
 
   onWebviewMounted() {
-    if (this.state.zhihu) return
-
     let webview = this.refs.webview
+    if (!webview) return
+
     webview.addEventListener('will-navigate', (e) => {
       if (e.url === LOGIN_URL || e.url === HOME_PAGE_URL) {
         let session = webview.getWebContents().session
