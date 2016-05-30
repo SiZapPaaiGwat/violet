@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react'
 import * as DbUtils from '../helpers/database'
+import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
 import styles from './BottomSettings.css'
 import globalStyles from '../css/global.css'
 
@@ -13,13 +14,11 @@ export default React.createClass({
   },
 
   handleCreate() {
-    let title = '无标题文档'
-    let content = '# 无标题文档 \n'
-    DbUtils.createPost(title, content).then(id => {
+    DbUtils.createPost(DEFAULT_TITLE, DEFAULT_CONTENT).then(id => {
       this.props.actions.postsCreate({
         id,
-        title,
-        content,
+        title: DEFAULT_TITLE,
+        content: DEFAULT_CONTENT,
         create_on: Date.now(),
         platforms: []
       })

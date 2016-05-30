@@ -1,7 +1,8 @@
 import React, {PropTypes} from 'react'
 import AceEditor from 'react-ace'
-import {EDITOR_INITIAL_VALUE} from '../helpers/const'
+import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
 import * as DbUtils from '../helpers/database'
+import * as utils from '../helpers/utils'
 import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/monokai'
@@ -19,7 +20,7 @@ export default React.createClass({
     return {
       width: null,
       height: null,
-      value: EDITOR_INITIAL_VALUE
+      value: DEFAULT_CONTENT
     }
   },
 
@@ -37,24 +38,28 @@ export default React.createClass({
 
   syncPost() {
     // TODO 同步内容到各大平台
-    let content = this.refs.aceEditor.editor.getValue()
+    let value = this.refs.aceEditor.editor.getValue()
+    let title = utils.getMarkdownTitle(value)
+    let content = utils.normalizeMarkdownContent(value)
+
     console.log('syncing post ...')
-    console.log(content)
+    console.log(title, content)
   },
 
   handleChange(value) {
     clearTimeout(this.timer)
     this.timer = setTimeout(() => {
       let post = this.props.states.posts.selected
+      let title = utils.getMarkdownTitle(value)
       DbUtils.updatePost(post.id, {
-        title: value,
+        title: title || DEFAULT_TITLE,
         content: value
       }).then(updated => {
         if (!updated) return
 
         this.props.actions.postsUpdate({
           id: post.id,
-          title: value,
+          title,
           content: value
         })
       })
@@ -63,7 +68,7 @@ export default React.createClass({
 
   render() {
     let post = this.props.states.posts.selected
-    let editorValue = post ? post.content : EDITOR_INITIAL_VALUE
+    let editorValue = post ? post.content : ''
     let el = this.state.width ? (
       <AceEditor
         ref="aceEditor"

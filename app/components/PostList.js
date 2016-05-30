@@ -13,6 +13,11 @@ export default React.createClass({
       this.props.actions.postsList({
         posts: posts.reverse()
       })
+
+      let items = this.props.states.posts.datasource
+      if (items.length) {
+        this.props.actions.postsSelect(items[0])
+      }
     })
   },
 
