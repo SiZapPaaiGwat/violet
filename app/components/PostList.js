@@ -17,7 +17,8 @@ export default React.createClass({
   },
 
   render() {
-    let list = this.props.states.posts.datasource.map((post, i) => {
+    let posts = this.props.states.posts.datasource
+    let list = posts.map((post, i) => {
       let handleClick = () => {
         this.props.actions.postsSelect(post)
       }
@@ -36,9 +37,11 @@ export default React.createClass({
         </li>
       )
     })
+    let el = posts.length ? <ul>{list}</ul> :
+      <div className={styles.noPost}>还没有任何作品</div>
     return (
       <div className={styles.postContainer}>
-        <ul>{list}</ul>
+        {el}
       </div>
     )
   }

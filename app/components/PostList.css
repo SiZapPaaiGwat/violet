@@ -43,3 +43,10 @@
   display: inline-block;
   font-size: 12px;
 }
+
+.noPost {
+  text-align: center;
+  color: #AAA;
+  font-size: 12px;
+  padding: 20px;
+}
