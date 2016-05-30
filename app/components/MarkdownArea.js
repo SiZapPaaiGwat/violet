@@ -3,6 +3,8 @@ import AceEditor from 'react-ace'
 import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
 import * as DbUtils from '../helpers/database'
 import * as utils from '../helpers/utils'
+import {syncPost} from '../../electron/ipc_render'
+import * as DataUtils from '../helpers/client_data'
 import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/monokai'
@@ -36,14 +38,42 @@ export default React.createClass({
     this.resizeEditorWH()
   },
 
-  syncPost() {
-    // TODO 同步内容到各大平台
+  handleSync() {
     let value = this.refs.aceEditor.editor.getValue()
-    let title = utils.getMarkdownTitle(value)
-    let content = utils.normalizeMarkdownContent(value)
+    let args = {
+      title: utils.getMarkdownTitle(value),
+      content: utils.normalizeMarkdownContent(value)
+    }
 
-    console.log('syncing post ...')
-    console.log(title, content)
+    let accountMap = DataUtils.getAccountMap()
+    DataUtils.getLoginDetails(accountMap).then(result => {
+      console.log(result)
+      if (result.github) {
+        args.github = accountMap.github
+        // TODO
+        args.github.repo = 'simongfxu.github.com'
+      }
+
+      if (result.zhihu) {
+        let cookie = DataUtils.getCookiesByPlatform('zhihu')
+        args.zhihu = {
+          cookie,
+          token: utils.getCookieByName(cookie, 'XSRF-TOKEN')
+        }
+      }
+
+      console.log(args)
+      if (Object.keys(args).length === 2) {
+        return Promise.reject(new Error('没有设置任何写作平台'))
+      }
+
+      console.log('syncing')
+      return syncPost(args)
+    }).then(result => {
+      alert('文章同步成功')
+    }).catch(err => {
+      console.log(err)
+    })
   },
 
   handleChange(value) {
@@ -88,7 +118,7 @@ export default React.createClass({
     return (
       <div ref="container" className={styles.markdownContainer}>
         <div className={styles.container}>
-          <a href="javascript:;" title="开始同步文章" onClick={this.syncPost}>
+          <a href="javascript:;" title="开始同步文章" onClick={this.handleSync}>
             <i className={globalStyles.iconfont}>&#xe6a2;</i>
           </a>
         </div>

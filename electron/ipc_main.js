@@ -29,16 +29,22 @@ marked.setOptions({
 <pre lang=\"\">var a = 1;\nfunction A() {\n    console.log(123)\n}\n</pre><p></p>
  */
 ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
-  Promise.all([
-    RequestHandler.publishGitHub({
+  let tasks = []
+  if (github) {
+    tasks.push(RequestHandler.publishGitHub({
       title,
       content,
       username: github.username,
       password: github.password,
       repo: github.repo
-    }),
-    RequestHandler.publishZhihu(zhihu.cookie, zhihu.token, title, marked(content))
-  ]).then(info => {
+    }))
+  }
+
+  if (zhihu) {
+    tasks.push(RequestHandler.publishZhihu(zhihu.cookie, zhihu.token, title, marked(content)))
+  }
+
+  Promise.all(tasks).then(info => {
     event.sender.send('sync-post-finish', info)
   })
 })
