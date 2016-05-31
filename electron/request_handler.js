@@ -1,6 +1,8 @@
 import request from 'superagent'
 import GitHubAPI from 'github'
 import {getCookieByName, cookieTokenUtil} from '../app/helpers/utils'
+import {ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
+
 
 /**
  * 用于请求知乎的相关接口
@@ -9,7 +11,7 @@ export function requestWithParams({url, cookie, token, formData, method}) {
   return new Promise(function(resolve, reject) {
     request[method || 'post'](url)
       .send(formData)
-      .set('X-XSRF-TOKEN', token)
+      .set(`X-${ZHIHU_XSRF_TOKEN_NAME}`, token)
       .set('Cookie', cookie)
       .set('Content-Type', 'application/json;charset=UTF-8')
       .timeout(5000)
@@ -21,7 +23,8 @@ export function requestWithParams({url, cookie, token, formData, method}) {
 
         let json = JSON.parse(res.text)
         // 更新cookie与token，不过这里暂时没用
-        json.csrfToken = getCookieByName(res.headers['set-cookie'].join('; '), 'XSRF-TOKEN')
+        json.csrfToken = getCookieByName(res.headers['set-cookie'].join('; '),
+          ZHIHU_XSRF_TOKEN_NAME)
         json.cookie = cookieTokenUtil(cookie, json.csrfToken).cookie
         resolve(json)
       })

@@ -26,3 +26,5 @@ export let PLATFORM_INFO = {
 export const DEFAULT_TITLE = '无标题文档'
 
 export const DEFAULT_CONTENT = '# 无标题文档 \n\n开动起来吧...'
+
+export const ZHIHU_XSRF_TOKEN_NAME = 'XSRF-TOKEN'

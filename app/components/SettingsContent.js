@@ -6,6 +6,7 @@ import Form from './Form'
 import {detectLoginStatus, parseWebviewCookiesByDomain, whoAmI} from '../../electron/ipc_render'
 import * as DataUtils from '../helpers/client_data'
 import {getCookieByName} from '../helpers/utils'
+import {ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
 import styles from './SettingsContent.css'
 
 let Tab = ReactTabs.Tab
@@ -54,7 +55,7 @@ export default React.createClass({
         let session = webview.getWebContents().session
         parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
           DataUtils.setCookiesByPlatform('zhihu', cookie)
-          return whoAmI({cookie, token: getCookieByName(cookie, 'XSRF-TOKEN')})
+          return whoAmI({cookie, token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)})
         }).then(json => {
           accountMap.zhihu.username = json.email
           DataUtils.updateAccount('zhihu', json.email, Date.now().toString(16))
@@ -130,14 +131,20 @@ export default React.createClass({
     })
   },
 
-  saveGithubAccount(username, password) {
+  saveGithubAccount(username, password, repo) {
+    if (!username || !password || !repo) {
+      alert('输入的帐号信息不完整')
+      return
+    }
+
     detectLoginStatus({
       github: {username, password}
     }).then(isLogin => {
       if (isLogin) {
-        DataUtils.updateAccount('github', username, password)
+        DataUtils.updateAccount('github', username, password, repo)
         accountMap.github.username = username
         accountMap.github.password = password
+        accountMap.github.repo = repo
         this.setState({
           github: true
         })
@@ -150,6 +157,15 @@ export default React.createClass({
   },
 
   render() {
+    let githubExtends = {
+      name: 'repo',
+      type: 'text',
+      label: '仓库名',
+      placeholder: '请输入GitHub仓库(repo)名称',
+      required: true,
+      value: ''
+    }
+
     return (
       <div className={styles.contentContainer} style={{display: 'block'}}>
         <Tabs onSelect={this.handleSelect}>
@@ -171,7 +187,7 @@ export default React.createClass({
                   username={accountMap.github.username}
                   onLogout={this.handleGitHubLogout}
                 />
-            ) : <Form onSubmit={this.saveGithubAccount} />}
+            ) : <Form onSubmit={this.saveGithubAccount} extends={[githubExtends]} />}
             </Loading>
           </TabPanel>
         </Tabs>

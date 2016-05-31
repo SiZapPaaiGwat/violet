@@ -1,3 +1,5 @@
+import {ZHIHU_XSRF_TOKEN_NAME} from './const'
+
 const HEADING_REG = /^ *# +[^\n]*\n/g
 
 export function getCookieByName(cookie, name) {
@@ -20,7 +22,7 @@ export function updateCookie(cookie, pair) {
 
 export function cookieTokenUtil(oldCookie, newToken) {
   return {
-    cookie: updateCookie(oldCookie, `XSRF-TOKEN=${newToken}`),
+    cookie: updateCookie(oldCookie, `${ZHIHU_XSRF_TOKEN_NAME}=${newToken}`),
     token: newToken
   }
 }

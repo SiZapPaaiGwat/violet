@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react'
 import AceEditor from 'react-ace'
-import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
+import {DEFAULT_TITLE, ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
 import * as DbUtils from '../helpers/database'
 import * as utils from '../helpers/utils'
 import {syncPost} from '../../electron/ipc_render'
@@ -21,8 +21,7 @@ export default React.createClass({
   getInitialState() {
     return {
       width: null,
-      height: null,
-      value: DEFAULT_CONTENT
+      height: null
     }
   },
 
@@ -47,27 +46,22 @@ export default React.createClass({
 
     let accountMap = DataUtils.getAccountMap()
     DataUtils.getLoginDetails(accountMap).then(result => {
-      console.log(result)
       if (result.github) {
         args.github = accountMap.github
-        // TODO
-        args.github.repo = 'simongfxu.github.com'
       }
 
       if (result.zhihu) {
         let cookie = DataUtils.getCookiesByPlatform('zhihu')
         args.zhihu = {
           cookie,
-          token: utils.getCookieByName(cookie, 'XSRF-TOKEN')
+          token: utils.getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
         }
       }
 
-      console.log(args)
       if (Object.keys(args).length === 2) {
         return Promise.reject(new Error('没有设置任何写作平台'))
       }
 
-      console.log('syncing')
       return syncPost(args)
     }).then(result => {
       alert('文章同步成功')
