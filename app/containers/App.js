@@ -30,21 +30,18 @@ export default React.createClass({
     // }
 
     let states = this.props.states
+    let DynamicComponent = PostList
+    if (states.settings.name === 'zhihu') {
+      DynamicComponent = SettingsZhihu
+    } else if (states.settings.name === 'github') {
+      DynamicComponent = SettingsGitHub
+    }
+
     return (
       <div>
-        <PostList {...this.props} />
         <BottomSettings {...this.props} />
         <MarkdownArea {...this.props} />
-        {
-          states.settings.name === 'zhihu' && <SettingsZhihu {...this.props} />
-        }
-        {
-          states.settings.name === 'github' && <SettingsGitHub {...this.props} />
-        }
-        {
-          //settings.list && <SettingsContent />
-        }
-
+        <DynamicComponent {...this.props} />
         <Alert ref="alert" />
       </div>
     )

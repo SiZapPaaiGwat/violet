@@ -13,6 +13,7 @@ export default React.createClass({
   },
 
   getInitialState() {
+    // TODO state 全部放到redux
     return {
       isLoggedIn: null
     }
@@ -20,7 +21,6 @@ export default React.createClass({
 
   componentDidMount() {
     let github = this.props.states.account.github
-    console.log(github)
     DataUtils.getLoginDetails({github}).then(result => {
       this.setState({
         isLoggedIn: result

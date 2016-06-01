@@ -42,18 +42,20 @@ export default React.createClass({
   },
 
   render() {
-    // TODO 加载设置页面
+    // TODO 根据状态设置透明度
     return (
       <div className={styles.bottomSettingsContainer}>
         <a
           href="javascript:;"
           onClick={this.showZhihu}
+          title="设置知乎帐号"
         >
-          <img src={zhihuIcon} alt="zhihu" className={`${styles.img} ${styles.disabled}`} />
+          <img src={zhihuIcon} alt="zhihu" className={`${styles.img}`} />
         </a>
         <a
           href="javascript:;"
           onClick={this.showGitHub}
+          title="设置GitHub帐号"
         >
           <img src={githubIcon} alt="zhihu" className={styles.img} />
         </a>

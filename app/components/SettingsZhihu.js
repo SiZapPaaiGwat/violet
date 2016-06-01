@@ -18,6 +18,7 @@ export default React.createClass({
   },
 
   getInitialState() {
+    // TODO state 全部放到redux
     return {
       isLoggedIn: null,
       isLoggedOut: false
@@ -62,7 +63,7 @@ export default React.createClass({
             isLoggedIn: true
           })
         }).catch(err => {
-          alert(err.message)
+          App.alert(err.message)
         })
       }
     })
