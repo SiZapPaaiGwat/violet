@@ -43,28 +43,27 @@ export default React.createClass({
     }
 
     webview.addEventListener('will-navigate', (e) => {
-      if (e.url === LOGIN_URL || e.url === HOME_PAGE_URL) {
-        let session = webview.getWebContents().session
-        parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
-          DataUtils.setCookiesByPlatform('zhihu', cookie)
-          return whoAmI({cookie, token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)})
-        }).then(json => {
-          this.props.actions.accountUpdate({
-            platform: 'zhihu',
-            value: {
-              username: json.email,
-              password: ''
-            }
-          })
-          DataUtils.updateAccount('zhihu', json.email, '')
-          this.props.actions.statusUpdate({
-            platform: 'zhihu',
-            value: true
-          })
-        }).catch(err => {
-          App.alert(err.message)
+      // TODO 暂时忽略点击其它连接的跳转
+      let session = webview.getWebContents().session
+      parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
+        DataUtils.setCookiesByPlatform('zhihu', cookie)
+        return whoAmI({cookie, token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)})
+      }).then(json => {
+        this.props.actions.accountUpdate({
+          platform: 'zhihu',
+          value: {
+            username: json.email,
+            password: ''
+          }
         })
-      }
+        DataUtils.updateAccount('zhihu', json.email, '')
+        this.props.actions.statusUpdate({
+          platform: 'zhihu',
+          value: true
+        })
+      }).catch(err => {
+        App.alert(err.message)
+      })
     })
   },
 
@@ -91,7 +90,7 @@ export default React.createClass({
     let status = this.props.states.status
     if (status.zhihu) {
       return (
-        <div>
+        <div data-login>
           <LoginStatus
             username={accountMap.zhihu.username}
             onLogout={this.handleZhihuLogout}
@@ -112,7 +111,7 @@ export default React.createClass({
     }
 
     return (
-      <div>
+      <div data-logout>
         <webview
           className={styles.normal}
           ref="webview"
