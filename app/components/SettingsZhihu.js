@@ -32,7 +32,7 @@ export default React.createClass({
       this.refs.dialog.show()
       this.onWebviewMounted()
     }).catch(err => {
-      alert(err)
+      App.alert(err)
     })
   },
 
@@ -54,7 +54,7 @@ export default React.createClass({
             platform: 'zhihu',
             value: {
               username: json.email,
-              password: '',
+              password: ''
             }
           })
           DataUtils.updateAccount('zhihu', json.email, '')

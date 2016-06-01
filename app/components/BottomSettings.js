@@ -24,9 +24,8 @@ export default React.createClass({
         create_on: Date.now(),
         platforms: []
       })
-      alert('操作成功')
     }).catch(err => {
-      alert('操作失败')
+      App.alert('新建作品失败')
     })
   },
 
@@ -34,18 +33,34 @@ export default React.createClass({
     this.props.actions.settingsShow({name: 'zhihu'})
   },
 
+  showGitHub() {
+    this.props.actions.settingsShow({name: 'github'})
+  },
+
+  showList() {
+    this.props.actions.settingsShow({name: 'list'})
+  },
+
   render() {
     // TODO 加载设置页面
     return (
       <div className={styles.bottomSettingsContainer}>
-        <a href="javascript:;" onClick={this.showZhihu}>
+        <a
+          href="javascript:;"
+          onClick={this.showZhihu}
+        >
           <img src={zhihuIcon} alt="zhihu" className={`${styles.img} ${styles.disabled}`} />
         </a>
-        <a href="javascript:;">
+        <a
+          href="javascript:;"
+          onClick={this.showGitHub}
+        >
           <img src={githubIcon} alt="zhihu" className={styles.img} />
         </a>
-        <a href="javascript:;"
+        <a
+          href="javascript:;"
           title="查看全部作品"
+          onClick={this.showList}
         >
           <i className={globalStyles.iconfont}>&#xe65f;</i>
         </a>
@@ -56,7 +71,8 @@ export default React.createClass({
         >
           <i className={globalStyles.iconfont}>&#xe677;</i>
         </a>
-        <a href="javascript:;"
+        <a
+          href="javascript:;"
           title="同步当前作品"
         >
           <i className={globalStyles.iconfont}>&#xe6a2;</i>

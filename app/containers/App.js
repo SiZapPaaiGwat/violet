@@ -3,6 +3,7 @@ import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import MarkdownArea from '../components/MarkdownArea'
 import SettingsZhihu from '../components/SettingsZhihu'
+import SettingsGitHub from '../components/SettingsGitHub'
 import Alert from 'react-notification-system'
 
 export default React.createClass({
@@ -38,7 +39,7 @@ export default React.createClass({
           states.settings.name === 'zhihu' && <SettingsZhihu {...this.props} />
         }
         {
-          //settings.github && <SettingsContent />
+          states.settings.name === 'github' && <SettingsGitHub {...this.props} />
         }
         {
           //settings.list && <SettingsContent />
