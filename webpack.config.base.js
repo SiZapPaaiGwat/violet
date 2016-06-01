@@ -11,7 +11,7 @@ export default {
         test: /\.json$/,
         loader: 'json-loader'
       }, {
-        test: /\.woff$/,
+        test: /(\.woff)|(\.ico)$/,
         loader: 'file-loader?name=[name]-[sha512:hash:base64:7].[ext]'
       }
     ]

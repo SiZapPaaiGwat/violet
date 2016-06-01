@@ -57,15 +57,20 @@ a {
   font-style:normal;
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
+  vertical-align: middle;
 }
 
-.icon-upload:before { content: "\e6a2"; }
-.icon-trash:before { content: "\e69f"; }
-.icon-cross:before { content: "\e630"; }
-.icon-eye:before { content: "\e640"; }
-.icon-screen:before { content: "\e684"; }
-.icon-crosscircle:before { content: "\e631"; }
-.icon-heart:before { content: "\e64b"; }
-.icon-home:before { content: "\e64f"; }
+.icon-list:before { content: "\e65f"; }
 .icon-pluscircle:before { content: "\e677"; }
-.icon-cog:before { content: "\e62d"; }
+.icon-cross:before { content: "\e630"; }
+.icon-sync:before { content: "\e692"; }
+.icon-upload:before { content: "\e6a2"; }
+.icon-sad:before { content: "\e683"; }
+.icon-smile:before { content: "\e688"; }
+.icon-screen:before { content: "\e684"; }
+.icon-star:before { content: "\e68c"; }
+.icon-trash:before { content: "\e69f"; }
+.icon-crosscircle:before { content: "\e631"; }
+.icon-eye:before { content: "\e640"; }
+.icon-download:before { content: "\e638"; }
+.icon-heart:before { content: "\e64b"; }

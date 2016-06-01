@@ -3,11 +3,9 @@
 .markdownContainer {
   position: fixed;
   top: 0;
-  right: 0;
-  bottom: 0;
-  left: var(--postContainerWidth);
-  border-left: 1px solid #efefef;
-  padding: var(--paddingVertical) var(--paddingHoriz);
+  right: 20%;
+  left: 20%;
+  bottom: 30px;
 }
 
 .container {

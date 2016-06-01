@@ -4,6 +4,23 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  width: var(--postContainerWidth);
+  right: 0;
   height: 24px;
+  text-align: center;
+  padding: 6px 0;
+}
+
+.bottomSettingsContainer a {
+  margin-right: 18px;
+}
+
+.img {
+  width: 16px;
+  height: 16px;
+  border-radius: 6px;
+  vertical-align: middle;
+}
+
+.img.disabled {
+  opacity: 0.4;
 }

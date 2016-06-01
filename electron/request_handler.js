@@ -1,8 +1,7 @@
 import request from 'superagent'
 import GitHubAPI from 'github'
 import {getCookieByName, cookieTokenUtil} from '../app/helpers/utils'
-import {ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
-
+import {ZHIHU_XSRF_TOKEN_NAME} from '../app/helpers/const'
 
 /**
  * 用于请求知乎的相关接口
