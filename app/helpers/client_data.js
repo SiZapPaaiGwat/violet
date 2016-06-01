@@ -53,10 +53,8 @@ export function getLoginDetails(accountMap) {
   // zhihu只需要cookie即可
   if (accountMap.zhihu) {
     let cookie = getCookiesByPlatform('zhihu')
-    if (cookie) {
-      req.zhihu = {
-        cookie
-      }
+    req.zhihu = {
+      cookie
     }
   }
 

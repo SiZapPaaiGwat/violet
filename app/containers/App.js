@@ -24,14 +24,18 @@ export default React.createClass({
 
     let github = this.props.states.account.github
     DataUtils.getLoginDetails({zhihu: true, github}).then(result => {
+      if (Object.keys(result).length !== 2) {
+        throw new Error('调用错误')
+      }
+
       this.props.actions.statusUpdate({
         platform: 'zhihu',
-        value: result[0]
+        value: result.zhihu
       })
 
       this.props.actions.statusUpdate({
         platform: 'github',
-        value: result[1]
+        value: result.github
       })
     }).catch(err => {
       App.alert(err.message)

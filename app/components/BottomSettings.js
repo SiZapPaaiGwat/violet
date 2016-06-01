@@ -43,22 +43,24 @@ export default React.createClass({
   },
 
   render() {
-    // TODO 根据状态设置透明度
     let status = this.props.states.status
+    let account = this.props.states.account
     return (
       <div className={styles.bottomSettingsContainer}>
         <a
           href="javascript:;"
           onClick={this.showZhihu}
-          title="设置知乎帐号"
+          title={status.zhihu === false ? '设置知乎帐号' : account.zhihu.username}
+          className={status.zhihu === false ? styles.disabled : ''}
           style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
         >
-          <img src={zhihuIcon} alt="zhihu" className={`${styles.img}`} />
+          <img src={zhihuIcon} alt="zhihu" className={styles.img} />
         </a>
         <a
           href="javascript:;"
           onClick={this.showGitHub}
-          title="设置GitHub帐号"
+          title={status.github === false ? '设置GitHub帐号' : account.github.username}
+          className={status.github === false ? styles.disabled : ''}
           style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
         >
           <img src={githubIcon} alt="zhihu" className={styles.img} />
