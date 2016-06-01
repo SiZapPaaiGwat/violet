@@ -20,8 +20,8 @@ export function getAccountMap() {
   return accountMap
 }
 
-export function updateAccount(platform, userName, password, repo = '') {
-  if (!userName || !password) {
+export function updateAccount(platform, userName, password = '', repo = '') {
+  if (!userName) {
     return
   }
 
@@ -49,13 +49,26 @@ export function setCookiesByPlatform(platform, cookie) {
 }
 
 export function getLoginDetails(accountMap) {
-  return detectLoginStatus({
-    zhihu: {
-      cookie: getCookiesByPlatform('zhihu')
-    },
-    github: {
-      username: accountMap.github.username,
-      password: accountMap.github.password
+  let req = {}
+  // zhihu只需要cookie即可
+  if (accountMap.zhihu) {
+    let cookie = getCookiesByPlatform('zhihu')
+    if (cookie) {
+      req.zhihu = {
+        cookie
+      }
     }
-  })
+  }
+
+  if (accountMap.github) {
+    if (accountMap.github.username && accountMap.github.password) {
+      req.github = accountMap.github
+    }
+  }
+
+  if (Object.keys(req).length === 0) {
+    return Promise.resolve(false)
+  }
+
+  return detectLoginStatus(req)
 }

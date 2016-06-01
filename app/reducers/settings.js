@@ -1,9 +1,10 @@
 import State from '../helpers/initial_state'
 
-export default function(state = State.settings, action) {
-  if (action.type === 'show_settings') {
+export default function(state = State.settings, {type, payload}) {
+  if (type === 'show_settings') {
     return {
-      showSettings: true
+      ...state,
+      name: payload.name
     }
   }
 

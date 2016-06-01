@@ -1,10 +1,12 @@
 import _ from 'lodash'
-import * as settings from './settings.js'
-import * as posts from './posts.js'
+import * as settings from './settings'
+import * as posts from './posts'
+import * as account from './account'
 
 const actions = {
   settings,
-  posts
+  posts,
+  account
 }
 
 function convert(actionCreators) {

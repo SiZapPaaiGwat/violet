@@ -47,6 +47,7 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
   Promise.all(tasks).then(info => {
     event.sender.send('sync-post-finish', info)
   })
+  // TODO 统一的主进程错误传递处理
 })
 
 /**
@@ -54,6 +55,7 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
  */
 ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
   let tasks = []
+  console.log(zhihu, github)
   if (zhihu) {
     tasks.push(RequestHandler.isZhihuLoggin(zhihu.cookie))
   }
@@ -61,7 +63,9 @@ ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
   if (github) {
     tasks.push(RequestHandler.isGitHubLoggin(github.username, github.password))
   }
+  console.log(tasks.length)
   Promise.all(tasks).then(result => {
+    console.log('result is ', result)
     let ret = tasks.length === 2 ? {
       zhihu: result[0],
       github: result[1]

@@ -30,11 +30,15 @@ export default React.createClass({
     })
   },
 
+  showZhihu() {
+    this.props.actions.settingsShow({name: 'zhihu'})
+  },
+
   render() {
     // TODO 加载设置页面
     return (
       <div className={styles.bottomSettingsContainer}>
-        <a href="javascript:;">
+        <a href="javascript:;" onClick={this.showZhihu}>
           <img src={zhihuIcon} alt="zhihu" className={`${styles.img} ${styles.disabled}`} />
         </a>
         <a href="javascript:;">

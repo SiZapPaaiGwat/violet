@@ -1,0 +1,10 @@
+.normal {
+  width:400px;
+  height:460px;
+  margin: 0 auto;
+}
+
+.hide {
+  width: 0px;
+  height: 0px;
+}

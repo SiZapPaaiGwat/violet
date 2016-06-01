@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import MarkdownArea from '../components/MarkdownArea'
-import SettingsContent from '../components/SettingsContent'
+import SettingsZhihu from '../components/SettingsZhihu'
 
 export default React.createClass({
   propTypes: {
@@ -17,13 +17,20 @@ export default React.createClass({
     //   devTools = <DevTools />
     // }
 
+    let settings = this.props.states.settings
     return (
       <div>
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
         <MarkdownArea {...this.props} />
         {
-          this.props.states.settings.showSettings && <SettingsContent />
+          settings.name === 'zhihu' && <SettingsZhihu {...this.props} />
+        }
+        {
+          //settings.github && <SettingsContent />
+        }
+        {
+          //settings.list && <SettingsContent />
         }
       </div>
     )
