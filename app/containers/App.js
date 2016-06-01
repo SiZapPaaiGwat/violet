@@ -3,10 +3,21 @@ import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import MarkdownArea from '../components/MarkdownArea'
 import SettingsZhihu from '../components/SettingsZhihu'
+import Alert from 'react-notification-system'
 
 export default React.createClass({
   propTypes: {
-    states: PropTypes.object.isRequired
+    states: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired
+  },
+
+  componentDidMount() {
+    App.alert = (message, level = 'warning') => {
+      this.refs.alert.addNotification({
+        message,
+        level
+      })
+    }
   },
 
   render() {
@@ -17,14 +28,14 @@ export default React.createClass({
     //   devTools = <DevTools />
     // }
 
-    let settings = this.props.states.settings
+    let states = this.props.states
     return (
       <div>
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
         <MarkdownArea {...this.props} />
         {
-          settings.name === 'zhihu' && <SettingsZhihu {...this.props} />
+          states.settings.name === 'zhihu' && <SettingsZhihu {...this.props} />
         }
         {
           //settings.github && <SettingsContent />
@@ -32,6 +43,8 @@ export default React.createClass({
         {
           //settings.list && <SettingsContent />
         }
+
+        <Alert ref="alert" />
       </div>
     )
   }
