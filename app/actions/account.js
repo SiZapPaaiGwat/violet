@@ -1,10 +1,6 @@
-export function update(payload) {
-  if (!payload.platform || !payload.value) {
-    throw new Error('platform and value are required fields.')
-  }
-
+export function update({platform, value}) {
   return {
     type: 'update_account',
-    payload
+    payload: {platform, value}
   }
 }

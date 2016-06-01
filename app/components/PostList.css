@@ -1,15 +1,5 @@
 @import "../css/var.css";
 
-.postContainer {
-  width: var(--postContainerWidth);
-  position: fixed;
-  left: 0;
-  top: 0;
-  bottom: 40px;
-  font-size: 14px;
-  overflow-y: auto;
-}
-
 .postItem {
   padding: 10px 15px;
   border-bottom: 1px solid #dedede;

@@ -8,7 +8,8 @@ import githubIcon from '../imgs/github.ico'
 
 export default React.createClass({
   propTypes: {
-    actions: PropTypes.object.isRequired
+    actions: PropTypes.object.isRequired,
+    states: PropTypes.object.isRequired
   },
 
   showContentPage() {
@@ -43,12 +44,14 @@ export default React.createClass({
 
   render() {
     // TODO 根据状态设置透明度
+    let status = this.props.states.status
     return (
       <div className={styles.bottomSettingsContainer}>
         <a
           href="javascript:;"
           onClick={this.showZhihu}
           title="设置知乎帐号"
+          style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
         >
           <img src={zhihuIcon} alt="zhihu" className={`${styles.img}`} />
         </a>
@@ -56,6 +59,7 @@ export default React.createClass({
           href="javascript:;"
           onClick={this.showGitHub}
           title="设置GitHub帐号"
+          style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
         >
           <img src={githubIcon} alt="zhihu" className={styles.img} />
         </a>

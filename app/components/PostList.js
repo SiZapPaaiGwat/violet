@@ -28,7 +28,7 @@ export default React.createClass({
         this.props.actions.postsSelect(post)
       }
       return (
-        <li className={styles.postItem} key={post.id} onClick={handleClick}>
+        <li key={post.id} onClick={handleClick}>
           <div className={styles.postTitle}>
             <span>{post.title}</span>
           </div>

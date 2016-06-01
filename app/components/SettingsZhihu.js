@@ -1,5 +1,4 @@
 import React, {PropTypes} from 'react'
-import Modal from 'react-skylight'
 import LoginStatus from './LoginStatus'
 import {parseWebviewCookiesByDomain, whoAmI} from '../../electron/ipc_render'
 import * as DataUtils from '../helpers/client_data'
@@ -18,23 +17,22 @@ export default React.createClass({
   },
 
   getInitialState() {
-    // TODO state 全部放到redux
     return {
-      isLoggedIn: null,
-      isLoggedOut: false
+      isLoggingOut: null
+    }
+  },
+
+  componentDidUpdate(nextProps, nextState) {
+    let isLogin = this.props.states.status.zhihu
+    let isLoggingOut = this.state.isLoggingOut
+    // 注销时绑定事件
+    if (!isLogin && isLoggingOut === false) {
+      this.onWebviewMounted()
     }
   },
 
   componentDidMount() {
-    DataUtils.getLoginDetails({zhihu: true}).then(result => {
-      this.setState({
-        isLoggedIn: !!result
-      })
-      this.refs.dialog.show()
-      this.onWebviewMounted()
-    }).catch(err => {
-      App.alert(err)
-    })
+    this.onWebviewMounted()
   },
 
   onWebviewMounted() {
@@ -59,8 +57,9 @@ export default React.createClass({
             }
           })
           DataUtils.updateAccount('zhihu', json.email, '')
-          this.setState({
-            isLoggedIn: true
+          this.props.actions.statusUpdate({
+            platform: 'zhihu',
+            value: true
           })
         }).catch(err => {
           App.alert(err.message)
@@ -72,27 +71,25 @@ export default React.createClass({
   handleZhihuLogout() {
     DataUtils.setCookiesByPlatform('zhihu', null)
     this.setState({
-      isLoggedOut: true
+      isLoggingOut: true
     }, () => {
       let webview = this.refs.webview
       webview.addEventListener('did-get-response-details', (e) => {
+        this.props.actions.statusUpdate({
+          platform: 'zhihu',
+          value: false
+        })
         this.setState({
-          isLoggedIn: false,
-          isLoggedOut: false,
-        }, () => {
-          this.onWebviewMounted()
+          isLoggingOut: false
         })
       })
     })
   },
 
-  resetSettings() {
-    this.props.actions.settingsShow({name: ''})
-  },
-
   renderZhihu() {
     let accountMap = this.props.states.account
-    if (this.state.isLoggedIn) {
+    let status = this.props.states.status
+    if (status.zhihu) {
       return (
         <div>
           <LoginStatus
@@ -100,7 +97,7 @@ export default React.createClass({
             onLogout={this.handleZhihuLogout}
           />
           {
-            this.state.isLoggedOut && (
+            this.state.isLoggingOut && (
               <webview
                 className={styles.hide}
                 ref="webview"
@@ -128,21 +125,10 @@ export default React.createClass({
   },
 
   render() {
-    // TODO compute from css
-    let dialogStyles = {
-      width: '400px',
-      height: '480px',
-      marginTop: '-240px',
-      marginLeft: '-200px'
-    }
-
     return (
-      <Modal ref="dialog" title="知乎"
-        dialogStyles={dialogStyles}
-        afterClose={this.resetSettings}
-      >
+      <div>
         {this.renderZhihu()}
-      </Modal>
+      </div>
     )
   }
 })

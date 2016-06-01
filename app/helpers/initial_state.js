@@ -13,5 +13,10 @@ export default {
   routing: {
   },
   // 账户设置信息
-  account: DataUtils.getAccountMap()
+  account: DataUtils.getAccountMap(),
+  // 帐号登录验证状态
+  status: {
+    zhihu: null,
+    github: null
+  }
 }
