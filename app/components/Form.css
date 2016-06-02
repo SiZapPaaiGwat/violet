@@ -1,0 +1,74 @@
+@import "../css/var.css";
+
+.forms {
+
+}
+
+.forms section {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.forms label {
+  font-size: 94%;
+  display: block;
+  margin-bottom: 6px;
+  color: var(--emTextColor);
+}
+
+.forms input {
+  display: block;
+  -webkit-appearance: none;
+  font-size: 14px;
+  padding: 5px 7px;
+  line-height: 1;
+  height: 24px;
+  outline: none;
+  background: #ffffff;
+  border: 1px solid #dfdfdf;
+  border-radius: 2px;
+  margin-bottom: 0;
+  color: var(--textColor);
+  width: 80%;
+}
+
+button:hover {
+  background-color: #ededed;
+  color: rgba(0,0,0,0.6);
+  text-decoration: none;
+}
+
+.btn, button {
+  display: inline-block;
+  vertical-align: top;
+  font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-size: 1.4rem;
+  font-weight: normal;
+  white-space: nowrap;
+  padding: 0 32px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  text-decoration: none;
+  -webkit-appearance: none;
+  outline: none;
+  margin: 0;
+  border: none;
+  border-radius: 2px;
+  box-shadow: none;
+  cursor: pointer;
+  color: #000000;
+  background: #e5e5e5;
+  width: auto;
+  overflow: visible;
+}
+
+.primary {
+  color: rgba(255,255,255,0.9);
+  background: #2f77d1;
+}
+
+.primary:hover {
+  color: rgba(255,255,255,0.7);
+  background-color: #5992da;
+}

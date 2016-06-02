@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react'
+import styles from './Form.css'
 
 export default React.createClass({
   propTypes: {
@@ -9,6 +10,7 @@ export default React.createClass({
   },
 
   handleSubmit(e) {
+    e.preventDefault()
     if (this.props.onSubmit) {
       let extendFields = this.props.extends ?
         this.props.extends.map(item => this.refs[item.name].value) : []
@@ -20,46 +22,50 @@ export default React.createClass({
     let extra = this.props.extends ? this.props.extends.map(item => {
       let type = item.type || 'text'
       return (
-        <div key={item.name}>
-          <div>
+        <section key={item.name}>
             <label htmlFor={item.name}>{item.label}</label>
             <input
               ref={item.name}
+              name={item.name}
               type={type}
               placeholder={item.placeholder}
               required={item.required}
               defaultValue={item.value}
             />
-          </div>
-        </div>
+        </section>
       )
     }) : null
 
     return (
-      <fieldset>
-        <div >
+      <form action="#" method="POST" className={styles.forms} onSubmit={this.handleSubmit}>
+        <section>
           <label htmlFor="name">帐号</label>
-          <input ref="username" type="text" placeholder="请输入登录帐号" required
+          <input
+            ref="username"
+            type="text"
+            placeholder="请输入登录帐号"
+            required
             defaultValue={this.props.username}
           />
-        </div>
+        </section>
 
-        <div>
+        <section>
           <label htmlFor="password">密码</label>
-          <input ref="password" type="password" placeholder="请输入密码" required
+          <input
+            ref="password"
+            type="password"
+            placeholder="请输入密码"
+            required
             defaultValue={this.props.password}
           />
-        </div>
+        </section>
 
         {extra}
 
-        <div>
-          <button
-            onClick={this.handleSubmit}
-            type="button"
-          >立即保存</button>
-        </div>
-      </fieldset>
+        <section>
+          <button type="submit" className={styles.primary}>立即保存</button>
+        </section>
+      </form>
     )
   }
 })

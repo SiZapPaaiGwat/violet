@@ -3,8 +3,10 @@
 @value markdownMarginLeft: 20%;
 @value webviewNormalWidth: 400px;
 @value webviewNormalHeight: 480px;
-@value webviewMiniHeight: 240px;
+@value webviewMiniHeight: 300px;
 @value webviewMarginTop: 15px;
+@value emTextColor: #454545;
+@value textColor: #696969;
 
 :root {
   --bottomHeight: bottomHeight;
@@ -14,6 +16,8 @@
   --webviewNormalHeight: webviewNormalHeight;
   --webviewMiniHeight: webviewMiniHeight;
   --webviewMarginTop: webviewMarginTop;
+  --emTextColor: emTextColor;
+  --textColor: textColor;
 }
 
 :export {
