@@ -3,7 +3,7 @@
 .markdownContainer {
   position: fixed;
   top: 0;
-  right: 20%;
-  left: 20%;
-  bottom: 30px;
+  right: calc(var(--markdownMarginLeft));
+  left: calc(var(--markdownMarginLeft));
+  bottom: calc(var(--bottomHeight) + var(--bottomPadding) * 2);
 }

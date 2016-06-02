@@ -8,6 +8,7 @@ import Alert from 'react-notification-system'
 import Modal from 'react-skylight'
 import * as DbUtils from '../helpers/database'
 import * as DataUtils from '../helpers/client_data'
+import vars from '../css/var.css'
 
 export default React.createClass({
   propTypes: {
@@ -79,25 +80,29 @@ export default React.createClass({
     //   devTools = <DevTools />
     // }
 
-    // TODO compute from css
-    let dialogStyles = {
-      width: '400px',
-      height: '480px',
-      marginTop: '-240px',
-      marginLeft: '-200px'
-    }
     let states = this.props.states
     let DynamicComponent = null
     let title = ' '
-    if (states.settings.name === 'zhihu') {
+    let dialogName = states.settings.name
+    if (dialogName === 'zhihu') {
       DynamicComponent = SettingsZhihu
       title = '设置知乎帐号'
-    } else if (states.settings.name === 'github') {
+    } else if (dialogName === 'github') {
       DynamicComponent = SettingsGitHub
       title = '设置GitHub帐号'
-    } else if (states.settings.name === 'list') {
+    } else if (dialogName === 'list') {
       DynamicComponent = PostList
       title = '作品列表'
+    }
+    // 知乎登录后或者使用github，窗口高度需要调整
+    let useMiniStyle = (dialogName === 'zhihu' && states.status.zhihu) || (
+      dialogName === 'github'
+    )
+    let dialogStyles = {
+      width: vars.dialogWidth,
+      height: useMiniStyle ? vars.dialogMiniHeight : vars.dialogHeight,
+      marginTop: useMiniStyle ? vars.dialogMiniMarginTop : vars.dialogMarginTop,
+      marginLeft: vars.dialogMarginLeft,
     }
 
     return (

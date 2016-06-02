@@ -1,7 +1,10 @@
+@import "../css/var.css";
+
 .normal {
-  width:400px;
-  height:460px;
+  width: var(--webviewNormalWidth);
+  height: var(--webviewNormalHeight);
   margin: 0 auto;
+  margin-top: var(--webviewMarginTop);
 }
 
 .hide {

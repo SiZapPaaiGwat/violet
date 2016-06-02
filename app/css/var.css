@@ -1,9 +1,26 @@
-@value postContainerWidth: 320px;
-@value paddingHoriz: 20px;
-@value paddingVertical: 10px;
+@value bottomHeight: 24px;
+@value bottomPadding: 6px;
+@value markdownMarginLeft: 20%;
+@value webviewNormalWidth: 400px;
+@value webviewNormalHeight: 480px;
+@value webviewMiniHeight: 240px;
+@value webviewMarginTop: 15px;
 
 :root {
-  --postContainerWidth: postContainerWidth;
-  --paddingHoriz: paddingHoriz;
-  --paddingVertical: paddingVertical;
+  --bottomHeight: bottomHeight;
+  --bottomPadding: bottomPadding;
+  --markdownMarginLeft: markdownMarginLeft;
+  --webviewNormalWidth: webviewNormalWidth;
+  --webviewNormalHeight: webviewNormalHeight;
+  --webviewMiniHeight: webviewMiniHeight;
+  --webviewMarginTop: webviewMarginTop;
+}
+
+:export {
+  dialogWidth: var(--webviewNormalWidth);
+  dialogHeight: calc(var(--webviewNormalHeight) + var(--webviewMarginTop) + 10px);
+  dialogMarginTop: calc(var(--webviewNormalHeight) * -1 / 2);
+  dialogMarginLeft: calc(var(--webviewNormalWidth) * -1 / 2);
+  dialogMiniMarginTop: calc(var(--webviewMiniHeight) * -1 / 2);
+  dialogMiniHeight: var(--webviewMiniHeight);
 }
