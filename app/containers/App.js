@@ -16,8 +16,9 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    App.alert = (message, level = 'warning') => {
+    App.alert = (message, level = 'warning', title = '提示') => {
       this.refs.alert.addNotification({
+        title,
         message,
         level
       })

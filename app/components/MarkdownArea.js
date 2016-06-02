@@ -9,7 +9,6 @@ import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/monokai'
 import styles from './MarkdownArea.css'
-import globalStyles from '../css/global.css'
 import variables from '../css/var.css'
 
 export default React.createClass({
@@ -44,9 +43,6 @@ export default React.createClass({
       content: utils.normalizeMarkdownContent(value)
     }
 
-    App.alert(args)
-    return
-
     let accountMap = DataUtils.getAccountMap()
     DataUtils.getLoginDetails(accountMap).then(result => {
       if (result.github) {
@@ -67,9 +63,9 @@ export default React.createClass({
 
       return syncPost(args)
     }).then(result => {
-      alert('文章同步成功')
+      App.alert('文章同步成功', 'success')
     }).catch(err => {
-      console.log(err)
+      App.alert(err.message, 'error', '同步失败')
     })
   },
 
