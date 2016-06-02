@@ -59,9 +59,7 @@ export function getLoginDetails(accountMap) {
   }
 
   if (accountMap.github) {
-    if (accountMap.github.username && accountMap.github.password) {
-      req.github = accountMap.github
-    }
+    req.github = accountMap.github
   }
 
   if (Object.keys(req).length === 0) {
