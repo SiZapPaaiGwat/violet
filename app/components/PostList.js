@@ -1,5 +1,4 @@
 import React, {PropTypes} from 'react'
-import * as DbUtils from '../helpers/database'
 import styles from './PostList.css'
 
 export default React.createClass({
@@ -7,19 +6,6 @@ export default React.createClass({
     actions: PropTypes.object.isRequired,
     states: PropTypes.object.isRequired,
     parent: PropTypes.object.isRequired
-  },
-
-  componentDidMount() {
-    DbUtils.listPosts().then((posts) => {
-      this.props.actions.postsList({
-        posts: posts.reverse()
-      })
-
-      let items = this.props.states.posts.datasource
-      if (items.length && !this.props.states.posts.selected) {
-        this.props.actions.postsSelect(items[0])
-      }
-    })
   },
 
   render() {

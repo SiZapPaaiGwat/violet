@@ -44,6 +44,9 @@ export default React.createClass({
       content: utils.normalizeMarkdownContent(value)
     }
 
+    App.alert(args)
+    return
+
     let accountMap = DataUtils.getAccountMap()
     DataUtils.getLoginDetails(accountMap).then(result => {
       if (result.github) {
@@ -111,12 +114,6 @@ export default React.createClass({
 
     return (
       <div ref="container" className={styles.markdownContainer}>
-        <div className={styles.container}>
-          <a href="javascript:;" title="开始同步文章" onClick={this.handleSync}>
-            <i className={globalStyles.iconfont}>&#xe6a2;</i>
-          </a>
-        </div>
-
         {el}
       </div>
     )

@@ -6,6 +6,7 @@ import SettingsZhihu from '../components/SettingsZhihu'
 import SettingsGitHub from '../components/SettingsGitHub'
 import Alert from 'react-notification-system'
 import Modal from 'react-skylight'
+import * as DbUtils from '../helpers/database'
 import * as DataUtils from '../helpers/client_data'
 
 export default React.createClass({
@@ -40,6 +41,17 @@ export default React.createClass({
     }).catch(err => {
       App.alert(err.message)
     })
+
+    DbUtils.listPosts().then((posts) => {
+      this.props.actions.postsList({
+        posts: posts.reverse()
+      })
+
+      let items = this.props.states.posts.datasource
+      if (items.length && !this.props.states.posts.selected) {
+        this.props.actions.postsSelect(items[0])
+      }
+    })
   },
 
   componentWillUpdate(nextProps) {
@@ -52,6 +64,10 @@ export default React.createClass({
 
   resetSettings() {
     this.props.actions.settingsShow({name: ''})
+  },
+
+  handleSync() {
+    this.refs.mdEditor.handleSync()
   },
 
   render() {
@@ -85,8 +101,8 @@ export default React.createClass({
 
     return (
       <div>
-        <BottomSettings {...this.props} />
-        <MarkdownArea {...this.props} />
+        <BottomSettings {...this.props} parent={this} />
+        <MarkdownArea {...this.props} ref="mdEditor" />
         <Modal
           ref="dialog"
           title={title}

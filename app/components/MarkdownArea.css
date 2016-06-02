@@ -7,12 +7,3 @@
   left: 20%;
   bottom: 30px;
 }
-
-.container {
-  position: fixed;
-  top: 5px;
-  right: 5px;
-  width: 17px;
-  height: 17px;
-  z-index: 9;
-}

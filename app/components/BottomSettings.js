@@ -9,11 +9,8 @@ import githubIcon from '../imgs/github.ico'
 export default React.createClass({
   propTypes: {
     actions: PropTypes.object.isRequired,
-    states: PropTypes.object.isRequired
-  },
-
-  showContentPage() {
-    this.props.actions.settingsShow()
+    states: PropTypes.object.isRequired,
+    parent: PropTypes.object.isRequired
   },
 
   handleCreate() {
@@ -36,6 +33,10 @@ export default React.createClass({
     }).catch(err => {
       App.alert('新建作品失败')
     })
+  },
+
+  handleSync() {
+    this.props.parent.handleSync()
   },
 
   showZhihu() {
@@ -88,6 +89,7 @@ export default React.createClass({
           <i className={globalStyles.iconfont}>&#xe677;</i>
         </a>
         <a
+          onClick={this.handleSync}
           href="javascript:;"
           title="同步当前作品"
         >
