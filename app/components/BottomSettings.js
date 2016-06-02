@@ -17,6 +17,13 @@ export default React.createClass({
   },
 
   handleCreate() {
+    let items = this.props.states.posts.datasource
+    let newestItem = items[0]
+    if (newestItem.title === DEFAULT_TITLE && newestItem.content === DEFAULT_CONTENT) {
+      this.props.actions.postsSelect(newestItem)
+      return
+    }
+
     DbUtils.createPost(DEFAULT_TITLE, DEFAULT_CONTENT).then(id => {
       this.props.actions.postsCreate({
         id,
@@ -25,8 +32,7 @@ export default React.createClass({
         create_on: Date.now(),
         platforms: []
       })
-      let items = this.props.states.posts.datasource
-      this.props.actions.postsSelect(items[0])
+      this.props.actions.postsSelect(this.props.states.posts.datasource[0])
     }).catch(err => {
       App.alert('新建作品失败')
     })
