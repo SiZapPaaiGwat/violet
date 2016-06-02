@@ -5,7 +5,8 @@ import styles from './PostList.css'
 export default React.createClass({
   propTypes: {
     actions: PropTypes.object.isRequired,
-    states: PropTypes.object.isRequired
+    states: PropTypes.object.isRequired,
+    parent: PropTypes.object.isRequired
   },
 
   componentDidMount() {
@@ -26,6 +27,9 @@ export default React.createClass({
     let list = posts.map((post, i) => {
       let handleClick = () => {
         this.props.actions.postsSelect(post)
+        let parent = this.props.parent
+        parent.refs.dialog.hide()
+        parent.resetSettings()
       }
       return (
         <li key={post.id} onClick={handleClick}>

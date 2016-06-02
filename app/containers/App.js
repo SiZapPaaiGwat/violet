@@ -94,7 +94,7 @@ export default React.createClass({
           dialogStyles={dialogStyles}
           afterClose={this.resetSettings}
         >
-          {DynamicComponent && <DynamicComponent {...this.props} />}
+          {DynamicComponent && <DynamicComponent {...this.props} parent={this} />}
         </Modal>
         <Alert ref="alert" />
       </div>
