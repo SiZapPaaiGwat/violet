@@ -25,6 +25,8 @@ export default React.createClass({
         create_on: Date.now(),
         platforms: []
       })
+      let items = this.props.states.posts.datasource
+      this.props.actions.postsSelect(items[0])
     }).catch(err => {
       App.alert('新建作品失败')
     })
