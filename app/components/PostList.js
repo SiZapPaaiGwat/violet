@@ -31,13 +31,11 @@ export default React.createClass({
         <li key={post.id} onClick={handleClick}>
           <div className={styles.postTitle}>
             <span>{post.title}</span>
-          </div>
-          <div>
-            <span className={styles.postPubDate}>{post.id}</span>
-            <span>
-              <em className={styles.postPlatform}>知乎</em>
-              <em className={styles.postPlatform}>GitHub</em>
-            </span>
+            <div>
+              <span className={styles.postPubDate}>
+                {new Date(post.create_on).toLocaleString()}
+              </span>
+            </div>
           </div>
         </li>
       )
