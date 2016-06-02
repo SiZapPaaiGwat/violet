@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react'
+import styles from './Form.css'
 
 export default React.createClass({
   propTypes: {
@@ -8,16 +9,15 @@ export default React.createClass({
 
   render() {
     return (
-      <div>
-        <div>
-          <strong>状态:</strong> <span>已登录</span>
-        </div>
-        <div>
-          <strong>用户名:</strong> <span>{this.props.username}</span>
-        </div>
-        <div style={{textAlign: 'center'}}>
+      <div className={styles.forms}>
+        <section>
+          <label>当前用户:</label>
+          <input type="text" value={this.props.username} readOnly />
+        </section>
+
+        <section>
           <button onClick={this.props.onLogout}>注销</button>
-        </div>
+        </section>
       </div>
     )
   }
