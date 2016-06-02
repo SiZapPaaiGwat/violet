@@ -16,7 +16,7 @@ export default React.createClass({
       })
 
       let items = this.props.states.posts.datasource
-      if (items.length) {
+      if (items.length && !this.props.states.posts.selected) {
         this.props.actions.postsSelect(items[0])
       }
     })
