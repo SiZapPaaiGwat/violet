@@ -54,7 +54,7 @@ export default React.createClass({
           value: true
         })
       } else {
-        App.alert('验证失败', 'error')
+        App.alert('帐号信息错误', 'error', '身份验证失败')
       }
     }).catch(err => {
       App.alert(err.message, 'error')

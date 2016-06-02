@@ -1,5 +1,9 @@
 import {ipcRenderer} from 'electron'
 
+ipcRenderer.on('user-action-error', (e, {error, title}) => {
+  App.alert(error.message, 'error', title)
+})
+
 export function syncPost(args) {
   if (typeof args !== 'object') {
     return Promise.reject(new Error('参数必须传对象'))

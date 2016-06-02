@@ -46,8 +46,9 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
 
   Promise.all(tasks).then(info => {
     event.sender.send('sync-post-finish', info)
+  }).catch(error => {
+    event.sender.send('user-action-error', {error, title: '同步失败'})
   })
-  // TODO 统一的主进程错误传递处理
 })
 
 /**
@@ -68,15 +69,15 @@ ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
       github: result[1]
     } : result[0]
     event.sender.send('detect-login-status-finish', ret)
-  }).catch(err => {
-    console.error(err)
+  }).catch(error => {
+    event.sender.send('user-action-error', {error, title: '登录态异常'})
   })
 })
 
 ipcMain.on('zhihu-whoami-start', (event, args) => {
   RequestHandler.whoAmI(args).then(json => {
     event.sender.send('zhihu-whoami-finish', json)
-  }).catch(err => {
-    console.error(err)
+  }).catch(error => {
+    event.sender.send('user-action-error', {error, title: '获取身份失败'})
   })
 })
