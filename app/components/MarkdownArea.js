@@ -9,31 +9,12 @@ import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/monokai'
 import styles from './MarkdownArea.css'
-import variables from '../css/var.css'
+import vars from '../css/var.css'
 
 export default React.createClass({
   propTypes: {
     actions: PropTypes.object.isRequired,
     states: PropTypes.object.isRequired
-  },
-
-  getInitialState() {
-    return {
-      width: null,
-      height: null
-    }
-  },
-
-  resizeEditorWH() {
-    let el = this.refs.container
-    this.setState({
-      width: `${el.offsetWidth - parseInt(variables.paddingHoriz, 10) * 2}px`,
-      height: `${el.offsetHeight - parseInt(variables.paddingVertical, 10) * 2}px`
-    })
-  },
-
-  componentDidMount() {
-    this.resizeEditorWH()
   },
 
   handleSync() {
@@ -43,27 +24,46 @@ export default React.createClass({
       content: utils.normalizeMarkdownContent(value)
     }
 
-    let accountMap = DataUtils.getAccountMap()
-    DataUtils.getLoginDetails(accountMap).then(result => {
-      if (result.github) {
-        args.github = accountMap.github
+    let accountMap = this.props.states.account
+    let loginStatus = this.props.states.status
+    let post = this.props.states.posts.selected
+
+    if (loginStatus.github) {
+      args.github = accountMap.github
+      args.github.key = post.github_id
+    }
+
+    if (loginStatus.zhihu) {
+      let cookie = DataUtils.getCookiesByPlatform('zhihu')
+      args.zhihu = {
+        cookie,
+        token: utils.getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME),
+        key: post.zhihu_kid
       }
 
-      if (result.zhihu) {
-        let cookie = DataUtils.getCookiesByPlatform('zhihu')
-        args.zhihu = {
-          cookie,
-          token: utils.getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
-        }
+      if (!args.zhihu.cookie) {
+        App.alert('应用程序内部错误，无法获取关键数据', 'error', '同步失败')
+        return
       }
+    }
 
-      if (Object.keys(args).length === 2) {
-        return Promise.reject(new Error('没有设置任何写作平台'))
+    if (Object.keys(args).length === 0) {
+      App.alert('没有设置任何写作平台', 'error', '同步失败')
+      return
+    }
+
+    syncPost(args).then(result =>
+      // 更新 key
+      DbUtils.updatePost(post.id, {
+        github_id: result[0].number,
+        zhihu_id: result[1].slug
+      })
+    ).then(updated => {
+      if (updated) {
+        App.alert('文章同步成功', 'success', '恭喜')
+      } else {
+        App.alert('文章同步成功，但是本地数据更新失败', 'warning', '未知错误')
       }
-
-      return syncPost(args)
-    }).then(result => {
-      App.alert('文章同步成功', 'success')
     }).catch(err => {
       App.alert(err.message, 'error', '同步失败')
     })
@@ -92,25 +92,22 @@ export default React.createClass({
   render() {
     let post = this.props.states.posts.selected
     let editorValue = post ? post.content : ''
-    let el = this.state.width ? (
-      <AceEditor
-        ref="aceEditor"
-        onChange={this.handleChange}
-        className={styles.aceEditor}
-        width={this.state.width}
-        height={this.state.height}
-        mode="markdown"
-        theme="github"
-        value={editorValue}
-        name="editor"
-        showGutter={false}
-        setOptions={{fontSize: 16, wrap: true}}
-      />
-    ) : null
 
     return (
       <div ref="container" className={styles.markdownContainer}>
-        {el}
+        <AceEditor
+          ref="aceEditor"
+          onChange={this.handleChange}
+          className={styles.aceEditor}
+          width="100%"
+          height={`calc(100% - ${vars.markdownEditorHeightOffset})`}
+          mode="markdown"
+          theme="monokai"
+          value={editorValue}
+          name="editor"
+          showGutter={false}
+          setOptions={{fontSize: 16, wrap: true}}
+        />
       </div>
     )
   }

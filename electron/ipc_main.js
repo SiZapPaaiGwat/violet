@@ -36,12 +36,14 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
       content,
       username: github.username,
       password: github.password,
-      repo: github.repo
+      repo: github.repo,
+      number: github.key
     }))
   }
 
   if (zhihu) {
-    tasks.push(RequestHandler.publishZhihu(zhihu.cookie, zhihu.token, title, marked(content)))
+    tasks.push(RequestHandler.publishZhihu(zhihu.cookie, zhihu.token,
+      title, marked(content), zhihu.key))
   }
 
   Promise.all(tasks).then(info => {

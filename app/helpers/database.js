@@ -3,23 +3,14 @@ import Database from 'dexie'
 export let db = new Database('violet')
 
 db.version(1).stores({
-  posts: '++id, title, content, create_on, platforms'
+  posts: '++id, title, content, create_on, zhihu_id, github_id'
 })
 
-/**
- * schema
- * id
- * title
- * content
- * create_on
- * platforms: []
- */
 export function createPost(title, content) {
   return db.posts.add({
     title,
     content,
-    create_on: Date.now(),
-    platforms: []
+    create_on: Date.now()
   })
 }
 

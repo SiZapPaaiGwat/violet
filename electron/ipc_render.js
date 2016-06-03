@@ -1,6 +1,9 @@
 import {ipcRenderer} from 'electron'
 
-ipcRenderer.on('user-action-error', (e, {error, title}) => {
+ipcRenderer.on('user-action-error', (e, {error, title = '未知错误'}) => {
+  console.log('#Main process error')
+  console.log(`#title=${title}`)
+  console.log(error)
   App.alert(error.message, 'error', title)
 })
 
@@ -19,7 +22,9 @@ export function syncPost(args) {
 
 /**
  * 获取站点cookie
- * NOTE electron按filter过滤不起作用
+ * 主站和子站的cookie需要同时获取
+ *
+ * NOTE electron session.cookies.get({}) filter不起作用
  */
 export function parseWebviewCookiesByDomain(session, domain) {
   return new Promise(function(resolve, reject) {
@@ -29,7 +34,7 @@ export function parseWebviewCookiesByDomain(session, domain) {
         return
       }
 
-      let cookie = cookies.filter((i) => i.domain.indexOf(domain) > -1).map(function(item) {
+      let cookie = cookies.filter(item => item.domain.indexOf(domain) > -1).map(function(item) {
         return `${item.name}=${item.value};`
       })
 

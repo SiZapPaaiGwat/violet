@@ -27,4 +27,5 @@
   dialogMarginLeft: calc(var(--webviewNormalWidth) * -1 / 2);
   dialogMiniMarginTop: calc(var(--webviewMiniHeight) * -1 / 2);
   dialogMiniHeight: var(--webviewMiniHeight);
+  markdownEditorHeightOffset: var(--bottomHeight) + var(--bottomPadding) * 2;
 }

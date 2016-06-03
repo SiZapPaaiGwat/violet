@@ -15,7 +15,7 @@ export default React.createClass({
 
   handleCreate() {
     let items = this.props.states.posts.datasource
-    let newestItem = items[0]
+    let newestItem = items[0] || {}
     if (newestItem.title === DEFAULT_TITLE && newestItem.content === DEFAULT_CONTENT) {
       this.props.actions.postsSelect(newestItem)
       return
@@ -31,7 +31,7 @@ export default React.createClass({
       })
       this.props.actions.postsSelect(this.props.states.posts.datasource[0])
     }).catch(err => {
-      App.alert('新建作品失败')
+      App.alert(err.message, 'error', '新建作品失败')
     })
   },
 

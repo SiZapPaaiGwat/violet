@@ -3,12 +3,10 @@ import LoginStatus from './LoginStatus'
 import {parseWebviewCookiesByDomain, whoAmI} from '../../electron/ipc_render'
 import * as DataUtils from '../helpers/client_data'
 import {getCookieByName} from '../helpers/utils'
-import {ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
+import {
+  ZHIHU_XSRF_TOKEN_NAME, ZHUANLAN_URL, LOGIN_URL, LOGOUT_URL, ZHIHU_DOMAIN
+} from '../helpers/const'
 import styles from './Settings.css'
-
-const HOME_PAGE_URL = 'https://www.zhihu.com/'
-const LOGIN_URL = 'https://www.zhihu.com/signin'
-const LOGOUT_URL = 'https://www.zhihu.com/logout'
 
 export default React.createClass({
   propTypes: {
@@ -42,28 +40,34 @@ export default React.createClass({
       return
     }
 
-    webview.addEventListener('will-navigate', (e) => {
-      // TODO 暂时忽略点击其它连接的跳转
-      let session = webview.getWebContents().session
-      parseWebviewCookiesByDomain(session, 'zhihu.com').then(function(cookie) {
-        DataUtils.setCookiesByPlatform('zhihu', cookie)
-        return whoAmI({cookie, token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)})
-      }).then(json => {
-        this.props.actions.accountUpdate({
-          platform: 'zhihu',
-          value: {
-            username: json.email,
-            password: ''
-          }
+    webview.addEventListener('did-navigate', (e) => {
+      if (e.url === ZHUANLAN_URL) {
+        let session = webview.getWebContents().session
+        // 这里需要获取所有zhihu域名下的cookie
+        parseWebviewCookiesByDomain(session, ZHIHU_DOMAIN)
+        .then(function(cookie) {
+          DataUtils.setCookiesByPlatform('zhihu', cookie)
+          return whoAmI({
+            cookie,
+            token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
+          })
+        }).then(json => {
+          this.props.actions.accountUpdate({
+            platform: 'zhihu',
+            value: {
+              username: json.email,
+              password: ''
+            }
+          })
+          DataUtils.updateAccount('zhihu', json.email, '')
+          this.props.actions.statusUpdate({
+            platform: 'zhihu',
+            value: true
+          })
+        }).catch(err => {
+          App.alert(err.message)
         })
-        DataUtils.updateAccount('zhihu', json.email, '')
-        this.props.actions.statusUpdate({
-          platform: 'zhihu',
-          value: true
-        })
-      }).catch(err => {
-        App.alert(err.message)
-      })
+      }
     })
   },
 

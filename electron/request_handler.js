@@ -13,7 +13,7 @@ export function requestWithParams({url, cookie, token, formData, method}) {
       .set(`X-${ZHIHU_XSRF_TOKEN_NAME}`, token)
       .set('Cookie', cookie)
       .set('Content-Type', 'application/json;charset=UTF-8')
-      .timeout(5000)
+      .timeout(15000)
       .end(function(err, res) {
         if (err) {
           reject(err)
@@ -69,7 +69,7 @@ export function getZhihuColumns(cookie, token, slug) {
   })
 }
 
-export function publishGitHub({username, password, title, content, repo}) {
+export function publishGitHub({username, password, title, content, repo, key}) {
   return new Promise(function(resolve, reject) {
     let github = new GitHubAPI({
       version: '3.0.0',
@@ -81,29 +81,56 @@ export function publishGitHub({username, password, title, content, repo}) {
       username,
       password
     })
-    github.issues.create({
-      user: username,
-      repo,
-      title,
-      body: content
-    }, function(err, result) {
+
+    let handler = function(err, result) {
       if (err) {
         reject(err)
         return
       }
 
       resolve(result)
-    })
+    }
+    if (!key) {
+      github.issues.create({
+        user: username,
+        repo,
+        title,
+        body: content
+      }, handler)
+    } else {
+      github.issues.edit({
+        user: username,
+        repo,
+        title,
+        body: content,
+        number: key
+      }, handler)
+    }
   })
 }
 
-export function publishZhihu(cookie, token, title, content) {
+export function updatePostContent(cookie, token, title, content, key) {
+  return requestWithParams({
+    cookie,
+    token,
+    method: 'patch',
+    url: `https://zhuanlan.zhihu.com/api/drafts/${key}`
+  })
+}
+
+// edit zhihu
+// https://zhuanlan.zhihu.com/api/drafts/21254014
+export function publishZhihu(cookie, token, title, content, key) {
+  let task = key ? updatePostContent(cookie, token, title, content, key) :
+    getZhihuDrafts(cookie, token, title, content)
   return Promise.all([
-    getZhihuDrafts(cookie, token, title, content),
+    task,
     getZhihuColumns(cookie, token)
   ]).then(function([draftInfo, columnsInfo]) {
+    let id = key || draftInfo.id
+    let url = `https://zhuanlan.zhihu.com/api/drafts/${id}/publish`
     return requestWithParams({
-      url: `https://zhuanlan.zhihu.com/api/drafts/${draftInfo.id}/publish`,
+      url,
       method: 'put',
       cookie,
       token,
@@ -112,7 +139,7 @@ export function publishZhihu(cookie, token, title, content) {
         canTitleImageFullScreen: false,
         column: columnsInfo[0],
         content,
-        id: draftInfo.id,
+        id,
         isTitleImageFullScreen: false,
         sourceUrl: '',
         state: 'published',
