@@ -20,40 +20,29 @@ const shouldUseAsar = true;
 const shouldBuildAll = argv.all;
 const electronVersion = '1.2.0';
 const iconUrl = 'app/imgs/app';
-const dotFiles = fs.readdirSync('.').filter(item => item.startsWith('.'))
-  .map(item => `^/\\${item}($|/)`)
-const includeFiles = [
+/**
+ * 原则上只需要以下几个目录的文件
+ * index.html
+ * main.js
+ * package.json
+ * dist/*
+ */
+const finallyIncludedFiles = [
   'index.html', 'main.js', 'package.json', 'dist', 'node_modules'
-]
+];
 const ignoreFiles = fs.readdirSync('.').concat(['release'])
-  .filter(item => !includeFiles.includes(item))
+  .filter(item => !finallyIncludedFiles.includes(item))
   .map(item => `^/${item.replace('.', '\\.')}($|/)`)
   .concat(devDeps.map(name => `/node_modules/${name}($|/)`))
   .concat(
     deps.filter(name => !electronCfg.externals.includes(name))
       .map(name => `/node_modules/${name}($|/)`)
-  )
-console.log(ignoreFiles)
+  );
 const DEFAULT_OPTS = {
   dir: './',
   name: appName,
   asar: shouldUseAsar,
   icon: iconUrl,
-  /**
-   * 原则上只需要以下几个目录的文件
-   * index.html
-   * main.js
-   * package.json
-   * dist/*
-   */
-  //  dotFiles.concat([
-  //    '^/app($|/)',
-  //    '^/electron($|/)',
-  //    '^/release($|/)',
-  //    '^/index.dev.html$',
-  //    '^/LICENSE$',
-  //    '^/[^\/]+.(js|md)$'
-  //  ])
   ignore: ignoreFiles
 };
 
