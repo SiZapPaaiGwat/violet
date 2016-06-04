@@ -1,39 +1,30 @@
+/* eslint max-len: 0 */
 import webpack from 'webpack'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import baseConfig from './webpack.config.base'
+import postcssImport from 'postcss-import'
+import postcssCssnext from 'postcss-cssnext'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
 const config = {
   ...baseConfig,
 
-  devtool: 'source-map',
+  // devtool: 'source-map',
 
   entry: './app/index',
 
   output: {
     ...baseConfig.output,
-
     publicPath: '../dist/'
   },
 
   module: {
     ...baseConfig.module,
-
     loaders: [
       ...baseConfig.module.loaders,
-
       {
-        test: /\.global\.css$/,
-        loader: ExtractTextPlugin.extract(
-          'style-loader',
-          'css-loader'
-        )
-      },
-
-      {
-        test: /^((?!\.global).)*\.css$/,
-        loader: ExtractTextPlugin.extract(
-          'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract('style-loader',
+          'css-loader?modules&importLoaders=1!postcss-loader'
         )
       }
     ]
@@ -57,7 +48,14 @@ const config = {
     new ExtractTextPlugin('style.css', {allChunks: true})
   ],
 
+  postcss() {
+    return [
+      postcssImport({path: `${__dirname}/app`}),
+      postcssCssnext(),
+    ]
+  },
+
   target: 'electron-renderer'
 }
 
-export default config;
+export default config

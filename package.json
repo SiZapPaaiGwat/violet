@@ -1,13 +1,18 @@
 {
   "name": "violet",
+  "productName": "violet",
   "version": "0.0.1",
-  "main": "./electron/main.js",
+  "main": "main.js",
   "private": true,
   "scripts": {
     "serve-hot": "node -r babel-register server.js",
     "serve": "node -r babel-register node_modules/webpack-dev-server/bin/webpack-dev-server --config=webpack.config.development.js --port=3000",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./electron/main.js",
-    "start": "cross-env NODE_ENV=production electron ./"
+    "start": "cross-env NODE_ENV=production electron ./",
+    "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
+    "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.production.js --progress --profile --colors",
+    "pack": "cross-env NODE_ENV=production node -r babel-register package.js",
+    "pack-all": "cross-env NODE_ENV=production node -r babel-register package.js --all"
   },
   "repository": {
     "type": "git",
@@ -51,6 +56,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
     "json-loader": "^0.5.4",
+    "minimist": "^1.2.0",
     "postcss": "^5.0.19",
     "postcss-cssnext": "^2.5.2",
     "postcss-import": "^8.1.0",

@@ -35,3 +35,8 @@ node_modules
 .idea
 
 .DS_Store
+
+# electron build files
+dist
+release
+/main.js

@@ -1,8 +1,8 @@
 import {app, BrowserWindow, Menu, crashReporter, shell} from 'electron'
 import './ipc_main'
 
-const ENTRY_FILE_APTH = process.env.HOT ? `file://${__dirname}/../app/app.dev.html` :
-  `file://${__dirname}/../app/app.html`
+const ENTRY_FILE_APTH = process.env.HOT ? `file://${__dirname}/index.dev.html` :
+  `file://${__dirname}/index.html`
 
 console.log(`Loading entry file: ${ENTRY_FILE_APTH}`)
 
@@ -11,10 +11,9 @@ let template
 let mainWindow = null
 
 crashReporter.start({
-  productName: 'Purple Editor',
-  companyName: 'Purple',
+  productName: 'violet',
+  companyName: 'violet',
   autoSubmit: true,
-  // TODO 增加接口接受崩溃日志
   submitURL: 'https://your-domain.com/url-to-submit'
 })
 
