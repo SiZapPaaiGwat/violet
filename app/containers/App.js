@@ -34,7 +34,7 @@ export default React.createClass({
     let github = this.props.states.account.github
     DataUtils.getLoginDetails({zhihu: true, github}).then(result => {
       if (Object.keys(result).length !== 2) {
-        throw new Error('调用错误')
+        App.alert('调用错误', 'error', '内部错误')
       }
 
       this.props.actions.statusUpdate({
@@ -118,9 +118,9 @@ export default React.createClass({
       title = '作品列表'
     }
     // 知乎登录后或者使用github，窗口高度需要调整
-    let useMiniStyle = (dialogName === 'zhihu' && states.status.zhihu) || (
-      dialogName === 'github'
-    )
+    let useMiniStyle = (dialogName === 'zhihu' && states.status.zhihu) ||
+      dialogName === 'github' || dialogName === 'list'
+
     let dialogStyles = {
       width: vars.dialogWidth,
       height: useMiniStyle ? vars.dialogMiniHeight : vars.dialogHeight,
