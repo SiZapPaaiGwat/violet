@@ -18,6 +18,12 @@ export default React.createClass({
   },
 
   handleSync() {
+    let post = this.props.states.posts.selected
+    if (!post) {
+      App.alert('未选择需要同步的作品', 'warning', '提示')
+      return
+    }
+
     let value = this.refs.aceEditor.editor.getValue()
     let args = {
       title: utils.getMarkdownTitle(value),
@@ -26,7 +32,6 @@ export default React.createClass({
 
     let accountMap = this.props.states.account
     let loginStatus = this.props.states.status
-    let post = this.props.states.posts.selected
 
     if (loginStatus.github) {
       args.github = accountMap.github
@@ -47,8 +52,8 @@ export default React.createClass({
       }
     }
 
-    if (Object.keys(args).length === 0) {
-      App.alert('没有设置任何写作平台', 'error', '同步失败')
+    if (Object.keys(args).length === 2) {
+      App.alert('没有设置任何写作平台的帐号信息', 'error', '同步失败')
       return
     }
 
