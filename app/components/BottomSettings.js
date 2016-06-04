@@ -59,8 +59,9 @@ export default React.createClass({
         <a
           href="javascript:;"
           onClick={this.showZhihu}
-          title={status.zhihu === false ? '设置知乎帐号' : account.zhihu.username}
-          className={status.zhihu === false ? styles.disabled : ''}
+          title={!status.zhihu ? '设置知乎帐号' : account.zhihu.username}
+          className={status.zhihu ? '' : styles.disabled}
+          disabled={!status.zhihu}
           style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
         >
           <img src={zhihuIcon} alt="zhihu" className={styles.img} />
@@ -68,8 +69,8 @@ export default React.createClass({
         <a
           href="javascript:;"
           onClick={this.showGitHub}
-          title={status.github === false ? '设置GitHub帐号' : account.github.username}
-          className={status.github === false ? styles.disabled : ''}
+          title={!status.github ? '设置GitHub帐号' : account.github.username}
+          className={status.github ? '' : styles.disabled}
           style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
         >
           <img src={githubIcon} alt="zhihu" className={styles.img} />
@@ -77,12 +78,14 @@ export default React.createClass({
         <a
           href="javascript:;"
           title="查看全部作品"
+          className={status.list ? '' : styles.clickableless}
           onClick={this.showList}
         >
           <i className={globalStyles.iconfont}>&#xe65f;</i>
         </a>
         <a
           onClick={this.handleCreate}
+          className={status.create ? '' : styles.clickableless}
           href="javascript:;"
           title="创作新的作品"
         >
@@ -90,6 +93,7 @@ export default React.createClass({
         </a>
         <a
           onClick={this.handleSync}
+          className={status.sync ? '' : styles.clickableless}
           href="javascript:;"
           title="同步当前作品"
         >

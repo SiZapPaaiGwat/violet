@@ -12,6 +12,7 @@
 
 .bottomSettingsContainer a {
   margin-right: 18px;
+  color: #333;
 }
 
 .img {
@@ -19,6 +20,12 @@
   height: 16px;
   border-radius: 6px;
   vertical-align: middle;
+}
+
+.clickableless {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.4;
 }
 
 .disabled {

@@ -68,6 +68,12 @@ export default React.createClass({
     }).then(posts => {
       this.props.actions.postsList({posts: posts.reverse()})
       this.props.actions.postsSelect(this.props.states.posts.datasource[0])
+      'list,create,sync'.split(',').forEach(item => {
+        this.props.actions.statusUpdate({
+          platform: item,
+          value: true
+        })
+      })
     }).catch(err => {
       App.alert(err.message, 'error', '获取作品列表出错')
     })
