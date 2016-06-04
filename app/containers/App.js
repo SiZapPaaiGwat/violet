@@ -8,6 +8,7 @@ import Alert from 'react-notification-system'
 import Modal from 'react-skylight'
 import * as DbUtils from '../helpers/database'
 import * as DataUtils from '../helpers/client_data'
+import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
 import vars from '../css/var.css'
 
 export default React.createClass({
@@ -25,6 +26,11 @@ export default React.createClass({
       })
     }
 
+    this.loadLoginStatus()
+    this.loadPostList()
+  },
+
+  loadLoginStatus() {
     let github = this.props.states.account.github
     DataUtils.getLoginDetails({zhihu: true, github}).then(result => {
       if (Object.keys(result).length !== 2) {
@@ -41,18 +47,29 @@ export default React.createClass({
         value: result.github
       })
     }).catch(err => {
-      App.alert(err.message)
+      App.alert(err.message, 'error', '获取同步帐号信息出错')
     })
+  },
 
-    DbUtils.listPosts().then((posts) => {
-      this.props.actions.postsList({
-        posts: posts.reverse()
-      })
-
-      let items = this.props.states.posts.datasource
-      if (items.length && !this.props.states.posts.selected) {
-        this.props.actions.postsSelect(items[0])
+  loadPostList() {
+    DbUtils.listPosts().then(posts => {
+      // 初次加载创建一条默认记录
+      if (posts.length === 0) {
+        return DbUtils.createPost(DEFAULT_TITLE, DEFAULT_CONTENT)
       }
+
+      return Promise.resolve(posts)
+    }).then(posts => {
+      if (typeof posts === 'number') {
+        return DbUtils.listPosts()
+      }
+
+      return Promise.resolve(posts)
+    }).then(posts => {
+      this.props.actions.postsList({posts: posts.reverse()})
+      this.props.actions.postsSelect(this.props.states.posts.datasource[0])
+    }).catch(err => {
+      App.alert(err.message, 'error', '获取作品列表出错')
     })
   },
 

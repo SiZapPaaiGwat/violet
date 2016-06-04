@@ -22,7 +22,7 @@ export default React.createClass({
           <div className={styles.postTitle}>
             <span>{post.title}</span>
             <div>
-              <span className={styles.postPubDate}>
+              <span className={styles.postPubDate} data-s={post.create_on}>
                 {new Date(post.create_on).toLocaleString()}
               </span>
             </div>
