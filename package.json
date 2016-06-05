@@ -10,6 +10,7 @@
     "start-pro": "cross-env NODE_ENV=production electron ./",
     "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.js --progress --profile --colors",
     "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.js --progress --profile --colors",
+    "build": "npm run build-main & npm run build-renderer",
     "pack": "cross-env NODE_ENV=production node -r babel-register package.js",
     "pack-all": "cross-env NODE_ENV=production node -r babel-register package.js --all"
   },
