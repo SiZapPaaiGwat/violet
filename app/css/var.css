@@ -1,6 +1,7 @@
 @value bottomHeight: 24px;
 @value bottomPadding: 6px;
-@value markdownMarginLeft: 20%;
+@value markdownMarginLeft: 288px;
+@value markdownMarginRight: 0px;
 @value webviewNormalWidth: 400px;
 @value webviewNormalHeight: 480px;
 @value webviewMiniHeight: 300px;
@@ -18,14 +19,8 @@
   --webviewMarginTop: webviewMarginTop;
   --emTextColor: emTextColor;
   --textColor: textColor;
-}
-
-:export {
-  dialogWidth: var(--webviewNormalWidth);
-  dialogHeight: calc(var(--webviewNormalHeight) + var(--webviewMarginTop) + 10px);
-  dialogMarginTop: calc(var(--webviewNormalHeight) * -1 / 2);
-  dialogMarginLeft: calc(var(--webviewNormalWidth) * -1 / 2);
-  dialogMiniMarginTop: calc(var(--webviewMiniHeight) * -1 / 2);
-  dialogMiniHeight: var(--webviewMiniHeight);
-  markdownEditorHeightOffset: var(--bottomHeight) + var(--bottomPadding) * 2;
+  --postListWidth: markdownMarginLeft;
+  --markdownMarginLeft: markdownMarginLeft;
+  --markdownMarginRight: markdownMarginRight;
+  --bottomClientHeight: calc(var(--bottomHeight) + var(--bottomPadding) * 2);
 }

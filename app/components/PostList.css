@@ -1,24 +1,24 @@
 @import "../css/var.css";
 
 .postContainer {
-  max-height: 450px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--postListWidth);
+  bottom: var(--bottomClientHeight);
   overflow-y: scroll;
+  box-sizing: border-box;
 }
 
 /*https://github.com/zenozeng/fonts.css*/
 .postTitle {
   margin-bottom: 8px;
-  color: #696969;
+  color: #474747;
   font-size: 14px;
   font-family: -apple-system,
-     "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN",
-     "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei",
-     "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
-  cursor: pointer;
-}
-
-.postTitle:hover {
-  color: #363636;
+    "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN",
+    "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei",
+    "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
 }
 
 .postPubDate {
@@ -27,15 +27,28 @@
   font-size: 12px;
 }
 
-.postPlatform {
-  margin-right: 8px;
-  display: inline-block;
-  font-size: 12px;
-}
-
 .noPost {
   text-align: center;
   color: #AAA;
   font-size: 12px;
   padding: 20px;
+}
+
+.callout {
+  padding: 16px;
+  border-bottom: 1px solid #dedede;
+  cursor: pointer;
+  /*border-left: 3px solid rgb(153, 153, 153);*/
+}
+
+.calloutInfo {
+  composes: callout;
+  background-color: rgb(242, 249, 252);
+  /*border-color: rgb(91, 192, 222);*/
+}
+
+.calloutSuccess {
+  composes: callout;
+  background-color: rgb(238, 247, 234);
+  /*border-color: rgb(102, 153, 0);*/
 }

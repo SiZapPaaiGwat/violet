@@ -3,6 +3,7 @@ import LoginStatus from './LoginStatus'
 import Form from './Form'
 import {detectLoginStatus} from '../../electron/ipc_render'
 import * as DataUtils from '../helpers/client_data'
+import styles from './Settings.css'
 
 export default React.createClass({
   propTypes: {
@@ -72,13 +73,16 @@ export default React.createClass({
     }
 
     return (
-      <div>
-        {this.props.states.status.github ? (
-          <LoginStatus
-            username={this.props.states.account.github.username}
-            onLogout={this.handleGitHubLogout}
-          />
-        ) : <Form onSubmit={this.saveGithubAccount} extends={[githubExtends]} />}
+      <div className={styles.container}>
+        <div className={styles.formContainer}>
+          <h2>GitHub</h2>
+          {this.props.states.status.github ? (
+            <LoginStatus
+              username={this.props.states.account.github.username}
+              onLogout={this.handleGitHubLogout}
+            />
+          ) : <Form onSubmit={this.saveGithubAccount} extends={[githubExtends]} />}
+        </div>
       </div>
     )
   }

@@ -3,7 +3,7 @@ import * as DataUtils from '../helpers/client_data'
 export default {
   // 是否展示相应胡弹窗页面
   settings: {
-    // 打开哪个弹窗，zhihu,github,list
+    // 打开哪个弹窗，zhihu,github
     name: ''
   },
   posts: {

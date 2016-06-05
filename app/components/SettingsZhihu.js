@@ -94,7 +94,8 @@ export default React.createClass({
     let status = this.props.states.status
     if (status.zhihu) {
       return (
-        <div data-login>
+        <div className={styles.formContainer}>
+          <h2>知乎</h2>
           <LoginStatus
             username={accountMap.zhihu.username}
             onLogout={this.handleZhihuLogout}
@@ -115,21 +116,19 @@ export default React.createClass({
     }
 
     return (
-      <div data-logout>
-        <webview
-          className={styles.normal}
-          ref="webview"
-          src={LOGIN_URL}
-          disablewebsecurity
-          partition="persist:zhihu"
-        />
-      </div>
+      <webview
+        className={styles.normal}
+        ref="webview"
+        src={LOGIN_URL}
+        disablewebsecurity
+        partition="persist:zhihu"
+      />
     )
   },
 
   render() {
     return (
-      <div>
+      <div className={styles.container}>
         {this.renderZhihu()}
       </div>
     )

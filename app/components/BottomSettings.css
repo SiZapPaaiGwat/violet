@@ -1,18 +1,25 @@
 @import "../css/var.css";
 
+:root {
+  --anchorMargin: 12px;
+}
+
 .bottomSettingsContainer {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
+  width: var(--postListWidth);
   height: var(--bottomHeight);
-  text-align: center;
   padding: var(--bottomPadding) 0;
 }
 
 .bottomSettingsContainer a {
-  margin-right: 18px;
+  margin-left: var(--anchorMargin);
   color: #333;
+}
+
+.bottomSettingsContainer a:last-child {
+  margin-right: var(--anchorMargin);
 }
 
 .img {

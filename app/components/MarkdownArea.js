@@ -105,7 +105,7 @@ export default React.createClass({
           onChange={this.handleChange}
           className={styles.aceEditor}
           width="100%"
-          height={`calc(100% - ${vars.markdownEditorHeightOffset})`}
+          height="100%"
           mode="markdown"
           theme="monokai"
           value={editorValue}

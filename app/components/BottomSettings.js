@@ -47,59 +47,51 @@ export default React.createClass({
     this.props.actions.settingsShow({name: 'github'})
   },
 
-  showList() {
-    this.props.actions.settingsShow({name: 'list'})
-  },
-
   render() {
     let status = this.props.states.status
     let account = this.props.states.account
     return (
       <div className={styles.bottomSettingsContainer}>
-        <a
-          href="javascript:;"
-          onClick={this.showZhihu}
-          title={!status.zhihu ? '设置知乎帐号' : account.zhihu.username}
-          className={status.zhihu ? '' : styles.disabled}
-          disabled={!status.zhihu}
-          style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
-        >
-          <img src={zhihuIcon} alt="zhihu" className={styles.img} />
-        </a>
-        <a
-          href="javascript:;"
-          onClick={this.showGitHub}
-          title={!status.github ? '设置GitHub帐号' : account.github.username}
-          className={status.github ? '' : styles.disabled}
-          style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
-        >
-          <img src={githubIcon} alt="zhihu" className={styles.img} />
-        </a>
-        <a
-          href="javascript:;"
-          title="查看全部作品"
-          className={status.list ? '' : styles.clickableless}
-          onClick={this.showList}
-        >
-          <i className={globalStyles.iconfont}>&#xe65f;</i>
-        </a>
-        <a
-          onClick={this.handleCreate}
-          className={status.create ? '' : styles.clickableless}
-          href="javascript:;"
-          title="创作新的作品"
-        >
-          <i className={globalStyles.iconfont}>&#xe677;</i>
-        </a>
-        <a
-          onClick={this.handleSync}
-          className={status.sync ? '' : styles.clickableless}
-          href="javascript:;"
-          title="同步当前作品"
-        >
-          <i className={globalStyles.iconfont}>&#xe6a2;</i>
-        </a>
+        <div style={{cssFloat: 'left'}}>
+          <a
+            href="javascript:;"
+            onClick={this.showZhihu}
+            title={!status.zhihu ? '设置知乎帐号' : account.zhihu.username}
+            className={status.zhihu ? '' : styles.disabled}
+            disabled={!status.zhihu}
+            style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
+          >
+            <img src={zhihuIcon} alt="zhihu" className={styles.img} />
+          </a>
+          <a
+            href="javascript:;"
+            onClick={this.showGitHub}
+            title={!status.github ? '设置GitHub帐号' : account.github.username}
+            className={status.github ? '' : styles.disabled}
+            style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
+          >
+            <img src={githubIcon} alt="zhihu" className={styles.img} />
+          </a>
+        </div>
 
+        <div style={{cssFloat: 'right'}}>
+          <a
+            onClick={this.handleCreate}
+            className={status.create ? '' : styles.clickableless}
+            href="javascript:;"
+            title="创作新的作品"
+          >
+            <i className={globalStyles.iconfont}>&#xe677;</i>
+          </a>
+          <a
+            onClick={this.handleSync}
+            className={status.sync ? '' : styles.clickableless}
+            href="javascript:;"
+            title="同步当前作品"
+          >
+            <i className={globalStyles.iconfont}>&#xe6a2;</i>
+          </a>
+        </div>
       </div>
     )
   }
