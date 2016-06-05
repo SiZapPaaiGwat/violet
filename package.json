@@ -9,8 +9,8 @@
     "serve": "node -r babel-register node_modules/webpack-dev-server/bin/webpack-dev-server --config=webpack.config.development.js --port=3000",
     "start-hot": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./electron/main.js",
     "start": "cross-env NODE_ENV=production electron ./",
-    "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.electron.js --progress --profile --colors",
-    "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.production.js --progress --profile --colors",
+    "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.js --progress --profile --colors",
+    "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.js --progress --profile --colors",
     "pack": "cross-env NODE_ENV=production node -r babel-register package.js",
     "pack-all": "cross-env NODE_ENV=production node -r babel-register package.js --all"
   },

@@ -14,7 +14,7 @@ const config = {
 
   output: {
     ...baseConfig.output,
-    publicPath: '../dist/'
+    publicPath: './dist/'
   },
 
   module: {
@@ -24,7 +24,10 @@ const config = {
       {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('style-loader',
-          'css-loader?modules&importLoaders=1!postcss-loader'
+          'css-loader?modules&importLoaders=1!postcss-loader',
+          {
+            publicPath: '../dist/'
+          }
         )
       }
     ]
@@ -39,12 +42,12 @@ const config = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        screw_ie8: true,
-        warnings: false
-      }
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compressor: {
+    //     screw_ie8: true,
+    //     warnings: false
+    //   }
+    // }),
     new ExtractTextPlugin('style.css', {allChunks: true})
   ],
 
