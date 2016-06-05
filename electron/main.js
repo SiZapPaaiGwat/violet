@@ -1,7 +1,7 @@
 import {app, BrowserWindow, Menu, crashReporter, shell} from 'electron'
 import './ipc_main'
 
-const ENTRY_FILE_APTH = process.env.HOT ? `file://${__dirname}/index.dev.html` :
+const ENTRY_FILE_APTH = process.env.HOT ? `file://${__dirname}/../index.dev.html` :
   `file://${__dirname}/index.html`
 
 console.log(`Loading entry file: ${ENTRY_FILE_APTH}`)
