@@ -71,6 +71,7 @@ export default React.createClass({
       required: true,
       value: ''
     }
+    let account = this.props.states.account.github
 
     return (
       <div className={styles.container}>
@@ -78,7 +79,7 @@ export default React.createClass({
           <h2>GitHub</h2>
           {this.props.states.status.github ? (
             <LoginStatus
-              username={this.props.states.account.github.username}
+              username={`${account.username}/${account.repo}`}
               onLogout={this.handleGitHubLogout}
             />
           ) : <Form onSubmit={this.saveGithubAccount} extends={[githubExtends]} />}

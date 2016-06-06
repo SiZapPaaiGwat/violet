@@ -29,6 +29,7 @@
   margin-bottom: 0;
   color: var(--textColor);
   width: 100%;
+  box-sizing: border-box;
 }
 
 button:hover {

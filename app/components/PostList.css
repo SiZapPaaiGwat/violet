@@ -6,7 +6,7 @@
   left: 0;
   width: var(--postListWidth);
   bottom: var(--bottomClientHeight);
-  overflow-y: scroll;
+  overflow-y: auto;
   box-sizing: border-box;
 }
 
