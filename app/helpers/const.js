@@ -36,3 +36,7 @@ export const LOGIN_URL = `http://www.zhihu.com/signin?next=${ZHUANLAN_URL}`
 export const LOGOUT_URL = 'https://www.zhihu.com/logout'
 
 export const ZHIHU_DOMAIN = 'zhihu.com'
+
+export const AUTO_SAVING_STORE_PERIOD = 250
+
+export const AUTO_SAVING_DATABASE_PERIOD = 5000

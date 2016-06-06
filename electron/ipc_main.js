@@ -37,7 +37,7 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
       username: github.username,
       password: github.password,
       repo: github.repo,
-      number: github.key
+      key: github.key
     }))
   } else {
     // null 表示没有同步

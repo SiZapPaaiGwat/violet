@@ -31,9 +31,16 @@ export default function(state = State.posts, action) {
   // 更新文章
   if (action.type === 'update_post') {
     let posts = [...state.datasource]
-    let post = posts.filter((item) => item.id === action.payload.id)[0]
-    post.title = action.payload.title
-    post.content = action.payload.content
+    let post = posts.filter(item => item.id === action.payload.id)[0]
+    if (!post) {
+      console.warn(`作品id不存在：${action.payload.id}`)
+      return state
+    }
+
+    // 不要直接赋值！
+    Object.keys(action.payload).forEach(field => {
+      post[field] = action.payload[field]
+    })
     return {
       ...state,
       datasource: posts

@@ -1,5 +1,4 @@
 import * as utils from './utils'
-import * as DbUtils from './database'
 import {syncPost} from '../../electron/ipc_render'
 
 export default function({post, value = '', zhihu = {}, github = {}, loginStatus}) {
@@ -43,12 +42,5 @@ export default function({post, value = '', zhihu = {}, github = {}, loginStatus}
     return Promise.reject(new Error('应用程序内部错误，无法获取关键数据'))
   }
 
-  return syncPost(args).then(result => {
-    console.log(result)
-    // 同步之后更新 key
-    return DbUtils.updatePost(post.id, {
-      github_id: result.github && result.github.number,
-      zhihu_id: result.zhihu && result.zhihu.slug
-    })
-  })
+  return syncPost(args)
 }

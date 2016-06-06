@@ -1,8 +1,11 @@
 import React, {PropTypes} from 'react'
 import AceEditor from 'react-ace'
-import {DEFAULT_TITLE} from '../helpers/const'
+import {
+  DEFAULT_TITLE, AUTO_SAVING_STORE_PERIOD, AUTO_SAVING_DATABASE_PERIOD
+} from '../helpers/const'
 import * as DbUtils from '../helpers/database'
 import * as utils from '../helpers/utils'
+import _ from 'lodash'
 import 'brace'
 import 'brace/mode/markdown'
 import 'brace/theme/monokai'
@@ -14,24 +17,40 @@ export default React.createClass({
     states: PropTypes.object.isRequired
   },
 
-  handleChange(value) {
-    clearTimeout(this.timer)
-    this.timer = setTimeout(() => {
-      let post = this.props.states.posts.selected
-      let title = utils.getMarkdownTitle(value)
-      DbUtils.updatePost(post.id, {
-        title: title || DEFAULT_TITLE,
-        content: value
-      }).then(updated => {
-        if (!updated) return
+  componentDidMount() {
+    /**
+     * 更新db不能频繁操作
+     */
+    this.syncStore = _.debounce(this.syncStore, AUTO_SAVING_STORE_PERIOD)
+    this.syncDatabase = _.debounce(this.syncDatabase, AUTO_SAVING_DATABASE_PERIOD)
+  },
 
-        this.props.actions.postsUpdate({
-          id: post.id,
-          title,
-          content: value
-        })
-      })
-    }, 600)
+  syncDatabase() {
+    let post = this.props.states.posts.selected
+    let value = this.refs.aceEditor.editor.getValue()
+    let title = utils.getMarkdownTitle(value)
+    let updates = {
+      title: title || DEFAULT_TITLE,
+      content: value
+    }
+    console.log('#Updating database:')
+    console.log(updates)
+    DbUtils.updatePost(post.id, updates).then(updated => {
+      console.log('#Updating result:', updated)
+    }).catch(err => {
+      console.error(err.message)
+    })
+  },
+
+  syncStore(value) {
+    let post = this.props.states.posts.selected
+    let title = utils.getMarkdownTitle(value)
+    this.props.actions.postsUpdate({
+      id: post.id,
+      title,
+      content: value
+    })
+    this.syncDatabase()
   },
 
   render() {
@@ -42,7 +61,7 @@ export default React.createClass({
       <div ref="container" className={styles.markdownContainer}>
         <AceEditor
           ref="aceEditor"
-          onChange={this.handleChange}
+          onChange={this.syncStore}
           className={styles.aceEditor}
           width="100%"
           height="100%"
