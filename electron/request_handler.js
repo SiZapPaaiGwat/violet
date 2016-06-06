@@ -70,6 +70,7 @@ export function getZhihuColumns(cookie, token, slug) {
 }
 
 export function publishGitHub({username, password, title, content, repo, key}) {
+  console.log(`key is ${key}`)
   return new Promise(function(resolve, reject) {
     let github = new GitHubAPI({
       version: '3.0.0',

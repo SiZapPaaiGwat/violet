@@ -31,18 +31,11 @@ export default React.createClass({
   loadLoginStatus() {
     let github = this.props.states.account.github
     DataUtils.getLoginDetails({zhihu: true, github}).then(result => {
-      if (Object.keys(result).length !== 2) {
-        App.alert('调用错误', 'error', '内部错误')
-      }
-
-      this.props.actions.statusUpdate({
-        platform: 'zhihu',
-        value: result.zhihu
-      })
-
-      this.props.actions.statusUpdate({
-        platform: 'github',
-        value: result.github
+      ['zhihu', 'github'].forEach(platform => {
+        this.props.actions.statusUpdate({
+          platform,
+          value: result[platform]
+        })
       })
     }).catch(err => {
       App.alert(err.message, 'error', '获取同步帐号信息出错')
@@ -77,10 +70,6 @@ export default React.createClass({
     })
   },
 
-  handleSync() {
-    this.refs.mdEditor.handleSync()
-  },
-
   render() {
     // let devTools
     // if (process.env.NODE_ENV !== 'production') {
@@ -102,9 +91,9 @@ export default React.createClass({
 
     return (
       <div>
-        <PostList {...this.props} parent={this} />
-        <BottomSettings {...this.props} parent={this} />
-        <DynamicComponent {...this.props} parent={this} ref="mdEditor" />
+        <PostList {...this.props} />
+        <BottomSettings {...this.props} />
+        <DynamicComponent {...this.props} />
         <Alert ref="alert" />
       </div>
     )

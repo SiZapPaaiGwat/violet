@@ -35,9 +35,10 @@
 }
 
 .callout {
-  padding: 16px;
+  padding: 16px 28px 16px 16px;
   border-bottom: 1px solid #dedede;
   cursor: pointer;
+  position: relative;
   /*border-left: 3px solid rgb(153, 153, 153);*/
 }
 
@@ -51,4 +52,17 @@
   composes: callout;
   background-color: rgb(238, 247, 234);
   /*border-color: rgb(102, 153, 0);*/
+}
+
+.sync {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  display: none;
+}
+
+.callout:hover .sync {
+  display: block;
 }

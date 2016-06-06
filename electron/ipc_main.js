@@ -39,15 +39,23 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
       repo: github.repo,
       number: github.key
     }))
+  } else {
+    // null 表示没有同步
+    tasks.push(Promise.resolve(null))
   }
 
   if (zhihu) {
     tasks.push(RequestHandler.publishZhihu(zhihu.cookie, zhihu.token,
       title, marked(content), zhihu.key))
+  } else {
+    tasks.push(Promise.resolve(null))
   }
 
-  Promise.all(tasks).then(info => {
-    event.sender.send('sync-post-finish', info)
+  Promise.all(tasks).then(result => {
+    event.sender.send('sync-post-finish', {
+      github: result[0],
+      zhihu: result[1]
+    })
   }).catch(error => {
     event.sender.send('user-action-error', {error, title: '同步失败'})
   })
@@ -58,19 +66,23 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
  */
 ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
   let tasks = []
-  if (zhihu) {
-    tasks.push(RequestHandler.isZhihuLoggin(zhihu.cookie))
-  }
 
   if (github) {
     tasks.push(RequestHandler.isGitHubLoggin(github.username, github.password))
+  } else {
+    tasks.push(Promise.resolve(false))
   }
+  if (zhihu) {
+    tasks.push(RequestHandler.isZhihuLoggin(zhihu.cookie))
+  } else {
+    tasks.push(Promise.resolve(false))
+  }
+
   Promise.all(tasks).then(result => {
-    let ret = tasks.length === 2 ? {
-      zhihu: result[0],
-      github: result[1]
-    } : result[0]
-    event.sender.send('detect-login-status-finish', ret)
+    event.sender.send('detect-login-status-finish', {
+      github: result[0],
+      zhihu: result[1]
+    })
   }).catch(error => {
     event.sender.send('user-action-error', {error, title: '登录态异常'})
   })
