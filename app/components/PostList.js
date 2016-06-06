@@ -26,7 +26,6 @@ export default React.createClass({
     let cookie = DataUtils.getCookiesByPlatform('zhihu') || ''
 
     sync({
-      post,
       value: post.content,
       zhihu: {
         cookie,
@@ -46,17 +45,9 @@ export default React.createClass({
         id: post.id
       }
       this.props.actions.postsUpdate(updates)
-      if (post.github_id !== updates.github_id || post.zhihu_id !== updates.zhihu_id) {
-        return DbUtils.updatePost(post.id, updates)
-      }
-
-      return Promise.resolve(true)
+      return DbUtils.updatePost(post.id, updates)
     }).then(updated => {
-      if (updated) {
-        App.alert('作品同步成功', 'success', '恭喜')
-      } else {
-        App.alert('作品同步成功，系统内部出现错误', 'warning', '提示')
-      }
+      App.alert('作品同步成功', 'success', '恭喜')
     }).catch(err => {
       App.alert(err.message, 'error', '同步失败')
     })

@@ -32,8 +32,8 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
   let tasks = []
   if (github) {
     tasks.push(RequestHandler.publishGitHub({
-      title,
-      content,
+      title: title.trim(),
+      content: content.trim(),
       username: github.username,
       password: github.password,
       repo: github.repo,
@@ -46,7 +46,7 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
 
   if (zhihu) {
     tasks.push(RequestHandler.publishZhihu(zhihu.cookie, zhihu.token,
-      title, marked(content), zhihu.key))
+      title.trim(), marked(content).trim(), zhihu.key))
   } else {
     tasks.push(Promise.resolve(null))
   }

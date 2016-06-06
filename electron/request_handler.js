@@ -20,12 +20,22 @@ export function requestWithParams({url, cookie, token, formData, method}) {
           return
         }
 
-        let json = JSON.parse(res.text)
-        // 更新cookie与token，不过这里暂时没用
-        json.csrfToken = getCookieByName(res.headers['set-cookie'].join('; '),
-          ZHIHU_XSRF_TOKEN_NAME)
-        json.cookie = cookieTokenUtil(cookie, json.csrfToken).cookie
-        resolve(json)
+        try {
+          if (res.text) {
+            let json = JSON.parse(res.text)
+            // 更新cookie与token，不过这里暂时没用
+            json.csrfToken = getCookieByName(res.headers['set-cookie'].join('; '),
+              ZHIHU_XSRF_TOKEN_NAME)
+            json.cookie = cookieTokenUtil(cookie, json.csrfToken).cookie
+            resolve(json)
+          } else {
+            resolve(res.text)
+          }
+        } catch (e) {
+          console.log('JSON parse error')
+          console.log(e)
+          resolve(res.text)
+        }
       })
   })
 }
@@ -110,11 +120,16 @@ export function publishGitHub({username, password, title, content, repo, key}) {
 }
 
 export function updatePostContent(cookie, token, title, content, key) {
+  // empty response
   return requestWithParams({
     cookie,
     token,
     method: 'patch',
-    url: `https://zhuanlan.zhihu.com/api/drafts/${key}`
+    url: `https://zhuanlan.zhihu.com/api/drafts/${key}`,
+    // zhihu这里分2个请求编辑
+    formData: {
+      title, content
+    }
   })
 }
 
