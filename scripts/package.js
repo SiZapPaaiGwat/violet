@@ -6,23 +6,24 @@
 require('babel-polyfill')
 const os = require('os')
 const fs = require('fs')
+const path = require('path')
 const webpack = require('webpack')
 const electronCfg = require('../webpack.config.main.js')
 const cfg = require('../webpack.config.renderer.js')
 const packager = require('electron-packager')
-const del = require('del')
-//  support argument names: all, icon
 const argv = require('minimist')(process.argv.slice(2))
 const pkg = require('../package.json')
-
+const basePath = path.join(__dirname, '..')
+const iconPath = path.join(basePath, 'electron', 'icons')
 const deps = Object.keys(pkg.dependencies)
 const devDeps = Object.keys(pkg.devDependencies)
 const shouldBuildAll = argv.all
+
 const electronVersion = '1.2.0'
 const iconUrls = {
-  linux: '../electron/icons/png/64.png',
-  darwin: '../electron/icons/png/app.icns',
-  win32: '../electron/icons/mac/app.ico'
+  linux: path.join(iconPath, 'png', '64.png'),
+  darwin: path.join(iconPath, 'mac', 'app.icns'),
+  win32: path.join(iconPath, 'win', 'app.ico')
 }
 const osSpecifiedSettings = {
   linux: {
@@ -45,7 +46,7 @@ const osSpecifiedSettings = {
 const finallyIncludedFiles = [
   'index.html', 'main.js', 'package.json', 'dist', 'node_modules'
 ]
-const ignoreFiles = fs.readdirSync('.').concat(['release'])
+const ignoreFiles = fs.readdirSync(basePath).concat(['release'])
   .filter(item => !finallyIncludedFiles.includes(item))
   .map(item => `^/${item.replace('.', '\\.')}($|/)`)
   .concat(devDeps.map(name => `/node_modules/${name}($|/)`))
@@ -53,7 +54,7 @@ const ignoreFiles = fs.readdirSync('.').concat(['release'])
     .map(name => `/node_modules/${name}($|/)`))
 // 通用打包配置
 const DEFAULT_OPTS = {
-  dir: '../',
+  dir: basePath,
   asar: true,
   prune: true,
   overwrite: true,
@@ -94,7 +95,7 @@ function startPack() {
         platform,
         arch,
         icon: iconUrls[platform],
-        out: `../release/${platform}-${arch}`
+        out: path.join(basePath, 'release', `${platform}-${arch}`)
       })
 
       console.log(`Packing ${platform}-${arch} with details:`)
@@ -113,7 +114,6 @@ function startPack() {
 
   build(electronCfg)
   .then(() => build(cfg))
-  .then(() => del('release'))
   .then(paths => {
     let tasks = []
     if (shouldBuildAll) {
