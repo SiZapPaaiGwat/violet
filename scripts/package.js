@@ -70,6 +70,8 @@ function startPack() {
 
   function build(config) {
     return new Promise((resolve, reject) => {
+      console.log(`Building scripts via webpack using ${config.entry} ...`)
+
       webpack(config, (err, stats) => {
         if (err) {
           reject(err)
@@ -80,10 +82,13 @@ function startPack() {
     })
   }
 
-  function pack(platform, arch, cb) {
+  function pack(platform, arch) {
     return new Promise((resolve, reject) => {
       // there is no darwin ia32 electron
-      if (platform === 'darwin' && arch === 'ia32') resolve([])
+      if (platform === 'darwin' && arch === 'ia32') {
+        resolve([])
+        return
+      }
 
       const opts = Object.assign({}, DEFAULT_OPTS, osSpecifiedSettings[platform], {
         platform,
@@ -91,6 +96,10 @@ function startPack() {
         icon: iconUrls[platform],
         out: `../release/${platform}-${arch}`
       })
+
+      console.log(`Packing ${platform}-${arch} with details:`)
+      console.log(opts)
+
       packager(opts, (err, appPaths) => {
         if (err) {
           reject(err)
@@ -102,17 +111,6 @@ function startPack() {
     })
   }
 
-  function log(plat, arch) {
-    return (err, filepath) => {
-      if (err) {
-        console.error(err)
-        return
-      }
-
-      console.log(`${plat}-${arch} finished!`)
-    }
-  }
-
   build(electronCfg)
   .then(() => build(cfg))
   .then(() => del('release'))
@@ -121,16 +119,16 @@ function startPack() {
     if (shouldBuildAll) {
       platforms.forEach(plat => {
         archs.forEach(arch => {
-          tasks.push(pack(plat, arch, log(plat, arch)))
+          tasks.push(pack(plat, arch))
         })
       })
     } else {
-      tasks.push(pack(os.platform(), os.arch(), log(os.platform(), os.arch())))
+      tasks.push(pack(os.platform(), os.arch()))
     }
 
     return Promise.all(tasks)
   }).then(list => {
-    console.log('Packing is done:')
+    console.log('Packing success')
     console.log(list)
   }).catch(err => {
     console.error(err)
