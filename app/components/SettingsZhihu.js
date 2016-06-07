@@ -33,6 +33,7 @@ export default React.createClass({
     this.onWebviewMounted()
   },
 
+  // TODO 这里是否需要使用轮询，让逻辑更清晰
   onWebviewMounted() {
     let webview = this.refs.webview
     if (!webview) {
@@ -46,10 +47,16 @@ export default React.createClass({
         // 这里需要获取所有zhihu域名下的cookie
         parseWebviewCookiesByDomain(session, ZHIHU_DOMAIN)
         .then(function(cookie) {
+          let token = getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
+          if (!token) {
+            return Promise.reject(new Error('获取知乎帐号信息发生异常，请稍后重试'))
+          }
+
           DataUtils.setCookiesByPlatform('zhihu', cookie)
+
           return whoAmI({
             cookie,
-            token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
+            token
           })
         }).then(json => {
           let hasColumns = json && json.columns.length !== 0

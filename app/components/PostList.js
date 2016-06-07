@@ -25,12 +25,16 @@ export default React.createClass({
     let states = this.props.states
     let cookie = DataUtils.getCookiesByPlatform('zhihu') || ''
     let syncedPlatforms = []
+    let token = utils.getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
+    if (!token) {
+      console.warn('zhihu token is null, check your cookie')
+    }
 
     sync({
       value: post.content,
       zhihu: {
         cookie,
-        token: utils.getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME),
+        token,
         key: post.zhihu_id
       },
       github: {

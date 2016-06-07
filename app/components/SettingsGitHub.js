@@ -37,9 +37,9 @@ export default React.createClass({
     }
 
     detectLoginStatus({
-      github: {username, password}
-    }).then(isLogin => {
-      if (isLogin) {
+      github: {username, password, repo}
+    }).then(({github}) => {
+      if (github) {
         DataUtils.updateAccount('github', username, password, repo)
         this.props.actions.accountUpdate({
           platform: 'github',
@@ -55,7 +55,7 @@ export default React.createClass({
           value: true
         })
       } else {
-        App.alert('帐号信息错误', 'error', '身份验证失败')
+        App.alert('帐号信息错误，请确保帐号密码以及仓库对应正确', 'error', '身份验证失败')
       }
     }).catch(err => {
       App.alert(err.message, 'error')

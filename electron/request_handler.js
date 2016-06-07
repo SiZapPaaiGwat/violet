@@ -135,7 +135,7 @@ export function updatePostContent(cookie, token, title, content, key) {
 
 // edit zhihu
 // https://zhuanlan.zhihu.com/api/drafts/21254014
-export function publishZhihu(cookie, token, title, content, key) {
+export function publishZhihu({cookie, token, title, content, key}) {
   let task = key ? updatePostContent(cookie, token, title, content, key) :
     getZhihuDrafts(cookie, token, title, content)
   return Promise.all([
@@ -168,7 +168,7 @@ export function publishZhihu(cookie, token, title, content, key) {
 }
 
 // 检测知乎是否正确登录
-export function isZhihuLoggin(cookie) {
+export function isZhihuLoggin({cookie}) {
   return new Promise((resolve, reject) => {
     request.get('https://zhuanlan.zhihu.com/api/me')
     .set('Cookie', cookie)
@@ -178,7 +178,7 @@ export function isZhihuLoggin(cookie) {
         try {
           let result = JSON.parse(res.text)
           if (result && result.email) {
-            resolve(true)
+            resolve(result)
           }
         } catch (e) {
           resolve(false)
@@ -190,7 +190,7 @@ export function isZhihuLoggin(cookie) {
   })
 }
 
-export function isGitHubLoggin(username, password) {
+export function isGitHubLoggin({username, password, repo}) {
   return new Promise((resolve, reject) => {
     let github = new GitHubAPI({
       version: '3.0.0',
@@ -209,8 +209,11 @@ export function isGitHubLoggin(username, password) {
       username,
       password
     })
-    github.user.getEmails({}, function(err, result) {
-      if (err) {
+    github.repos.get({
+      user: username,
+      repo
+    }, function(err, result) {
+      if (err || !result) {
         resolve(false)
         return
       }

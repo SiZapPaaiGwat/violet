@@ -1,5 +1,7 @@
 import {ipcRenderer} from 'electron'
 
+// TODO 封装消息发送和接受（start/finish）
+
 ipcRenderer.on('user-action-error', (e, {error, title = '未知错误'}) => {
   console.log('#Main process error')
   console.log(`#title=${title}`)

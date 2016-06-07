@@ -39,4 +39,4 @@ export const ZHIHU_DOMAIN = 'zhihu.com'
 
 export const AUTO_SAVING_STORE_PERIOD = 250
 
-export const AUTO_SAVING_DATABASE_PERIOD = 5000
+export const AUTO_SAVING_DATABASE_PERIOD = 3000

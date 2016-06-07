@@ -31,13 +31,19 @@ export default React.createClass({
   loadLoginStatus() {
     let github = this.props.states.account.github
     DataUtils.getLoginDetails({zhihu: true, github}).then(result => {
-      ['zhihu', 'github'].forEach(platform => {
-        this.props.actions.statusUpdate({
-          platform,
-          value: result[platform]
-        })
+      this.props.actions.statusUpdate({
+        platform: 'github',
+        value: result.github
+      })
+
+      this.props.actions.statusUpdate({
+        platform: 'zhihu',
+        value: result.zhihu ? {
+          writable: result.zhihu.columns.length > 0
+        } : false
       })
     }).catch(err => {
+      console.log(err)
       App.alert(err.message, 'error', '获取同步帐号信息出错')
     })
   },

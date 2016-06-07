@@ -32,12 +32,9 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
   let tasks = []
   if (github) {
     tasks.push(RequestHandler.publishGitHub({
+      ...github,
       title: title.trim(),
-      content: content.trim(),
-      username: github.username,
-      password: github.password,
-      repo: github.repo,
-      key: github.key
+      content: content.trim()
     }))
   } else {
     // null 表示没有同步
@@ -45,8 +42,11 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
   }
 
   if (zhihu) {
-    tasks.push(RequestHandler.publishZhihu(zhihu.cookie, zhihu.token,
-      title.trim(), marked(content).trim(), zhihu.key))
+    tasks.push(RequestHandler.publishZhihu({
+      ...zhihu,
+      title: title.trim(),
+      content: marked(content).trim()
+    }))
   } else {
     tasks.push(Promise.resolve(null))
   }
@@ -68,12 +68,12 @@ ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
   let tasks = []
 
   if (github) {
-    tasks.push(RequestHandler.isGitHubLoggin(github.username, github.password))
+    tasks.push(RequestHandler.isGitHubLoggin(github))
   } else {
     tasks.push(Promise.resolve(false))
   }
   if (zhihu) {
-    tasks.push(RequestHandler.isZhihuLoggin(zhihu.cookie))
+    tasks.push(RequestHandler.isZhihuLoggin(zhihu))
   } else {
     tasks.push(Promise.resolve(false))
   }
