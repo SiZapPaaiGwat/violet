@@ -25,9 +25,8 @@ export default React.createClass({
     this.syncDatabase = _.debounce(this.syncDatabase, AUTO_SAVING_DATABASE_PERIOD)
   },
 
-  syncDatabase() {
+  syncDatabase(value) {
     let post = this.props.states.posts.selected
-    let value = this.refs.aceEditor.editor.getValue()
     let title = utils.getMarkdownTitle(value)
     let updates = {
       title: title || DEFAULT_TITLE,
@@ -50,7 +49,7 @@ export default React.createClass({
       title,
       content: value
     })
-    this.syncDatabase()
+    this.syncDatabase(value)
   },
 
   render() {
