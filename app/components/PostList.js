@@ -24,6 +24,7 @@ export default React.createClass({
   syncPost(post) {
     let states = this.props.states
     let cookie = DataUtils.getCookiesByPlatform('zhihu') || ''
+    let syncedPlatforms = []
 
     sync({
       value: post.content,
@@ -45,9 +46,11 @@ export default React.createClass({
         id: post.id
       }
       this.props.actions.postsUpdate(updates)
+      syncedPlatforms = Object.keys(result).filter(plat => !!result[plat])
       return DbUtils.updatePost(post.id, updates)
     }).then(updated => {
-      App.alert('作品同步成功', 'success', '恭喜')
+      let msg = `作品成功同步到${syncedPlatforms.join(', ')}等${syncedPlatforms.length}个平台`
+      App.alert(msg, 'success', '恭喜')
     }).catch(err => {
       App.alert(err.message, 'error', '同步失败')
     })

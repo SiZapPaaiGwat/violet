@@ -102,7 +102,7 @@ export default React.createClass({
     if (status.zhihu) {
       let tip = !status.zhihu.writable ? (
         <div>
-          <em style={{color: 'red'}}>当前帐号未开通专栏，无法同步作品。开通专栏后请先注销然后重新登录</em>
+          <em style={{color: 'red'}}>当前帐号未开通专栏，无法向此平台同步作品。请先开通专栏然后注销重新登录</em>
         </div>
       ) : null
 
