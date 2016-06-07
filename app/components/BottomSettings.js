@@ -17,6 +17,7 @@ export default React.createClass({
     let newestItem = items[0] || {}
     if (newestItem.title === DEFAULT_TITLE && newestItem.content === DEFAULT_CONTENT) {
       this.props.actions.postsSelect(newestItem)
+      this.props.actions.settingsShow({name: ''})
       return
     }
 
@@ -29,17 +30,22 @@ export default React.createClass({
         platforms: []
       })
       this.props.actions.postsSelect(this.props.states.posts.datasource[0])
+      this.props.actions.settingsShow({name: ''})
     }).catch(err => {
       App.alert(err.message, 'error', '新建作品失败')
     })
   },
 
   showZhihu() {
-    this.props.actions.settingsShow({name: 'zhihu'})
+    if (this.props.states.settings.name !== 'zhihu') {
+      this.props.actions.settingsShow({name: 'zhihu'})
+    }
   },
 
   showGitHub() {
-    this.props.actions.settingsShow({name: 'github'})
+    if (this.props.states.settings.name !== 'github') {
+      this.props.actions.settingsShow({name: 'github'})
+    }
   },
 
   render() {

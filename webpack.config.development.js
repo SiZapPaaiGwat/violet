@@ -10,7 +10,9 @@ const config = {
 
   debug: true,
 
-  devtool: 'source-map',
+  // https://webpack.github.io/docs/configuration.html#debug
+  // eval is the fatest
+  devtool: 'eval',
 
   entry: [
     'webpack/hot/dev-server',
