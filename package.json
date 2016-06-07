@@ -11,8 +11,8 @@
     "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.main.js --progress --profile --colors",
     "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.js --progress --profile --colors",
     "build": "npm run build-main & npm run build-renderer",
-    "pack": "cross-env NODE_ENV=production node -r babel-register package.js",
-    "pack-all": "cross-env NODE_ENV=production node -r babel-register package.js --all"
+    "pack": "cross-env NODE_ENV=production node -r babel-register scripts/package.js",
+    "pack-all": "cross-env NODE_ENV=production node -r babel-register scripts/package.js --all"
   },
   "repository": {
     "type": "git",
