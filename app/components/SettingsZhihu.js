@@ -52,6 +52,7 @@ export default React.createClass({
             token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
           })
         }).then(json => {
+          let hasColumns = json && json.columns.length !== 0
           this.props.actions.accountUpdate({
             platform: 'zhihu',
             value: {
@@ -62,8 +63,14 @@ export default React.createClass({
           DataUtils.updateAccount('zhihu', json.email, '')
           this.props.actions.statusUpdate({
             platform: 'zhihu',
-            value: true
+            value: {
+              writable: hasColumns
+            }
           })
+
+          if (!hasColumns) {
+            App.alert(`该帐户${json.email}还没有开通专栏，请先前往 https://zhuanlan.zhihu.com/request 开通`, 'warning', '提示')
+          }
         }).catch(err => {
           App.alert(err.message)
         })
@@ -93,6 +100,12 @@ export default React.createClass({
     let accountMap = this.props.states.account
     let status = this.props.states.status
     if (status.zhihu) {
+      let tip = !status.zhihu.writable ? (
+        <div>
+          <em style={{color: 'red'}}>当前帐号未开通专栏，无法同步作品。开通专栏后请先注销然后重新登录</em>
+        </div>
+      ) : null
+
       return (
         <div className={styles.formContainer}>
           <h2>知乎</h2>
@@ -100,6 +113,7 @@ export default React.createClass({
             username={accountMap.zhihu.username}
             onLogout={this.handleZhihuLogout}
           />
+          {tip}
           {
             this.state.isLoggingOut && (
               <webview

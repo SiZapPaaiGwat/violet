@@ -21,7 +21,8 @@ export default function({value = '', zhihu = {}, github = {}, loginStatus}) {
     args.github = github
   }
 
-  if (loginStatus.zhihu) {
+  // 帐号已登录但是可能没有申请专栏
+  if (loginStatus.zhihu.writable) {
     args.zhihu = zhihu
   }
 
