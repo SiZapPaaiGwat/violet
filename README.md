@@ -1,12 +1,14 @@
 # violet
 
+[![Gitter](https://badges.gitter.im/simongfxu/violet.svg)](https://gitter.im/simongfxu/violet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ## 她是什么
 
 violet 是一款面向写作爱好者的同步工具。
 
 ## 她提供什么功能
 
- * violet 最大的亮点在于其同步功能
+ * violet 最大的亮点在于她能够在各大写作平台之间同步作品
  * violet 支持流行的写作语言 **Markdown**
 
 ## 应用场景
@@ -25,14 +27,15 @@ violet 就是帮你来解决多平台写作时产生的种种问题！
 * 软件运行期间不产生任何额外的网络请求(写作平台相关接口除外)
 * 敏感信息使用加密技术存储在本地
 
-## 技术栈
+## 支持平台
 
-* React
-* Redux
-* Webpack
-* Babel
-* Electron
-* PostCSS
+* 知乎专栏
+* GitHub Issue
+
+如果需要其他写作平台的支持，烦请前往：
+[violet需求调查](https://jinshuju.net/f/2yctZ5?x_field_1=github)
+
+我个人会第一时间查看用户反馈的需求！
 
 ## 名称来源
 
