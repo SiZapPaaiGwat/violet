@@ -2,6 +2,7 @@
   "name": "violet",
   "productName": "violet",
   "version": "0.0.1",
+  "electronVersion": "1.2.0",
   "main": "main.js",
   "private": true,
   "scripts": {
@@ -12,7 +13,8 @@
     "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.js --progress --profile --colors",
     "build": "npm run build-main & npm run build-renderer",
     "pack": "cross-env NODE_ENV=production node -r babel-register scripts/package.js",
-    "pack-all": "cross-env NODE_ENV=production node -r babel-register scripts/package.js --all"
+    "pack-all": "cross-env NODE_ENV=production node -r babel-register scripts/package.js --all",
+    "dist:mac": "cross-env NODE_ENV=production node -r babel-register scripts/dmg.js"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,7 @@
   "homepage": "https://github.com/simongfxu/violet#readme",
   "description": "",
   "devDependencies": {
+    "appdmg": "^0.4.5",
     "asar": "^0.11.0",
     "babel-core": "^6.7.6",
     "babel-eslint": "^6.0.2",

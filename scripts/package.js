@@ -19,7 +19,6 @@ const deps = Object.keys(pkg.dependencies)
 const devDeps = Object.keys(pkg.devDependencies)
 const shouldBuildAll = argv.all
 
-const electronVersion = '1.2.0'
 const iconUrls = {
   linux: path.join(iconPath, 'png', '64.png'),
   darwin: path.join(iconPath, 'mac', 'app.icns'),
@@ -60,7 +59,7 @@ const DEFAULT_OPTS = {
   overwrite: true,
   name: pkg.productName,
   ignore: ignoreFiles,
-  version: electronVersion,
+  version: pkg.electronVersion,
   'app-version': pkg.version
 }
 const archs = ['ia32', 'x64']
@@ -95,7 +94,7 @@ function startPack() {
         platform,
         arch,
         icon: iconUrls[platform],
-        out: path.join(basePath, 'release', `${platform}-${arch}`)
+        out: path.join(basePath, 'release')
       })
 
       console.log(`Packing ${platform}-${arch} with details:`)
