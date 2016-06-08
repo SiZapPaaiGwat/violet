@@ -2,19 +2,14 @@ import {app, shell} from 'electron'
 
 export default function(mainWindow) {
   return [{
-    label: 'Electron',
+    label: 'Violet',
     submenu: [{
-      label: 'About ElectronReact',
+      label: 'About Violet',
       selector: 'orderFrontStandardAboutPanel:'
     }, {
       type: 'separator'
     }, {
-      label: 'Services',
-      submenu: []
-    }, {
-      type: 'separator'
-    }, {
-      label: 'Hide ElectronReact',
+      label: 'Hide Violet',
       accelerator: 'Command+H',
       selector: 'hide:'
     }, {
@@ -34,37 +29,8 @@ export default function(mainWindow) {
       }
     }]
   }, {
-    label: 'Edit',
-    submenu: [{
-      label: 'Undo',
-      accelerator: 'Command+Z',
-      selector: 'undo:'
-    }, {
-      label: 'Redo',
-      accelerator: 'Shift+Command+Z',
-      selector: 'redo:'
-    }, {
-      type: 'separator'
-    }, {
-      label: 'Cut',
-      accelerator: 'Command+X',
-      selector: 'cut:'
-    }, {
-      label: 'Copy',
-      accelerator: 'Command+C',
-      selector: 'copy:'
-    }, {
-      label: 'Paste',
-      accelerator: 'Command+V',
-      selector: 'paste:'
-    }, {
-      label: 'Select All',
-      accelerator: 'Command+A',
-      selector: 'selectAll:'
-    }]
-  }, {
     label: 'View',
-    submenu: (process.env.NODE_ENV === 'development') ? [{
+    submenu: [{
       label: 'Reload',
       accelerator: 'Command+R',
       click() {
@@ -81,12 +47,6 @@ export default function(mainWindow) {
       accelerator: 'Alt+Command+I',
       click() {
         mainWindow.toggleDevTools()
-      }
-    }] : [{
-      label: 'Toggle Full Screen',
-      accelerator: 'Ctrl+Command+F',
-      click() {
-        mainWindow.setFullScreen(!mainWindow.isFullScreen())
       }
     }]
   }, {
@@ -106,26 +66,21 @@ export default function(mainWindow) {
       selector: 'arrangeInFront:'
     }]
   }, {
-    label: 'Help',
+    label: '帮助',
     submenu: [{
-      label: 'Learn More',
+      label: '官网',
       click() {
-        shell.openExternal('http://electron.atom.io')
+        shell.openExternal('https://github.com/simongfxu/violet')
       }
     }, {
-      label: 'Documentation',
+      label: '反馈建议',
       click() {
-        shell.openExternal('https://github.com/atom/electron/tree/master/docs#readme')
+        shell.openExternal('https://jinshuju.net/f/2yctZ5?x_field_1=github')
       }
     }, {
-      label: 'Community Discussions',
+      label: '联系开发者',
       click() {
-        shell.openExternal('https://discuss.atom.io/c/electron')
-      }
-    }, {
-      label: 'Search Issues',
-      click() {
-        shell.openExternal('https://github.com/atom/electron/issues')
+        shell.openExternal('http://www.weibo.com/xugaofan')
       }
     }]
   }]

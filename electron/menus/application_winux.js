@@ -15,7 +15,7 @@ export default function(mainWindow) {
     }]
   }, {
     label: '&View',
-    submenu: (process.env.NODE_ENV === 'development') ? [{
+    submenu: [{
       label: '&Reload',
       accelerator: 'Ctrl+R',
       click() {
@@ -33,34 +33,23 @@ export default function(mainWindow) {
       click() {
         mainWindow.toggleDevTools()
       }
-    }] : [{
-      label: 'Toggle &Full Screen',
-      accelerator: 'F11',
-      click() {
-        mainWindow.setFullScreen(!mainWindow.isFullScreen())
-      }
     }]
   }, {
-    label: 'Help',
+    label: '帮助',
     submenu: [{
-      label: 'Learn More',
+      label: '官网',
       click() {
-        shell.openExternal('http://electron.atom.io')
+        shell.openExternal('https://github.com/simongfxu/violet')
       }
     }, {
-      label: 'Documentation',
+      label: '反馈建议',
       click() {
-        shell.openExternal('https://github.com/atom/electron/tree/master/docs#readme')
+        shell.openExternal('https://jinshuju.net/f/2yctZ5?x_field_1=github')
       }
     }, {
-      label: 'Community Discussions',
+      label: '联系开发者',
       click() {
-        shell.openExternal('https://discuss.atom.io/c/electron')
-      }
-    }, {
-      label: 'Search Issues',
-      click() {
-        shell.openExternal('https://github.com/atom/electron/issues')
+        shell.openExternal('http://www.weibo.com/xugaofan')
       }
     }]
   }]
