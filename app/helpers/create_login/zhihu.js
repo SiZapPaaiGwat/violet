@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react'
-import LoginManager from '../../components/LoginManager'
+import LoginManager from './LoginManager'
 import * as DataUtils from '../client_data'
 import {getCookieByName} from '../utils'
 import {whoAmI} from '../../../electron/ipc_render'

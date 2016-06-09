@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react'
-import LoginStatus from './LoginStatus'
-import {parseWebviewCookiesByDomain} from '../../electron/ipc_render'
-import * as DataUtils from '../helpers/client_data'
+import LoginStatus from '../../components/LoginStatus'
+import {parseWebviewCookiesByDomain} from '../../../electron/ipc_render'
+import * as DataUtils from '../client_data'
 import styles from './Settings.css'
 
 export default React.createClass({

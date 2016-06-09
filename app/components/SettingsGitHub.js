@@ -3,7 +3,7 @@ import LoginStatus from './LoginStatus'
 import Form from './Form'
 import {detectLoginStatus} from '../../electron/ipc_render'
 import * as DataUtils from '../helpers/client_data'
-import styles from './Settings.css'
+import styles from '../helpers/create_login/Settings.css'
 
 export default React.createClass({
   propTypes: {
