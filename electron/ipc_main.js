@@ -50,6 +50,7 @@ ipcMain.on('sync-post-start', (event, {title = '', content = '', github = {}, zh
       zhihu: result[1]
     })
   }).catch(error => {
+    console.log(error)
     event.sender.send('user-action-error', {error, title: '同步失败'})
   })
 })
@@ -70,6 +71,7 @@ ipcMain.on('detect-login-status-start', (event, {zhihu = {}, github = {}}) => {
       zhihu: result[1]
     })
   }).catch(error => {
+    console.log(error)
     event.sender.send('user-action-error', {error, title: '登录态异常'})
   })
 })
@@ -80,6 +82,7 @@ ipcMain.on('zhihu-whoami-start', (event, args) => {
   zhihuHandler.whoAmI().then(json => {
     event.sender.send('zhihu-whoami-finish', json)
   }).catch(error => {
+    console.log(error)
     event.sender.send('user-action-error', {error, title: '获取身份失败'})
   })
 })

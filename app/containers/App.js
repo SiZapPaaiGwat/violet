@@ -7,7 +7,8 @@ import SettingsGitHub from '../components/SettingsGitHub'
 import Alert from 'react-notification-system'
 import * as DbUtils from '../helpers/database'
 import * as DataUtils from '../helpers/client_data'
-import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
+import {getCookieByName} from '../helpers/utils'
+import {DEFAULT_TITLE, DEFAULT_CONTENT, ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
 import {detectLoginStatus} from '../../electron/ipc_render'
 
 export default React.createClass({
@@ -30,8 +31,12 @@ export default React.createClass({
   },
 
   loadLoginStatus() {
+    let cookie = DataUtils.getCookiesByPlatform('zhihu')
     detectLoginStatus({
-      zhihu: DataUtils.getCookiesByPlatform('zhihu'),
+      zhihu: {
+        cookie,
+        token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
+      },
       github: this.props.states.account.github
     }).then(result => {
       this.props.actions.statusUpdate({

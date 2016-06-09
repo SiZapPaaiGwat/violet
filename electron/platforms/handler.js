@@ -14,10 +14,10 @@ export default class PlatformHandler {
   }
 
   isLoggedIn() {
-    return Promise.resolve(false)
+    return Promise.reject(new Error('Unimplement interface'))
   }
 
   publish() {
-    return Promise.reject(null)
+    return Promise.reject(new Error('Unimplement interface'))
   }
 }

@@ -9,7 +9,7 @@ function httpRequest({url, method = 'post', cookie, token, formData}) {
   }
 
   if (!cookie) {
-    return Promise.reject(new Error('Request header cookie is empty'))
+    return Promise.reject(new Error(`Request header cookie is empty.\nURL is ${url}`))
   }
 
   if (!token) {
@@ -49,7 +49,7 @@ function httpRequest({url, method = 'post', cookie, token, formData}) {
  * 更新文章（草稿状态，未发布）
  * 这个请求不用返回数据
  */
-function updatePostContent(cookie, token, title, content, key) {
+function updatePostContent({cookie, token, title, content, key}) {
   return httpRequest({
     cookie,
     token,
@@ -108,25 +108,17 @@ export default class ZhihuHandler extends PlatformHandler {
   }
 
   isLoggedIn() {
-    let {cookie} = this
-
-    if (!cookie) {
+    let {cookie, token} = this
+    if (!cookie || !token) {
       return Promise.resolve(false)
     }
 
     return httpRequest({
       url: 'https://zhuanlan.zhihu.com/api/me',
       method: 'get',
-      cookie
-    }).then(result => {
-      if (result && result.email) {
-        return Promise.resolve(true)
-      }
-
-      console.log(`Checking zhihu login status, result is ${result}`)
-
-      return Promise.resolve(false)
-    })
+      cookie,
+      token
+    }).then(result => Promise.resolve(result))
   }
 
   publish() {
@@ -141,7 +133,7 @@ export default class ZhihuHandler extends PlatformHandler {
 
     return Promise.all([
       task,
-      getZhihuColumns(cookie, token)
+      getZhihuColumns({cookie, token})
     ]).then(function([draftInfo, columnsInfo]) {
       let id = key || draftInfo.id
       let url = `https://zhuanlan.zhihu.com/api/drafts/${id}/publish`
