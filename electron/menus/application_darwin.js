@@ -2,7 +2,7 @@ import {app, shell} from 'electron'
 
 export default function(mainWindow) {
   return [{
-    label: 'Violet',
+    label: 'violet',
     submenu: [{
       label: 'About Violet',
       selector: 'orderFrontStandardAboutPanel:'
@@ -75,7 +75,7 @@ export default function(mainWindow) {
     }, {
       label: '反馈建议',
       click() {
-        shell.openExternal('https://jinshuju.net/f/2yctZ5?x_field_1=github')
+        shell.openExternal('https://jinshuju.net/f/2yctZ5?x_field_1=client')
       }
     }, {
       label: '联系开发者',

@@ -75,7 +75,6 @@ a {
 .icon-download:before { content: "\e638"; }
 .icon-heart:before { content: "\e64b"; }
 
-:global .skylight-dialog > h2 {
-  margin-bottom: 14px;
-  color: #454545;
+html {
+	background-color: #fefefe;
 }
