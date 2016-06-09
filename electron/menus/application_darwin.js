@@ -70,7 +70,7 @@ export default function(mainWindow) {
     submenu: [{
       label: '官网',
       click() {
-        shell.openExternal('https://github.com/simongfxu/violet')
+        shell.openExternal('https://github.com/simongfxu/violet?source=client')
       }
     }, {
       label: '反馈建议',
@@ -80,7 +80,7 @@ export default function(mainWindow) {
     }, {
       label: '联系开发者',
       click() {
-        shell.openExternal('http://www.weibo.com/xugaofan')
+        shell.openExternal('http://www.weibo.com/xugaofan?source=client')
       }
     }]
   }]
