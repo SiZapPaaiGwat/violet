@@ -3,7 +3,7 @@ import {ZHIHU_XSRF_TOKEN_NAME} from './const'
 const HEADING_REG = /^ *# +[^\n]*\n/g
 
 export function getCookieByName(cookie, name) {
-  let match = cookie.match(new RegExp(`${name}=([^;]+)`, 'i'))
+  let match = cookie && cookie.match(new RegExp(`${name}=([^;]+)`, 'i'))
   return match ? match[1] : null
 }
 

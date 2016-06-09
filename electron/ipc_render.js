@@ -36,7 +36,9 @@ export function parseWebviewCookiesByDomain(session, domain) {
         return
       }
 
-      let cookie = cookies.filter(item => item.domain.indexOf(domain) > -1).map(function(item) {
+      let cookie = cookies.filter(item => {
+        return item.domain.indexOf(domain) > -1
+      }).map(function(item) {
         return `${item.name}=${item.value};`
       })
 

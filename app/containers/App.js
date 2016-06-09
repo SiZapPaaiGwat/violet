@@ -2,14 +2,16 @@ import React, {PropTypes} from 'react'
 import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import MarkdownArea from '../components/MarkdownArea'
-import SettingsZhihu from '../components/SettingsZhihu'
 import SettingsGitHub from '../components/SettingsGitHub'
 import Alert from 'react-notification-system'
 import * as DbUtils from '../helpers/database'
 import * as DataUtils from '../helpers/client_data'
 import {getCookieByName} from '../helpers/utils'
-import {DEFAULT_TITLE, DEFAULT_CONTENT, ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
+import {
+  DEFAULT_TITLE, DEFAULT_CONTENT, ZHIHU_XSRF_TOKEN_NAME
+} from '../helpers/const'
 import {detectLoginStatus} from '../../electron/ipc_render'
+import createZhihuLoginPage from '../helpers/create_login/zhihu'
 
 export default React.createClass({
   propTypes: {
@@ -97,18 +99,18 @@ export default React.createClass({
     let DynamicComponent = null
     let pageName = states.settings.name
     if (pageName === 'zhihu') {
-      DynamicComponent = SettingsZhihu
+      DynamicComponent = createZhihuLoginPage(this.props)
     } else if (pageName === 'github') {
-      DynamicComponent = SettingsGitHub
+      DynamicComponent = <SettingsGitHub {...this.props} />
     } else {
-      DynamicComponent = MarkdownArea
+      DynamicComponent = <MarkdownArea {...this.props} />
     }
 
     return (
       <div>
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
-        <DynamicComponent {...this.props} />
+        {DynamicComponent}
         <Alert ref="alert" />
       </div>
     )
