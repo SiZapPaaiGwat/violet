@@ -9,7 +9,9 @@ import {ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
 
 function getSyncedPlatforms(post) {
   let platforms = ['zhihu', 'github']
-  return platforms.filter(item => !!post[`${item}_id`])
+  return platforms.filter(item => {
+    return !!post[`${item}_id`]
+  })
 }
 
 export default React.createClass({
@@ -50,7 +52,9 @@ export default React.createClass({
         id: post.id
       }
       this.props.actions.postsUpdate(updates)
-      syncedPlatforms = Object.keys(result).filter(plat => !!result[plat])
+      syncedPlatforms = Object.keys(result).filter(plat => {
+        return !!result[plat]
+      })
       return DbUtils.updatePost(post.id, updates)
     }).then(updated => {
       let msg = `作品成功同步到${syncedPlatforms.join(', ')}等${syncedPlatforms.length}个平台`
@@ -61,6 +65,7 @@ export default React.createClass({
   },
 
   render() {
+    let selected = this.props.states.posts.selected || {}
     let posts = this.props.states.posts.datasource
     let list = posts.map((post, i) => {
       /**
@@ -90,6 +95,7 @@ export default React.createClass({
           <a
             onClick={handleSync}
             className={styles.sync}
+            style={{display: post.id === selected.id ? 'block' : 'none'}}
             href="javascript:;"
             title="同步当前作品"
           >

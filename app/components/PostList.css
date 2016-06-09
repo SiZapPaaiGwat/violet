@@ -60,9 +60,4 @@
   right: 10px;
   width: 16px;
   height: 16px;
-  display: none;
-}
-
-.callout:hover .sync {
-  display: block;
 }
