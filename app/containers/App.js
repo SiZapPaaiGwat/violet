@@ -27,6 +27,7 @@ export default React.createClass({
         level
       })
     }
+    App.mountTime = Date.now()
 
     this.loadLoginStatus()
     this.loadPostList()

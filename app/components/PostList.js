@@ -5,7 +5,8 @@ import globalStyles from '../css/global.css'
 import * as DataUtils from '../helpers/client_data'
 import * as utils from '../helpers/utils'
 import * as DbUtils from '../helpers/database'
-import {ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
+import {ZHIHU_XSRF_TOKEN_NAME, REQUEST_TIMEOUT} from '../helpers/const'
+import Spinner from './Spinner'
 
 function getSyncedPlatforms(post) {
   let platforms = ['zhihu', 'github']
@@ -25,6 +26,19 @@ export default React.createClass({
    */
   syncPost(post) {
     let states = this.props.states
+    if (!states.status.zhihu && !states.status.github) {
+      if (Date.now() - App.mountTime > REQUEST_TIMEOUT) {
+        App.alert('请检查平台帐号配置', 'error', '同步失败')
+      } else {
+        App.alert('请稍等几秒后重试', 'warning', '同步无法进行')
+      }
+      return
+    }
+
+    this.props.actions.postsLoading({
+      id: post.id,
+      isLoading: true
+    })
     let cookie = DataUtils.getCookiesByPlatform('zhihu') || ''
     let syncedPlatforms = []
     let token = utils.getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
@@ -59,14 +73,23 @@ export default React.createClass({
     }).then(updated => {
       let msg = `作品成功同步到${syncedPlatforms.join(', ')}等${syncedPlatforms.length}个平台`
       App.alert(msg, 'success', '恭喜')
+      this.props.actions.postsLoading({
+        id: post.id,
+        isLoading: false
+      })
     }).catch(err => {
       App.alert(err.message, 'error', '同步失败')
+      this.props.actions.postsLoading({
+        id: post.id,
+        isLoading: false
+      })
     })
   },
 
   render() {
     let selected = this.props.states.posts.selected || {}
     let posts = this.props.states.posts.datasource
+    let loadingStatus = this.props.states.posts.loadingStatus
     let list = posts.map((post, i) => {
       /**
        * 点击展示当前作品编辑器内容
@@ -81,6 +104,17 @@ export default React.createClass({
       }
       let syncedPlatforms = getSyncedPlatforms(post)
       let tip = syncedPlatforms.length ? `已同步平台:${syncedPlatforms.join(', ')}` : '作品还未同步'
+      let anchor = loadingStatus[post.id] ? <Spinner /> : (
+        <a
+          onClick={handleSync}
+          className={styles.sync}
+          style={{display: post.id === selected.id ? 'block' : 'none'}}
+          href="javascript:;"
+          title="同步当前作品"
+        >
+          <i className={globalStyles.iconfont}>&#xe6a2;</i>
+        </a>
+      )
 
       return (
         <div
@@ -92,15 +126,7 @@ export default React.createClass({
           <span className={styles.postTitle}>{post.title}</span>
           <br />
           <small className={styles.postPubDate}>{new Date(post.create_on).toLocaleString()}</small>
-          <a
-            onClick={handleSync}
-            className={styles.sync}
-            style={{display: post.id === selected.id ? 'block' : 'none'}}
-            href="javascript:;"
-            title="同步当前作品"
-          >
-            <i className={globalStyles.iconfont}>&#xe6a2;</i>
-          </a>
+          {anchor}
         </div>
       )
     })

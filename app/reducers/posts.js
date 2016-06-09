@@ -31,7 +31,9 @@ export default function(state = State.posts, action) {
   // 更新文章
   if (action.type === 'update_post') {
     let posts = [...state.datasource]
-    let post = posts.filter(item => item.id === action.payload.id)[0]
+    let post = posts.filter(item => {
+      return item.id === action.payload.id
+    })[0]
     if (!post) {
       console.warn(`作品id不存在：${action.payload.id}`)
       return state
@@ -44,6 +46,18 @@ export default function(state = State.posts, action) {
     return {
       ...state,
       datasource: posts
+    }
+  }
+
+  if (action.type === 'set_post_loading_status') {
+    let {id, isLoading} = action.payload
+    let loadingStatus = state.loadingStatus
+    return {
+      ...state,
+      loadingStatus: {
+        ...loadingStatus,
+        [id]: isLoading
+      }
     }
   }
 

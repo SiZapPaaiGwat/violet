@@ -25,3 +25,10 @@ export function update(payload) {
     payload
   }
 }
+
+export function loading({id, isLoading}) {
+  return {
+    type: 'set_post_loading_status',
+    payload: {id, isLoading}
+  }
+}

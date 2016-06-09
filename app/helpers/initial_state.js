@@ -8,10 +8,10 @@ export default {
   },
   posts: {
     datasource: [],
-    selected: null
+    selected: null,
+    loadingStatus: {}
   },
-  routing: {
-  },
+  routing: {},
   // 账户设置信息
   account: DataUtils.getAccountMap(),
   // 帐号登录验证状态以及底部工具条状态控制
