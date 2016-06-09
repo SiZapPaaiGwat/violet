@@ -73,16 +73,13 @@ export default React.createClass({
     }).then(updated => {
       let msg = `作品成功同步到${syncedPlatforms.join(', ')}等${syncedPlatforms.length}个平台`
       App.alert(msg, 'success', '恭喜')
+    }).then(() => {
       this.props.actions.postsLoading({
         id: post.id,
         isLoading: false
       })
     }).catch(err => {
       App.alert(err.message, 'error', '同步失败')
-      this.props.actions.postsLoading({
-        id: post.id,
-        isLoading: false
-      })
     })
   },
 
