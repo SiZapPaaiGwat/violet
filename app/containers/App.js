@@ -8,6 +8,7 @@ import Alert from 'react-notification-system'
 import * as DbUtils from '../helpers/database'
 import * as DataUtils from '../helpers/client_data'
 import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
+import {detectLoginStatus} from '../../electron/ipc_render'
 
 export default React.createClass({
   propTypes: {
@@ -29,8 +30,10 @@ export default React.createClass({
   },
 
   loadLoginStatus() {
-    let github = this.props.states.account.github
-    DataUtils.getLoginDetails({zhihu: true, github}).then(result => {
+    detectLoginStatus({
+      zhihu: DataUtils.getCookiesByPlatform('zhihu'),
+      github: this.props.states.account.github
+    }).then(result => {
       this.props.actions.statusUpdate({
         platform: 'github',
         value: result.github
@@ -39,6 +42,7 @@ export default React.createClass({
       this.props.actions.statusUpdate({
         platform: 'zhihu',
         value: result.zhihu ? {
+          // 可能还没有申请专栏
           writable: result.zhihu.columns.length > 0
         } : false
       })

@@ -1,5 +1,6 @@
 import {ipcMain} from 'electron'
-import * as RequestHandler from './request_handler'
+import ZhihuHandler from './platforms/zhihu'
+import GitHubHandler from './platforms/github'
 import marked from 'marked'
 
 marked.setOptions({
@@ -28,30 +29,22 @@ marked.setOptions({
 </ul><br><p></p><br><p></p>
 <pre lang=\"\">var a = 1;\nfunction A() {\n    console.log(123)\n}\n</pre><p></p>
  */
-ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
-  let tasks = []
-  if (github) {
-    tasks.push(RequestHandler.publishGitHub({
-      ...github,
-      title: title.trim(),
-      content: content.trim()
-    }))
-  } else {
-    // null 表示没有同步
-    tasks.push(Promise.resolve(null))
-  }
+ipcMain.on('sync-post-start', (event, {title = '', content = '', github = {}, zhihu = {}}) => {
+  let githubHandler = new GitHubHandler({
+    ...github,
+    title: title.trim(),
+    content: content.trim()
+  })
+  let zhihuHandler = new ZhihuHandler({
+    ...zhihu,
+    title: title.trim(),
+    content: marked(content).trim()
+  })
 
-  if (zhihu) {
-    tasks.push(RequestHandler.publishZhihu({
-      ...zhihu,
-      title: title.trim(),
-      content: marked(content).trim()
-    }))
-  } else {
-    tasks.push(Promise.resolve(null))
-  }
-
-  Promise.all(tasks).then(result => {
+  Promise.all([
+    githubHandler.publish(),
+    zhihuHandler.publish()
+  ]).then(result => {
     event.sender.send('sync-post-finish', {
       github: result[0],
       zhihu: result[1]
@@ -64,21 +57,14 @@ ipcMain.on('sync-post-start', (event, {title, content, github, zhihu}) => {
 /**
  * 检测各个平台的登录情况
  */
-ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
-  let tasks = []
+ipcMain.on('detect-login-status-start', (event, {zhihu = {}, github = {}}) => {
+  let githubHandler = new GitHubHandler(github)
+  let zhihuHandler = new ZhihuHandler(zhihu)
 
-  if (github) {
-    tasks.push(RequestHandler.isGitHubLoggin(github))
-  } else {
-    tasks.push(Promise.resolve(false))
-  }
-  if (zhihu) {
-    tasks.push(RequestHandler.isZhihuLoggin(zhihu))
-  } else {
-    tasks.push(Promise.resolve(false))
-  }
-
-  Promise.all(tasks).then(result => {
+  Promise.all([
+    githubHandler.isLoggedIn(),
+    zhihuHandler.isLoggedIn()
+  ]).then(result => {
     event.sender.send('detect-login-status-finish', {
       github: result[0],
       zhihu: result[1]
@@ -89,7 +75,9 @@ ipcMain.on('detect-login-status-start', (event, {zhihu, github}) => {
 })
 
 ipcMain.on('zhihu-whoami-start', (event, args) => {
-  RequestHandler.whoAmI(args).then(json => {
+  let zhihuHandler = new ZhihuHandler(args)
+
+  zhihuHandler.whoAmI().then(json => {
     event.sender.send('zhihu-whoami-finish', json)
   }).catch(error => {
     event.sender.send('user-action-error', {error, title: '获取身份失败'})
