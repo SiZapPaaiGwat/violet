@@ -2,7 +2,7 @@
   "name": "violet",
   "productName": "violet",
   "version": "0.0.1",
-  "electronVersion": "1.2.0",
+  "electronVersion": "1.2.2",
   "main": "main.js",
   "private": true,
   "scripts": {
