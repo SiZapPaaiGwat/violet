@@ -93,7 +93,6 @@
     "react-redux": "^4.4.5",
     "react-router": "^2.2.4",
     "react-router-redux": "^4.0.2",
-    "react-skylight": "^0.4.0",
     "redux": "^3.4.0",
     "redux-thunk": "^2.0.1",
     "superagent": "^1.8.3",
