@@ -3,6 +3,8 @@ import PlatformHandler from './handler'
 import {REQUEST_TIMEOUT} from '../../app/helpers/const'
 
 export default class GitHubHandler extends PlatformHandler {
+  static alias = 'github'
+
   isLoggedIn() {
     let {username, password, repo} = this
     return new Promise((resolve, reject) => {
@@ -83,5 +85,6 @@ export default class GitHubHandler extends PlatformHandler {
       }
     })
   }
-
 }
+
+PlatformHandler.link(GitHubHandler.alias, GitHubHandler)

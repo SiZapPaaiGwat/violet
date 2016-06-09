@@ -13,6 +13,7 @@
     "react"
   ],
   "rules": {
+    "arrow-body-style": ["error", "always"],
     "no-script-url": 0,
     "no-console": 0,
     "new-cap": 0,

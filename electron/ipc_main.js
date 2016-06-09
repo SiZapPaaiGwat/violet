@@ -1,6 +1,7 @@
 import {ipcMain} from 'electron'
+import PlatformHandler from './platforms/handler'
 import ZhihuHandler from './platforms/zhihu'
-import GitHubHandler from './platforms/github'
+import './platforms/github'
 import marked from 'marked'
 
 marked.setOptions({
@@ -13,6 +14,14 @@ marked.setOptions({
   smartLists: true,
   smartypants: false
 })
+
+function zipObject(keys = [], values = []) {
+  let obj = {}
+  keys.forEach((key, i) => {
+    obj[key] = values[i]
+  })
+  return obj
+}
 
 /**
  * 发布文章到各个写作平台
@@ -29,26 +38,18 @@ marked.setOptions({
 </ul><br><p></p><br><p></p>
 <pre lang=\"\">var a = 1;\nfunction A() {\n    console.log(123)\n}\n</pre><p></p>
  */
-ipcMain.on('sync-post-start', (event, {title = '', content = '', github = {}, zhihu = {}}) => {
-  let githubHandler = new GitHubHandler({
-    ...github,
-    title: title.trim(),
-    content: content.trim()
-  })
-  let zhihuHandler = new ZhihuHandler({
-    ...zhihu,
-    title: title.trim(),
-    content: marked(content).trim()
+ipcMain.on('sync-post-start', (event, {title = '', content = '', ...platforms}) => {
+  let keys = Object.keys(platforms)
+  let handlerList = PlatformHandler.map(keys).map((instance, i) => {
+    return new instance({
+      ...platforms[keys[i]],
+      title: title.trim(),
+      content: content.trim()
+    }).publish()
   })
 
-  Promise.all([
-    githubHandler.publish(),
-    zhihuHandler.publish()
-  ]).then(result => {
-    event.sender.send('sync-post-finish', {
-      github: result[0],
-      zhihu: result[1]
-    })
+  Promise.all(handlerList).then(result => {
+    event.sender.send('sync-post-finish', zipObject(keys, result))
   }).catch(error => {
     console.log(error)
     event.sender.send('user-action-error', {error, title: '同步失败'})
@@ -58,18 +59,14 @@ ipcMain.on('sync-post-start', (event, {title = '', content = '', github = {}, zh
 /**
  * 检测各个平台的登录情况
  */
-ipcMain.on('detect-login-status-start', (event, {zhihu = {}, github = {}}) => {
-  let githubHandler = new GitHubHandler(github)
-  let zhihuHandler = new ZhihuHandler(zhihu)
+ipcMain.on('detect-login-status-start', (event, platforms) => {
+  let keys = Object.keys(platforms)
+  let handlerList = PlatformHandler.map(keys).map((instance, i) => {
+    return new instance(platforms[keys[i]]).isLoggedIn()
+  })
 
-  Promise.all([
-    githubHandler.isLoggedIn(),
-    zhihuHandler.isLoggedIn()
-  ]).then(result => {
-    event.sender.send('detect-login-status-finish', {
-      github: result[0],
-      zhihu: result[1]
-    })
+  Promise.all(handlerList).then(result => {
+    event.sender.send('detect-login-status-finish', zipObject(keys, result))
   }).catch(error => {
     console.log(error)
     event.sender.send('user-action-error', {error, title: '登录态异常'})

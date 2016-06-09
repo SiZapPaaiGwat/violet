@@ -93,6 +93,8 @@ function getZhihuColumns({cookie, token}) {
 }
 
 export default class ZhihuHandler extends PlatformHandler {
+  static alias = 'zhihu'
+
   whoAmI() {
     let {cookie, token} = this
     if (!cookie || !token) {
@@ -161,3 +163,5 @@ export default class ZhihuHandler extends PlatformHandler {
     })
   }
 }
+
+PlatformHandler.link(ZhihuHandler.alias, ZhihuHandler)
