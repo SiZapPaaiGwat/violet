@@ -33,7 +33,14 @@ export function removeAccountByPlatform(platform) {
 
 export function getCookiesByPlatform(platform = 'zhihu') {
   if (platform) {
-    return localStorage.getItem(`${platform}_cookie`)
+    let cookie = localStorage.getItem(`${platform}_cookie`)
+    if (!cookie) return null
+
+    try {
+      return decrypt(cookie)
+    } catch (err) {
+      localStorage.removeItem(`${platform}_cookie`)
+    }
   }
 
   return null
@@ -41,7 +48,7 @@ export function getCookiesByPlatform(platform = 'zhihu') {
 
 export function setCookiesByPlatform(platform, cookie) {
   if (platform && cookie) {
-    localStorage.setItem(`${platform}_cookie`, cookie)
+    localStorage.setItem(`${platform}_cookie`, encrypt(cookie))
   } else {
     localStorage.removeItem(`${platform}_cookie`)
   }
