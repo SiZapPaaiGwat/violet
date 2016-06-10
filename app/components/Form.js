@@ -1,25 +1,28 @@
 import React, {PropTypes} from 'react'
 import styles from './Form.css'
+import _ from 'lodash'
 
 export default React.createClass({
   propTypes: {
     onSubmit: PropTypes.func,
-    username: PropTypes.string,
-    password: PropTypes.string,
-    extends: PropTypes.array
+    extends: PropTypes.array.isRequired
   },
 
   handleSubmit(e) {
     e.preventDefault()
     if (this.props.onSubmit) {
-      let extendFields = this.props.extends ?
-        this.props.extends.map(item => this.refs[item.name].value) : []
-      this.props.onSubmit(this.refs.username.value, this.refs.password.value, ...extendFields)
+      let keys = this.props.extends.map(item => {
+        return item.name
+      })
+      let values = this.props.extends.map(item => {
+        return this.refs[item.name].value
+      })
+      this.props.onSubmit(_.zipObject(keys, values))
     }
   },
 
   render() {
-    let extra = this.props.extends ? this.props.extends.map(item => {
+    let extra = this.props.extends.map(item => {
       let type = item.type || 'text'
       return (
         <section key={item.name}>
@@ -34,34 +37,11 @@ export default React.createClass({
             />
         </section>
       )
-    }) : null
+    })
 
     return (
       <form action="#" method="POST" className={styles.forms} onSubmit={this.handleSubmit}>
-        <section>
-          <label htmlFor="name">帐号</label>
-          <input
-            ref="username"
-            type="text"
-            placeholder="请输入登录帐号"
-            required
-            defaultValue={this.props.username}
-          />
-        </section>
-
-        <section>
-          <label htmlFor="password">密码</label>
-          <input
-            ref="password"
-            type="password"
-            placeholder="请输入密码"
-            required
-            defaultValue={this.props.password}
-          />
-        </section>
-
         {extra}
-
         <section>
           <button type="submit" className={styles.primary}>立即保存</button>
         </section>

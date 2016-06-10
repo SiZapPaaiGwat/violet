@@ -8,6 +8,7 @@ import {
 } from '../../helpers/const'
 
 const PLATFORM_NAME = 'zhihu'
+const PLATFORM_LABEL = '知乎'
 
 function transformCookie(cookie) {
   return {
@@ -50,7 +51,7 @@ export default function createZhihuLoginPage(props) {
     <LoginManager
       {...props}
       platformName={PLATFORM_NAME}
-      platformLabel="知乎"
+      platformLabel={PLATFORM_LABEL}
       loginUrl={LOGIN_URL}
       logoutUrl={LOGOUT_URL}
       loggedInUrl={ZHUANLAN_URL}

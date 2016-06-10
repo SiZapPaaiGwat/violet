@@ -2,7 +2,6 @@ import React, {PropTypes} from 'react'
 import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import MarkdownArea from '../components/MarkdownArea'
-import SettingsGitHub from '../components/SettingsGitHub'
 import Alert from 'react-notification-system'
 import * as DbUtils from '../helpers/database'
 import * as DataUtils from '../helpers/client_data'
@@ -12,6 +11,7 @@ import {
 } from '../helpers/const'
 import {detectLoginStatus} from '../../electron/ipc_render'
 import createZhihuLoginPage from '../helpers/create_login/zhihu'
+import createGitHubLoginPage from '../helpers/create_login/github'
 
 export default React.createClass({
   propTypes: {
@@ -102,7 +102,7 @@ export default React.createClass({
     if (pageName === 'zhihu') {
       DynamicComponent = createZhihuLoginPage(this.props)
     } else if (pageName === 'github') {
-      DynamicComponent = <SettingsGitHub {...this.props} />
+      DynamicComponent = createGitHubLoginPage(this.props)
     } else {
       DynamicComponent = <MarkdownArea {...this.props} />
     }

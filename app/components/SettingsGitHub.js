@@ -11,10 +11,6 @@ export default React.createClass({
     actions: PropTypes.object.isRequired
   },
 
-  resetSettings() {
-    this.props.actions.settingsShow({name: ''})
-  },
-
   handleGitHubLogout() {
     DataUtils.removeAccountByPlatform('github')
     this.props.actions.accountUpdate({
