@@ -3,8 +3,8 @@ import AceEditor from 'react-ace'
 import {
   DEFAULT_TITLE, AUTO_SAVING_STORE_PERIOD, AUTO_SAVING_DATABASE_PERIOD
 } from '../helpers/const'
-import * as DbUtils from '../helpers/database'
 import * as utils from '../helpers/utils'
+import * as DbUtils from '../helpers/database'
 import _ from 'lodash'
 import 'brace'
 import 'brace/mode/markdown'
@@ -25,22 +25,6 @@ export default React.createClass({
     this.syncDatabase = _.debounce(this.syncDatabase, AUTO_SAVING_DATABASE_PERIOD)
   },
 
-  syncDatabase(value) {
-    let post = this.props.states.posts.selected
-    let title = utils.getMarkdownTitle(value)
-    let updates = {
-      title: title || DEFAULT_TITLE,
-      content: value
-    }
-    console.log('#Updating database:')
-    console.log(updates)
-    DbUtils.updatePost(post.id, updates).then(updated => {
-      console.log('#Updating result:', updated)
-    }).catch(err => {
-      console.error(err.message)
-    })
-  },
-
   syncStore(value) {
     let post = this.props.states.posts.selected
     let title = utils.getMarkdownTitle(value)
@@ -49,7 +33,26 @@ export default React.createClass({
       title,
       content: value
     })
-    this.syncDatabase(value)
+    this.syncDatabase(post.id, value)
+  },
+
+  syncDatabase(id, value) {
+    if (!id || !value) {
+      return
+    }
+
+    let title = utils.getMarkdownTitle(value)
+    let updates = {
+      title: title || DEFAULT_TITLE,
+      content: value
+    }
+    console.log('#Updating database:')
+    console.log(updates)
+    DbUtils.updatePost(id, updates).then(updated => {
+      console.log('#Updating result:', updated)
+    }).catch(err => {
+      console.error(err.message)
+    })
   },
 
   render() {

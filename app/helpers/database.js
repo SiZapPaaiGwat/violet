@@ -15,7 +15,9 @@ export function createPost(title, content) {
 }
 
 export function listPosts() {
-  return db.open().then(() => db.posts.toArray())
+  return db.open().then(() => {
+    return db.posts.toArray()
+  })
 }
 
 export function updatePost(id, params) {
