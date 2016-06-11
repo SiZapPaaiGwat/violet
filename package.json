@@ -1,11 +1,12 @@
 {
   "name": "violet",
   "productName": "violet",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "electronVersion": "1.2.2",
   "main": "main.js",
   "private": true,
   "scripts": {
+    "test": "cross-env NODE_ENV=test mocha --compilers js:babel-register",
     "serve": "node -r babel-register node_modules/webpack-dev-server/bin/webpack-dev-server --config=webpack.config.development.js --port=3000 --watch-poll",
     "start": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./electron/main.js",
     "start-pro": "cross-env NODE_ENV=production electron ./",
@@ -49,6 +50,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
+    "chai": "^3.5.0",
     "cross-env": "^1.0.7",
     "css-loader": "^0.23.1",
     "electron-debug": "latest",
@@ -64,6 +66,8 @@
     "file-loader": "^0.8.5",
     "json-loader": "^0.5.4",
     "minimist": "^1.2.0",
+    "mocha": "^2.5.3",
+    "nock": "^8.0.0",
     "postcss": "^5.0.19",
     "postcss-cssnext": "^2.5.2",
     "postcss-import": "^8.1.0",
@@ -74,6 +78,7 @@
     "redux-devtools-log-monitor": "^1.0.11",
     "redux-logger": "^2.6.1",
     "rimraf": "latest",
+    "sinon": "^1.17.4",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.0",
     "webpack-dev-server": "^1.14.1"
