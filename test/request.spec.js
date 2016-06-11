@@ -68,7 +68,6 @@ describe('request', function() {
     })
     clock.tick(3000)
     return req.catch(err => {
-      console.log(err)
       expect(err).to.be.an('error')
     })
   })
