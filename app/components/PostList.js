@@ -61,8 +61,8 @@ export default React.createClass({
     }).then(result => {
       // 更新记录 redux以及数据库
       let updates = {
-        github_id: result.github && result.github.number,
-        zhihu_id: result.zhihu && result.zhihu.slug,
+        github_id: result.github,
+        zhihu_id: result.zhihu,
         id: post.id
       }
       this.props.actions.postsUpdate(updates)

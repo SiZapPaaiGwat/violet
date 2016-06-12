@@ -73,7 +73,9 @@ export default class GitHubHandler extends PlatformHandler {
           repo,
           title,
           body: content
-        }, handler)
+        }, (err, result) => {
+          handler(err, result && result.number)
+        })
       } else {
         github.issues.edit({
           user: username,

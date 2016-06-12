@@ -100,6 +100,7 @@
     "redux": "^3.4.0",
     "redux-thunk": "^2.0.1",
     "superagent": "^1.8.3",
+    "superagent-proxy": "^1.0.0",
     "sweetalert2": "^3.3.8",
     "to-markdown": "^3.0.0"
   },

@@ -166,6 +166,8 @@ export default class ZhihuHandler extends PlatformHandler {
           topics: columnsInfo[0].topics,
           updateTime: new Date().toISOString()
         }
+      }).then(json => {
+        return json.slug
       })
     })
   }

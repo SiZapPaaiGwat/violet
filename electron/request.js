@@ -1,7 +1,10 @@
 import request from 'superagent'
+import proxilize from 'superagent-proxy'
 import {REQUEST_TIMEOUT} from '../app/helpers/const'
 
-export default function({url, method, formData, headers, timeout = REQUEST_TIMEOUT}) {
+proxilize(request)
+
+export default function({url, method, formData, headers, timeout = REQUEST_TIMEOUT, proxy}) {
   return new Promise((resolve, reject) => {
     let req = request[method]
     if (!req) {
@@ -11,6 +14,10 @@ export default function({url, method, formData, headers, timeout = REQUEST_TIMEO
 
     try {
       req = req(url)
+      // socks://127.0.0.1:1080/ for shadowsocks proxy
+      if (proxy) {
+        req.proxy(proxy)
+      }
       req.send(formData)
       req.timeout(timeout)
 
