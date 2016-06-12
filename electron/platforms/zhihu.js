@@ -121,10 +121,15 @@ export default class ZhihuHandler extends PlatformHandler {
       cookie,
       token
     }).then(result => {
-      Promise.resolve(result)
+      return Promise.resolve(result)
     })
   }
 
+  /**
+   * 一点小区别：
+   * 编辑器中的换行会被知乎忽略，而GitHub不会
+   * 我们这里不做任何处理
+   */
   publish() {
     let {cookie, token, title, content, key} = this
     if (!cookie || !token || !title) {
