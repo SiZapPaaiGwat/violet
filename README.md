@@ -1,6 +1,7 @@
 # violet
 
 [![Build Status](https://semaphoreci.com/api/v1/damngoto/violet/branches/master/badge.svg)](https://semaphoreci.com/damngoto/violet)
+[![codecov](https://codecov.io/gh/simongfxu/violet/branch/master/graph/badge.svg)](https://codecov.io/gh/simongfxu/violet)
 [![Gitter](https://badges.gitter.im/simongfxu/violet.svg)](https://gitter.im/simongfxu/violet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
