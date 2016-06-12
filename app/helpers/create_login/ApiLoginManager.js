@@ -35,15 +35,17 @@ export default React.createClass({
       [name]: formData
     }).then((result) => {
       if (result[name]) {
+        // 哪些信息需要返回存储到本地由实现者决定
+        // 客户端数据以及服务端数据一并返回给实现者
+        let accountInfo = this.props.updateAccount(name, formData, result[name])
         this.props.actions.accountUpdate({
           platform: name,
-          value: formData
+          value: accountInfo
         })
         this.props.actions.statusUpdate({
           platform: name,
           value: true
         })
-        this.props.updateAccount(name, formData)
       } else {
         App.alert('身份验证失败', '请重新检查表单')
       }
@@ -55,19 +57,20 @@ export default React.createClass({
 
   render() {
     let name = this.props.platformName
-    let account = this.props.states.account[name]
-    let username = this.props.transfromUsername(account)
+    let isLoggedIn = this.props.states.status[name]
+    let account = isLoggedIn && this.props.states.account[name]
+    let username = isLoggedIn && this.props.transfromUsername(account)
 
     return (
       <div className={styles.container}>
         <div className={styles.formContainer}>
           <h2>{this.props.platformLabel}</h2>
-          {this.props.states.status[name] ? (
+          {isLoggedIn ? (
             <LoginStatus
               username={username}
               onLogout={this.handleLogout}
             />
-        ) : <Form onSubmit={this.saveAccount} extends={this.props.extends} />}
+          ) : <Form onSubmit={this.saveAccount} extends={this.props.extends} />}
         </div>
       </div>
     )

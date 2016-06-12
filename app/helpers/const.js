@@ -1,5 +1,6 @@
 export let SYNC_PLATFORMS = ['zhihu', 'github', 'medium', 'jianshu']
 
+// TODO 这里需要换成数组优化
 export let PLATFORM_INFO = {
   zhihu: {
     name: '知乎',

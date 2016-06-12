@@ -2,6 +2,7 @@ import {ipcMain} from 'electron'
 import PlatformHandler from './platforms/handler'
 import ZhihuHandler from './platforms/zhihu'
 import './platforms/github'
+import './platforms/medium'
 import marked from 'marked'
 
 marked.setOptions({

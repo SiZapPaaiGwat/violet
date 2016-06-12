@@ -48,6 +48,12 @@ export default React.createClass({
     }
   },
 
+  showMedium() {
+    if (this.props.states.settings.name !== 'medium') {
+      this.props.actions.settingsShow({name: 'medium'})
+    }
+  },
+
   render() {
     let status = this.props.states.status
     let account = this.props.states.account
@@ -60,7 +66,6 @@ export default React.createClass({
             title={!status.zhihu ? '设置知乎帐号' : account.zhihu.username}
             className={status.zhihu ? '' : styles.disabled}
             disabled={!status.zhihu}
-            style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
           >
             <img src={zhihuIcon} alt="zhihu" className={styles.img} />
           </a>
@@ -69,9 +74,17 @@ export default React.createClass({
             onClick={this.showGitHub}
             title={!status.github ? '设置GitHub帐号' : account.github.username}
             className={status.github ? '' : styles.disabled}
-            style={{visibility: status.zhihu !== null ? 'visible' : 'hidden'}}
           >
-            <img src={githubIcon} alt="zhihu" className={styles.img} />
+            <img src={githubIcon} alt="github" className={styles.img} />
+          </a>
+
+          <a
+            href="javascript:;"
+            onClick={this.showMedium}
+            title={!status.medium ? '设置Medium帐号' : account.medium.username}
+            className={status.medium ? '' : styles.disabled}
+          >
+            <img src={githubIcon} alt="medium" className={styles.img} />
           </a>
         </div>
 

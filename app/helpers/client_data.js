@@ -1,30 +1,31 @@
 import {encrypt, decrypt} from './aes'
 import {SYNC_PLATFORMS} from '../helpers/const'
 
-const SPLIT_FLAG = '\n'
-
 // 获取帐号配置信息
 export function getAccountMap() {
   let accountMap = {}
   SYNC_PLATFORMS.forEach((platform) => {
-    let pair = localStorage.getItem(platform) || ''
-    pair = pair && decrypt(pair).split(SPLIT_FLAG)
-    accountMap[platform] = {
-      username: pair && pair[0],
-      password: pair && pair[1],
-      repo: pair && pair[2]
+    try {
+      let str = localStorage.getItem(platform)
+      let account = str ? JSON.parse(decrypt(str)) : null
+      // 没有数据就不要设置empty object
+      if (account) {
+        accountMap[platform] = account
+      }
+    } catch (err) {
+      localStorage.removeItem(platform)
     }
   })
 
   return accountMap
 }
 
-export function updateAccount(platform, userName, password = '', repo = '') {
-  if (!userName) {
+export function updateAccount(platform, account) {
+  if (!account) {
     return
   }
 
-  localStorage.setItem(platform, encrypt(`${userName}${SPLIT_FLAG}${password}${SPLIT_FLAG}${repo}`))
+  localStorage.setItem(platform, encrypt(JSON.stringify(account)))
 }
 
 export function removeAccountByPlatform(platform) {

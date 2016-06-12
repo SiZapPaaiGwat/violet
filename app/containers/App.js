@@ -36,14 +36,12 @@ export default React.createClass({
   },
 
   loadLoginStatus() {
-    let cookie = DataUtils.getCookiesByPlatform('zhihu')
-    detectLoginStatus({
-      zhihu: {
-        cookie,
-        token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
-      },
-      github: this.props.states.account.github
-    }).then(result => {
+    // TODO
+    detectLoginStatus(this.props.states.account).then(result => {
+      this.props.actions.statusUpdate({
+        platform: 'medium',
+        value: result.medium
+      })
       this.props.actions.statusUpdate({
         platform: 'github',
         value: result.github

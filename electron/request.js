@@ -35,7 +35,11 @@ export default function({url, method, formData, headers, timeout = REQUEST_TIMEO
         return
       }
 
-      resolve(res)
+      if (headers && headers.Accept === 'application/json') {
+        resolve(res.text ? JSON.parse(res.text) : res)
+      } else {
+        resolve(res)
+      }
     })
   })
 }

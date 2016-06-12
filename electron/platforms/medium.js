@@ -24,7 +24,8 @@ export default class MediumHandler extends PlatformHandler {
       method: 'get',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
       },
       proxy
     })
@@ -46,7 +47,8 @@ export default class MediumHandler extends PlatformHandler {
       method: 'post',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
       },
       formData: {
         title,
