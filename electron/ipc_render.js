@@ -6,7 +6,7 @@ ipcRenderer.on('user-action-error', (e, {error, title = '未知错误'}) => {
   console.log('#Main process error')
   console.log(`#title=${title}`)
   console.log(error)
-  App.alert(error.message, 'error', title)
+  App.alert(title, error.message)
 })
 
 export function syncPost(args) {

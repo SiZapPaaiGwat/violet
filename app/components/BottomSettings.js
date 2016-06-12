@@ -32,7 +32,7 @@ export default React.createClass({
       this.props.actions.postsSelect(this.props.states.posts.datasource[0])
       this.props.actions.settingsShow({name: ''})
     }).catch(err => {
-      App.alert(err.message, 'error', '新建作品失败')
+      App.alert('新建作品失败', err.message)
     })
   },
 

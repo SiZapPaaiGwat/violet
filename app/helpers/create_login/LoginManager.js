@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import LoginStatus from '../../components/LoginStatus'
 import {parseWebviewCookiesByDomain} from '../../../electron/ipc_render'
 import * as DataUtils from '../client_data'
-import styles from './Settings.css'
+import styles from './CreateLogin.css'
 
 export default React.createClass({
   propTypes: {
@@ -93,7 +93,7 @@ export default React.createClass({
           this.props.onLoggedIn(this.props, json)
         }).catch(err => {
           console.log(err)
-          App.alert(err.message, 'error', '登录出错')
+          App.alert('登录出错', err.message)
         })
       }
     })

@@ -3,7 +3,7 @@ import LoginStatus from '../../components/LoginStatus'
 import Form from '../../components/Form'
 import {detectLoginStatus} from '../../../electron/ipc_render'
 import * as DataUtils from '../client_data'
-import styles from './Settings.css'
+import styles from './CreateLogin.css'
 
 export default React.createClass({
   propTypes: {
@@ -45,11 +45,11 @@ export default React.createClass({
         })
         this.props.updateAccount(name, formData)
       } else {
-        App.alert('请重新检查表单', 'error', '身份验证失败')
+        App.alert('身份验证失败', '请重新检查表单')
       }
     }).catch(err => {
       console.log(err)
-      App.alert(err.message, 'error')
+      App.alert('身份验证失败', err.message)
     })
   },
 

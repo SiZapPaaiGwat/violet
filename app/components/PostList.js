@@ -28,9 +28,9 @@ export default React.createClass({
     let states = this.props.states
     if (!states.status.zhihu && !states.status.github) {
       if (Date.now() - App.mountTime > REQUEST_TIMEOUT) {
-        App.alert('请检查平台帐号配置', 'error', '同步失败')
+        App.alert('同步失败', '请检查平台帐号配置')
       } else {
-        App.alert('请稍等几秒后重试', 'warning', '同步无法进行')
+        App.alert('同步无法进行', '请稍等几秒后重试', 'warning')
       }
       return
     }
@@ -72,14 +72,14 @@ export default React.createClass({
       return DbUtils.updatePost(post.id, updates)
     }).then(updated => {
       let msg = `作品成功同步到${syncedPlatforms.join(', ')}等${syncedPlatforms.length}个平台`
-      App.alert(msg, 'success', '恭喜')
+      App.alert('同步成功', msg, 'success')
     }).then(() => {
       this.props.actions.postsLoading({
         id: post.id,
         isLoading: false
       })
     }).catch(err => {
-      App.alert(err.message, 'error', '同步失败')
+      App.alert('同步失败', err.message)
     })
   },
 

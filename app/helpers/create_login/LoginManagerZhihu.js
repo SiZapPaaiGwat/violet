@@ -35,7 +35,7 @@ function onZhihuLoggedIn(props, json) {
   })
 
   if (!hasColumns) {
-    App.alert(`该帐户${json.email}还没有开通专栏，请先前往 https://zhuanlan.zhihu.com/request 开通`, 'warning', '提示')
+    App.alert('友情提醒', `该帐户${json.email}还没有开通专栏，请先前往 https://zhuanlan.zhihu.com/request 开通`, 'warning')
   }
 }
 

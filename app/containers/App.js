@@ -2,16 +2,13 @@ import React, {PropTypes} from 'react'
 import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import MarkdownArea from '../components/MarkdownArea'
-import Alert from 'react-notification-system'
 import * as DbUtils from '../helpers/database'
 import * as DataUtils from '../helpers/client_data'
 import {getCookieByName} from '../helpers/utils'
-import {
-  DEFAULT_TITLE, DEFAULT_CONTENT, ZHIHU_XSRF_TOKEN_NAME
-} from '../helpers/const'
+import {DEFAULT_TITLE, DEFAULT_CONTENT, ZHIHU_XSRF_TOKEN_NAME} from '../helpers/const'
 import {detectLoginStatus} from '../../electron/ipc_render'
-import createZhihuLoginPage from '../helpers/create_login/zhihu'
-import createGitHubLoginPage from '../helpers/create_login/github'
+import createLoginPage from '../helpers/create_login/CreateLogin'
+import Alert from 'sweetalert2'
 
 export default React.createClass({
   propTypes: {
@@ -20,12 +17,17 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    App.alert = (message, level = 'warning', title = '提示') => {
-      this.refs.alert.addNotification({
-        title,
-        message,
-        level
-      })
+    App.alert = (title = 'oops', text = '遇到了一点问题', type = 'error') => {
+      if (typeof title === 'string') {
+        Alert({
+          title,
+          text,
+          type
+        })
+        return Promise.resolve(null)
+      }
+
+      return Alert(title)
     }
     App.mountTime = Date.now()
 
@@ -56,7 +58,7 @@ export default React.createClass({
       })
     }).catch(err => {
       console.log(err)
-      App.alert(err.message, 'error', '获取同步帐号信息出错')
+      App.alert('获取帐号信息出错', err.message)
     })
   },
 
@@ -84,7 +86,7 @@ export default React.createClass({
         })
       })
     }).catch(err => {
-      App.alert(err.message, 'error', '获取作品列表出错')
+      App.alert('获取作品列表出错', err.message)
     })
   },
 
@@ -97,22 +99,14 @@ export default React.createClass({
     // }
 
     let states = this.props.states
-    let DynamicComponent = null
-    let pageName = states.settings.name
-    if (pageName === 'zhihu') {
-      DynamicComponent = createZhihuLoginPage(this.props)
-    } else if (pageName === 'github') {
-      DynamicComponent = createGitHubLoginPage(this.props)
-    } else {
-      DynamicComponent = <MarkdownArea {...this.props} />
-    }
+    let DynamicComponent = createLoginPage(states.settings.name, this.props) ||
+      <MarkdownArea {...this.props} />
 
     return (
       <div>
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
         {DynamicComponent}
-        <Alert ref="alert" />
       </div>
     )
   }

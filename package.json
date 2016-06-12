@@ -93,13 +93,13 @@
     "react": "^15.0.1",
     "react-ace": "^3.4.1",
     "react-dom": "^15.0.1",
-    "react-notification-system": "^0.2.7",
     "react-redux": "^4.4.5",
     "react-router": "^2.2.4",
     "react-router-redux": "^4.0.2",
     "redux": "^3.4.0",
     "redux-thunk": "^2.0.1",
     "superagent": "^1.8.3",
+    "sweetalert2": "^3.3.8",
     "to-markdown": "^3.0.0"
   },
   "optionalDependencies": {
