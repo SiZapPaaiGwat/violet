@@ -14,7 +14,9 @@ export default class PlatformHandler {
   }
 
   static map(items = Object.keys(subClassLinkMap)) {
-    return items.map(name => subClassLinkMap[name] || PlatformHandler)
+    return items.map(name => {
+      return subClassLinkMap[name] || PlatformHandler
+    })
   }
 
   constructor(params) {
