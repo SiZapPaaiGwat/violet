@@ -120,7 +120,9 @@ export default class ZhihuHandler extends PlatformHandler {
       method: 'get',
       cookie,
       token
-    }).then(result => Promise.resolve(result))
+    }).then(result => {
+      Promise.resolve(result)
+    })
   }
 
   publish() {
