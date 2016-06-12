@@ -6,7 +6,8 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha --compilers js:babel-register",
+    "test": "nyc --all --require babel-register mocha",
+    "cover": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "lint": "eslint app/** electron/**",
     "serve": "node -r babel-register node_modules/webpack-dev-server/bin/webpack-dev-server --config=webpack.config.development.js --port=3000 --watch-poll",
     "start": "cross-env HOT=1 NODE_ENV=development electron -r babel-register ./electron/main.js",
@@ -51,6 +52,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
     "chai": "^3.5.0",
+    "codecov": "^1.0.1",
     "cross-env": "^1.0.7",
     "css-loader": "^0.23.1",
     "electron-debug": "latest",
@@ -68,6 +70,7 @@
     "minimist": "^1.2.0",
     "mocha": "^2.5.3",
     "nock": "^8.0.0",
+    "nyc": "^6.4.4",
     "postcss": "^5.0.19",
     "postcss-cssnext": "^2.5.2",
     "postcss-import": "^8.1.0",
@@ -115,6 +118,12 @@
     ],
     "plugins": [
       "add-module-exports"
+    ]
+  },
+  "nyc": {
+    "include": [
+      "app/**",
+      "electron/**"
     ]
   }
 }
