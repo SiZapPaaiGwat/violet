@@ -99,14 +99,13 @@ export default React.createClass({
     // }
 
     let states = this.props.states
-    let DynamicComponent = createLoginPage(states.settings.name, this.props) ||
-      <MarkdownArea {...this.props} />
+    let DynamicComponent = createLoginPage(states.settings.name) || MarkdownArea
 
     return (
       <div>
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
-        {DynamicComponent}
+        <DynamicComponent {...this.props} />
       </div>
     )
   }

@@ -1,12 +1,11 @@
-import React from 'react'
 import GitHubLoginPage from './ApiLoginManagerGitHub'
 import ZhihuLoginPage from './LoginManagerZhihu'
 
-export default function(pageName, props) {
+export default function(pageName) {
   if (pageName === 'zhihu') {
-    return <ZhihuLoginPage {...props} />
+    return ZhihuLoginPage
   } else if (pageName === 'github') {
-    return <GitHubLoginPage {...props} />
+    return GitHubLoginPage
   }
 
   return null
