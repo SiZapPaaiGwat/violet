@@ -2,23 +2,24 @@
 
 [![Build Status](https://semaphoreci.com/api/v1/damngoto/violet/branches/master/badge.svg)](https://semaphoreci.com/damngoto/violet)
 [![Gitter](https://badges.gitter.im/simongfxu/violet.svg)](https://gitter.im/simongfxu/violet?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 ## 她是什么
 
-violet 是一款面向写作爱好者的同步工具。
+violet 是一款面向写作爱好者的同步工具（知乎/GitHub等）。
 
-## 她提供什么功能
+## 功能
 
- * violet 最大的亮点在于她能够在各大写作平台之间同步作品
+ * violet 能够在各大写作平台之间同步作品
  * violet 支持流行的写作语言 **Markdown**
 
 ## 应用场景
 
 我在`知乎专栏`、`简书`、`Medium`、`GitHub`等写作平台均有帐号，
-同样的一篇文章，不管是发布文章还是编辑文章我需要在这四个平台全部操作一次。
+同样的一篇文章，不管是发布还是编辑我需要在这四个平台全部操作一次。
 
-更关键的一点在于，各个写作平台的编辑器以及你在写作中实际使用的编辑器对格式和语法支持不尽一致。
-当你的作品需要发布时，复制粘贴经常会出现样式问题，然后你需要花费大量的时间在这些平台上调整格式。
+更关键的在于，各个写作平台的编辑器与你实际使用的在格式处理以及语法支持不尽一致。
+当你的作品需要发布到多个平台时，复制粘贴经常会出现问题，然后你要花费大量的时间在调整格式上。
 
 violet 就是帮你来解决多平台写作时产生的种种问题！
 
@@ -35,8 +36,6 @@ violet 就是帮你来解决多平台写作时产生的种种问题！
 
 如果需要其他写作平台的支持，烦请前往：
 [violet需求调查](https://jinshuju.net/f/2yctZ5?x_field_1=github)
-
-我个人会第一时间查看用户反馈的需求！
 
 ## 名称来源
 
