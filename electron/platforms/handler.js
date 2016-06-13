@@ -33,10 +33,6 @@ export default class PlatformHandler {
     return Promise.reject(notImplementMethod('whoAmI', this.constructor.name))
   }
 
-  isLoggedIn() {
-    return Promise.reject(notImplementMethod('isLoggedIn', this.constructor.name))
-  }
-
   publish() {
     return Promise.reject(notImplementMethod('publish', this.constructor.name))
   }

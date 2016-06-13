@@ -104,22 +104,6 @@ export default class ZhihuHandler extends PlatformHandler {
     })
   }
 
-  isLoggedIn() {
-    let {cookie, token} = this
-    if (!cookie || !token) {
-      return Promise.resolve(false)
-    }
-
-    return httpRequest({
-      url: 'https://zhuanlan.zhihu.com/api/me',
-      method: 'get',
-      cookie,
-      token
-    }).then(result => {
-      return Promise.resolve(result)
-    })
-  }
-
   /**
    * 一点小区别：
    * 编辑器中的换行会被知乎忽略，而GitHub不会

@@ -4,7 +4,7 @@ import request from '../request'
 export default class MediumHandler extends PlatformHandler {
   static alias = 'medium'
 
-  isLoggedIn() {
+  whoAmI() {
     let {accessToken, proxy} = this
     if (!accessToken) {
       return Promise.resolve(false)

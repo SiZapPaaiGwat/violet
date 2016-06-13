@@ -90,9 +90,11 @@ export default React.createClass({
         .then(cookie => {
           // 需要从cookie中提取一些数据比如token
           account = this.props.transformCookie(cookie)
-          return this.props.whoAmI(account)
+          return this.props.whoAmI({
+            [this.props.platformName]: account
+          })
         }).then(json => {
-          Object.assign(account, json)
+          Object.assign(account, json[this.props.platformName])
           this.props.onLoggedIn(this.props, account)
         }).catch(err => {
           console.log(err)

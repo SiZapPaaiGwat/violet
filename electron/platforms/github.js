@@ -5,7 +5,7 @@ import {REQUEST_TIMEOUT} from '../const'
 export default class GitHubHandler extends PlatformHandler {
   static alias = 'github'
 
-  isLoggedIn() {
+  whoAmI() {
     let {username, password, repo} = this
     return new Promise((resolve, reject) => {
       if (!username || !password || !repo) {
@@ -34,7 +34,7 @@ export default class GitHubHandler extends PlatformHandler {
           return
         }
 
-        resolve(true)
+        resolve(username)
       })
     })
   }

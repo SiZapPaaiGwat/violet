@@ -51,7 +51,7 @@ ipcMain.on('sync-post-start', (event, {title = '', content = '', ...platforms}) 
 ipcMain.on('detect-login-status-start', (event, platforms) => {
   let keys = Object.keys(platforms)
   let handlerList = PlatformHandler.map(keys).map((instance, i) => {
-    return new instance(platforms[keys[i]]).isLoggedIn()
+    return new instance(platforms[keys[i]]).whoAmI()
   })
 
   Promise.all(handlerList).then(result => {
@@ -59,16 +59,5 @@ ipcMain.on('detect-login-status-start', (event, platforms) => {
   }).catch(error => {
     console.log(error)
     event.sender.send('user-action-error', {text: error.message, error, title: '登录态异常'})
-  })
-})
-
-ipcMain.on('zhihu-whoami-start', (event, args) => {
-  let zhihuHandler = new ZhihuHandler(args)
-
-  zhihuHandler.whoAmI().then(json => {
-    event.sender.send('zhihu-whoami-finish', json)
-  }).catch(error => {
-    console.log(error)
-    event.sender.send('user-action-error', {text: error.message, error, title: '获取身份失败'})
   })
 })

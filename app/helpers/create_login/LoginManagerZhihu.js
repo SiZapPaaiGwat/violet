@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import LoginManager from './LoginManager'
 import * as DataUtils from '../client_data'
 import {getCookieByName} from '../utils'
-import {whoAmI} from '../../../electron/ipc_render'
+import {detectLoginStatus} from '../../../electron/ipc_render'
 import {
   ZHUANLAN_URL, LOGIN_URL, LOGOUT_URL, ZHIHU_DOMAIN, ZHIHU_XSRF_TOKEN_NAME,
   SUPPORT_PLATFORM_MAP
@@ -33,6 +33,7 @@ function onZhihuLoggedIn(props, {cookie, token, email, columns}) {
   let hasColumns = columns && columns.length > 0
   props.actions.statusUpdate({
     platform: PLATFORM_NAME,
+    // TODO 这里直接false，登录态根据本地数据，这里表示是否可以同步
     value: {
       writable: hasColumns
     }
@@ -56,7 +57,7 @@ export default function createZhihuLoginPage(props) {
       logoutUrl={LOGOUT_URL}
       loggedInUrl={ZHUANLAN_URL}
       domain={ZHIHU_DOMAIN}
-      whoAmI={whoAmI}
+      whoAmI={detectLoginStatus}
       onLoggedIn={onZhihuLoggedIn}
       transformCookie={transformCookie}
       getUsername={getUsername}

@@ -28,9 +28,6 @@ export let syncPost = registerEvent('sync-post', 'Syncing post')
 
 export let detectLoginStatus = registerEvent('detect-login-status', 'Detecting login status')
 
-// 用于在webview登录后获取知乎身份信息
-export let whoAmI = registerEvent('zhihu-whoami', 'Checking zhihu identity')
-
 /**
  * 获取站点cookie
  * 主站和子站的cookie需要同时获取
