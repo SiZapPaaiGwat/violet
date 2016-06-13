@@ -38,6 +38,7 @@ export default {
     ...baseConfig.externals,
     'github',
     'superagent',
-    'marked'
+    'marked',
+    'superagent-proxy'
   ]
 }

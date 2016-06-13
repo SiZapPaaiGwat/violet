@@ -3,18 +3,6 @@ import PlatformHandler from './platforms/handler'
 import ZhihuHandler from './platforms/zhihu'
 import './platforms/github'
 import './platforms/medium'
-import marked from 'marked'
-
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: false,
-  smartLists: true,
-  smartypants: false
-})
 
 function zipObject(keys = [], values = []) {
   let obj = {}

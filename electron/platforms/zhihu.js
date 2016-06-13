@@ -3,6 +3,17 @@ import request from '../request'
 import PlatformHandler from './handler'
 import {ZHIHU_XSRF_TOKEN_NAME} from '../const'
 
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false
+})
+
 function httpRequest({url, method = 'post', cookie, token, formData}) {
   if (!url) {
     return Promise.reject(new Error('Request url is empty'))
