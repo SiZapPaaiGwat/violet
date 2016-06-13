@@ -38,13 +38,6 @@ describe('PlatformHandler', function() {
     })
   })
 
-  it('should be rejected when isLoggedIn unimplemented', function() {
-    let instance = new PlatformHandler()
-    return instance.isLoggedIn().catch(err => {
-      expect(err).to.be.an('error')
-    })
-  })
-
   it('should be rejected when publish unimplemented', function() {
     let instance = new PlatformHandler()
     return instance.publish().catch(err => {
