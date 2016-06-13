@@ -64,7 +64,7 @@ export default class GitHubHandler extends PlatformHandler {
           return
         }
 
-        resolve(result)
+        resolve(result.number)
       }
 
       if (!key) {
@@ -73,9 +73,7 @@ export default class GitHubHandler extends PlatformHandler {
           repo,
           title,
           body: content
-        }, (err, result) => {
-          handler(err, result && result.number)
-        })
+        }, handler)
       } else {
         github.issues.edit({
           user: username,

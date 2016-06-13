@@ -13,7 +13,7 @@ export default React.createClass({
     platformLabel: PropTypes.string.isRequired,
     updateAccount: PropTypes.func.isRequired,
     extends: PropTypes.array.isRequired,
-    transfromUsername: PropTypes.func.isRequired
+    getUsername: PropTypes.func.isRequired
   },
 
   handleLogout() {
@@ -59,7 +59,7 @@ export default React.createClass({
     let name = this.props.platformName
     let isLoggedIn = this.props.states.status[name]
     let account = isLoggedIn && this.props.states.account[name]
-    let username = isLoggedIn && this.props.transfromUsername(account)
+    let username = isLoggedIn && this.props.getUsername(account)
 
     return (
       <div className={styles.container}>

@@ -5,11 +5,12 @@ import * as DataUtils from '../client_data'
 const PLATFORM_NAME = 'github'
 const PLATFORM_LABEL = 'GitHub'
 
-function updateAccount(name, {username, password, repo}) {
-  DataUtils.updateAccount(name, username, password, repo)
+function updateAccount(name, formData, serverJson) {
+  DataUtils.updateAccount(name, formData)
+  return formData
 }
 
-function transfromUsername(account) {
+function getUsername(account) {
   return `${account.username}/${account.repo}`
 }
 
@@ -45,7 +46,7 @@ export default function createGitHubPage(props) {
       platformName={PLATFORM_NAME}
       platformLabel={PLATFORM_LABEL}
       updateAccount={updateAccount}
-      transfromUsername={transfromUsername}
+      getUsername={getUsername}
     />
   )
 }
