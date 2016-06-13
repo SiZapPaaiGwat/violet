@@ -2,7 +2,7 @@ import marked from 'marked'
 import request from '../request'
 import PlatformHandler from './handler'
 import {ZHIHU_XSRF_TOKEN_NAME} from '../../app/helpers/const'
-import {getCookieByName, cookieTokenUtil} from '../../app/helpers/utils'
+// import {getCookieByName, cookieTokenUtil} from '../../app/helpers/utils'
 
 function httpRequest({url, method = 'post', cookie, token, formData}) {
   if (!url) {
@@ -22,26 +22,10 @@ function httpRequest({url, method = 'post', cookie, token, formData}) {
     method,
     formData,
     headers: {
+      Accept: 'application/json',
       Cookie: cookie,
       [`X-${ZHIHU_XSRF_TOKEN_NAME}`]: token,
       'Content-Type': 'application/json;charset=UTF-8'
-    }
-  }).then(res => {
-    try {
-      if (!res.text) {
-        return Promise.resolve(null)
-      }
-
-      let json = JSON.parse(res.text)
-      // 更新cookie与token，不过这里暂时没用
-      json.csrfToken = getCookieByName(res.headers['set-cookie'].join('; '),
-        ZHIHU_XSRF_TOKEN_NAME)
-      json.cookie = cookieTokenUtil(cookie, json.csrfToken).cookie
-      return Promise.resolve(json)
-    } catch (e) {
-      console.log('JSON parse error')
-      console.log(e)
-      return Promise.resolve(res.text)
     }
   })
 }

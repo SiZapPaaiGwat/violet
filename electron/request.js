@@ -31,12 +31,13 @@ export default function({url, method, formData, headers, timeout = REQUEST_TIMEO
 
     req.end((err, res) => {
       if (err) {
-        reject(err instanceof Error ? err : new Error(JSON.stringify(err)))
+        // superagent可能返回一个包含response的自定义对象
+        reject(err instanceof Error ? err : new Error(err.response.text))
         return
       }
 
       if (headers && headers.Accept === 'application/json') {
-        resolve(res.text ? JSON.parse(res.text) : res)
+        resolve(res.text ? JSON.parse(res.text) : null)
       } else {
         resolve(res)
       }
