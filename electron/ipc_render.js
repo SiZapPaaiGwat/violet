@@ -1,29 +1,35 @@
 import {ipcRenderer} from 'electron'
 
-// TODO 封装消息发送和接受（start/finish）
+function registerEvent(name, details) {
+  return function(args) {
+    if (typeof args !== 'object') {
+      return Promise.reject(new Error('参数必须传对象'))
+    }
 
-ipcRenderer.on('user-action-error', (e, {error, title = '未知错误'}) => {
+    console.log(`${details} :`, args)
+
+    return new Promise(function(resolve, reject) {
+      ipcRenderer.on(`${name}-finish`, function(e, arg) {
+        resolve(arg)
+      })
+      ipcRenderer.send(`${name}-start`, args)
+    })
+  }
+}
+
+ipcRenderer.on('user-action-error', (e, {text, title = '未知错误', error}) => {
   console.log('#Main process error')
-  console.log(`#title=${title}`)
-  console.log(error)
-  App.alert(title, error.message)
+  console.error(error)
+  App.alert(title, error.status === 404 ? '可能作品已经删除' : text)
   App.stopLoading()
 })
 
-export function syncPost(args) {
-  console.log('Syncing post:', args)
+export let syncPost = registerEvent('sync-post', 'Syncing post')
 
-  if (typeof args !== 'object') {
-    return Promise.reject(new Error('参数必须传对象'))
-  }
+export let detectLoginStatus = registerEvent('detect-login-status', 'Detecting login status')
 
-  return new Promise(function(resolve, reject) {
-    ipcRenderer.on('sync-post-finish', function(e, arg) {
-      resolve(arg)
-    })
-    ipcRenderer.send('sync-post-start', args)
-  })
-}
+// 用于在webview登录后获取知乎身份信息
+export let whoAmI = registerEvent('zhihu-whoami', 'Checking zhihu identity')
 
 /**
  * 获取站点cookie
@@ -47,24 +53,5 @@ export function parseWebviewCookiesByDomain(session, domain) {
 
       resolve(cookie.join(' '))
     })
-  })
-}
-
-export function detectLoginStatus(args) {
-  console.log('Detecting login status:', args)
-  return new Promise((resolve, reject) => {
-    ipcRenderer.on('detect-login-status-finish', function(e, arg) {
-      resolve(arg)
-    })
-    ipcRenderer.send('detect-login-status-start', args)
-  })
-}
-
-export function whoAmI(args) {
-  return new Promise((resolve, reject) => {
-    ipcRenderer.on('zhihu-whoami-finish', function(e, arg) {
-      resolve(arg)
-    })
-    ipcRenderer.send('zhihu-whoami-start', args)
   })
 }

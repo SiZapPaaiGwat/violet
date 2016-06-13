@@ -53,7 +53,7 @@ ipcMain.on('sync-post-start', (event, {title = '', content = '', ...platforms}) 
     event.sender.send('sync-post-finish', zipObject(keys, result))
   }).catch(error => {
     console.log(error)
-    event.sender.send('user-action-error', {error, title: '同步失败'})
+    event.sender.send('user-action-error', {text: error.message, title: '同步失败', error})
   })
 })
 
@@ -70,7 +70,7 @@ ipcMain.on('detect-login-status-start', (event, platforms) => {
     event.sender.send('detect-login-status-finish', zipObject(keys, result))
   }).catch(error => {
     console.log(error)
-    event.sender.send('user-action-error', {error, title: '登录态异常'})
+    event.sender.send('user-action-error', {text: error.message, error, title: '登录态异常'})
   })
 })
 
@@ -81,6 +81,6 @@ ipcMain.on('zhihu-whoami-start', (event, args) => {
     event.sender.send('zhihu-whoami-finish', json)
   }).catch(error => {
     console.log(error)
-    event.sender.send('user-action-error', {error, title: '获取身份失败'})
+    event.sender.send('user-action-error', {text: error.message, error, title: '获取身份失败'})
   })
 })
