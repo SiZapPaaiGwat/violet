@@ -5,6 +5,10 @@ import {REQUEST_TIMEOUT} from '../const'
 export default class GitHubHandler extends PlatformHandler {
   static alias = 'github'
 
+  /**
+   * 这个方法用于验证当前账户信息是否有效
+   * 因为输入的是账户名密码所以没有必要获取服务端数据
+   */
   whoAmI() {
     let {username, password, repo} = this
     return new Promise((resolve, reject) => {
