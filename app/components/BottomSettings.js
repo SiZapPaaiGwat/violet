@@ -35,6 +35,7 @@ export default React.createClass({
   },
 
   renderPlatforms() {
+    let status = this.props.states.status
     return SUPPORT_PLATFORM_LIST.map(plat => {
       let platformName = plat.name
       let handleClick = () => {
