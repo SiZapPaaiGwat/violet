@@ -10,6 +10,8 @@ ipcRenderer.on('user-action-error', (e, {error, title = '未知错误'}) => {
 })
 
 export function syncPost(args) {
+  console.log('Syncing post:', args)
+
   if (typeof args !== 'object') {
     return Promise.reject(new Error('参数必须传对象'))
   }
@@ -48,6 +50,7 @@ export function parseWebviewCookiesByDomain(session, domain) {
 }
 
 export function detectLoginStatus(args) {
+  console.log('Detecting login status:', args)
   return new Promise((resolve, reject) => {
     ipcRenderer.on('detect-login-status-finish', function(e, arg) {
       resolve(arg)

@@ -16,8 +16,9 @@ export default {
   account: DataUtils.getAccountMap(),
   // 帐号登录验证状态以及底部工具条状态控制
   status: {
-    zhihu: false,
-    github: false,
+    // 这里不要写出现具体的平台名称
+    // zhihu: false,
+    // github: false,
     list: false,
     create: false,
     sync: false

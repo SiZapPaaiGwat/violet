@@ -21,7 +21,8 @@ export default React.createClass({
     // whoami 接口可能需要额外的参数
     transformCookie: PropTypes.func,
     onLoggedIn: PropTypes.func.isRequired,
-    onLoggedout: PropTypes.func
+    onLoggedout: PropTypes.func,
+    getUsername: PropTypes.func.isRequired
   },
 
   getInitialState() {
@@ -53,7 +54,6 @@ export default React.createClass({
 
   handleLogout() {
     let name = this.props.platformName
-    DataUtils.setCookiesByPlatform(name, null)
     this.setState({
       isLoggingOut: true
     }, () => {
@@ -84,13 +84,16 @@ export default React.createClass({
 
     webview.addEventListener('did-navigate', (e) => {
       if (e.url === this.props.loggedInUrl) {
+        let account
         let session = webview.getWebContents().session
         parseWebviewCookiesByDomain(session, this.props.domain)
         .then(cookie => {
-          DataUtils.setCookiesByPlatform(this.props.platformName, cookie)
-          return this.props.whoAmI(this.props.transformCookie(cookie))
+          // 需要从cookie中提取一些数据比如token
+          account = this.props.transformCookie(cookie)
+          return this.props.whoAmI(account)
         }).then(json => {
-          this.props.onLoggedIn(this.props, json)
+          Object.assign(account, json)
+          this.props.onLoggedIn(this.props, account)
         }).catch(err => {
           console.log(err)
           App.alert('登录出错', err.message)
@@ -104,11 +107,12 @@ export default React.createClass({
     let status = this.props.states.status
     let name = this.props.platformName
     if (status[name]) {
+      let username = this.props.getUsername(accountMap[name])
       return (
         <div className={styles.formContainer}>
           <h2>{this.props.platformLabel}</h2>
           <LoginStatus
-            username={accountMap[name].username}
+            username={username}
             onLogout={this.handleLogout}
           />
 

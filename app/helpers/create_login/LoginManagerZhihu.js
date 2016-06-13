@@ -17,31 +17,30 @@ function transformCookie(cookie) {
   }
 }
 
-function onZhihuLoggedIn(props, json) {
-  let hasColumns = json && json.columns.length !== 0
+function getUsername(account) {
+  return account.email
+}
+
+function onZhihuLoggedIn(props, {cookie, token, email, columns}) {
+  let account = {cookie, token, email}
+  DataUtils.updateAccount(PLATFORM_NAME, account)
   props.actions.accountUpdate({
     platform: PLATFORM_NAME,
-    value: {
-      username: json.email,
-      password: ''
-    }
+    value: account
   })
-  DataUtils.updateAccount(PLATFORM_NAME, json.email, '')
+
+  let hasColumns = columns && columns.length > 0
   props.actions.statusUpdate({
     platform: PLATFORM_NAME,
     value: {
       writable: hasColumns
     }
   })
-
-  if (!hasColumns) {
-    App.alert('未开通专栏', '请先前往 https://zhuanlan.zhihu.com/request 开通', 'warning')
-  }
 }
 
 export default function createZhihuLoginPage(props) {
   let status = props.states.status
-  let tip = !status.zhihu.writable ? (
+  let tip = status.zhihu && !status.zhihu.writable ? (
     <div>
       <em style={{color: 'red'}}>当前帐号未开通专栏，无法向此平台同步作品。请先开通专栏然后注销重新登录</em>
     </div>
@@ -59,6 +58,7 @@ export default function createZhihuLoginPage(props) {
       whoAmI={whoAmI}
       onLoggedIn={onZhihuLoggedIn}
       transformCookie={transformCookie}
+      getUsername={getUsername}
     >
       {tip}
     </LoginManager>

@@ -1,15 +1,13 @@
 import React, {PropTypes} from 'react'
-import sync from '../helpers/sync'
+import sync, {getDatabaseUpdates, getSyncablePlatforms} from '../helpers/sync'
 import styles from './PostList.css'
 import globalStyles from '../css/global.css'
-import * as DataUtils from '../helpers/client_data'
-import * as utils from '../helpers/utils'
 import * as DbUtils from '../helpers/database'
-import {ZHIHU_XSRF_TOKEN_NAME, REQUEST_TIMEOUT} from '../helpers/const'
 import Spinner from './Spinner'
 
+// FIXME 这里不要写具体的平台
 function getSyncedPlatforms(post) {
-  let platforms = ['zhihu', 'github']
+  let platforms = ['zhihu', 'github', 'medium']
   return platforms.filter(item => {
     return !!post[`${item}_id`]
   })
@@ -26,12 +24,15 @@ export default React.createClass({
    */
   syncPost(post) {
     let states = this.props.states
-    if (!states.status.zhihu && !states.status.github) {
-      if (Date.now() - App.mountTime > REQUEST_TIMEOUT) {
-        App.alert('同步失败', '请检查平台帐号配置')
-      } else {
-        App.alert('同步无法进行', '请稍等几秒后重试', 'warning')
-      }
+    if (!states.status.sync) {
+      App.alert('请稍后重试', '应用程序正在初始化...', 'warning')
+      return
+    }
+
+    // 这里的平台登录态都已经验证
+    let account = getSyncablePlatforms(states.account, states.status)
+    if (Object.keys(account).length === 0) {
+      App.alert('没有可以同步的平台', '请至少添加一个平台帐号信息')
       return
     }
 
@@ -39,47 +40,32 @@ export default React.createClass({
       id: post.id,
       isLoading: true
     })
-    let cookie = DataUtils.getCookiesByPlatform('zhihu') || ''
+
     let syncedPlatforms = []
-    let token = utils.getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
-    if (!token) {
-      console.warn('zhihu token is null, check your cookie')
-    }
 
     sync({
-      value: post.content,
-      zhihu: {
-        cookie,
-        token,
-        key: post.zhihu_id
-      },
-      github: {
-        ...states.account.github,
-        key: post.github_id
-      },
-      loginStatus: states.status
+      post,
+      account
     }).then(result => {
       // 更新记录 redux以及数据库
-      let updates = {
-        github_id: result.github,
-        zhihu_id: result.zhihu,
-        id: post.id
-      }
+      let updates = getDatabaseUpdates(post.id, result)
       this.props.actions.postsUpdate(updates)
-      syncedPlatforms = Object.keys(result).filter(plat => {
-        return !!result[plat]
-      })
+      syncedPlatforms = Object.keys(result)
       return DbUtils.updatePost(post.id, updates)
     }).then(updated => {
       let msg = `作品成功同步到${syncedPlatforms.join(', ')}等${syncedPlatforms.length}个平台`
+      this.stopLoading(post.id)
       App.alert('同步成功', msg, 'success')
-    }).then(() => {
-      this.props.actions.postsLoading({
-        id: post.id,
-        isLoading: false
-      })
     }).catch(err => {
+      this.stopLoading(post.id)
       App.alert('同步失败', err.message)
+    })
+  },
+
+  stopLoading(id) {
+    this.props.actions.postsLoading({
+      id,
+      isLoading: false
     })
   },
 
