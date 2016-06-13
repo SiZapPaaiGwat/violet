@@ -31,26 +31,3 @@ export function updateAccount(platform, account) {
 export function removeAccountByPlatform(platform) {
   localStorage.removeItem(platform)
 }
-
-export function getCookiesByPlatform(platform = 'zhihu') {
-  if (platform) {
-    let cookie = localStorage.getItem(`${platform}_cookie`)
-    if (!cookie) return null
-
-    try {
-      return decrypt(cookie)
-    } catch (err) {
-      localStorage.removeItem(`${platform}_cookie`)
-    }
-  }
-
-  return null
-}
-
-export function setCookiesByPlatform(platform, cookie) {
-  if (platform && cookie) {
-    localStorage.setItem(`${platform}_cookie`, encrypt(cookie))
-  } else {
-    localStorage.removeItem(`${platform}_cookie`)
-  }
-}
