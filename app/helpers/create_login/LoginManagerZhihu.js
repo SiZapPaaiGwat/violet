@@ -4,11 +4,12 @@ import * as DataUtils from '../client_data'
 import {getCookieByName} from '../utils'
 import {whoAmI} from '../../../electron/ipc_render'
 import {
-  ZHUANLAN_URL, LOGIN_URL, LOGOUT_URL, ZHIHU_DOMAIN, ZHIHU_XSRF_TOKEN_NAME
+  ZHUANLAN_URL, LOGIN_URL, LOGOUT_URL, ZHIHU_DOMAIN, ZHIHU_XSRF_TOKEN_NAME,
+  SUPPORT_PLATFORM_MAP
 } from '../../helpers/const'
 
-const PLATFORM_NAME = 'zhihu'
-const PLATFORM_LABEL = '知乎'
+const PLATFORM_NAME = SUPPORT_PLATFORM_MAP.zhihu.name
+const PLATFORM_LABEL = SUPPORT_PLATFORM_MAP.zhihu.label
 
 function transformCookie(cookie) {
   return {
@@ -40,7 +41,7 @@ function onZhihuLoggedIn(props, {cookie, token, email, columns}) {
 
 export default function createZhihuLoginPage(props) {
   let status = props.states.status
-  let tip = status.zhihu && !status.zhihu.writable ? (
+  let tip = status[PLATFORM_NAME] && !status[PLATFORM_NAME].writable ? (
     <div>
       <em style={{color: 'red'}}>当前帐号未开通专栏，无法向此平台同步作品。请先开通专栏然后注销重新登录</em>
     </div>

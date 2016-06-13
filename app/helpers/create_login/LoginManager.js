@@ -63,7 +63,7 @@ export default React.createClass({
           platform: name,
           value: false
         })
-        DataUtils.removeAccountByPlatform('zhihu')
+        DataUtils.removeAccountByPlatform(name)
         if (this.props.onLoggedout) {
           this.props.onLoggedout(this.props)
         }

@@ -4,11 +4,10 @@ import styles from './PostList.css'
 import globalStyles from '../css/global.css'
 import * as DbUtils from '../helpers/database'
 import Spinner from './Spinner'
+import {SYNC_PLATFORMS} from '../helpers/const'
 
-// FIXME 这里不要写具体的平台
 function getSyncedPlatforms(post) {
-  let platforms = ['zhihu', 'github', 'medium']
-  return platforms.filter(item => {
+  return SYNC_PLATFORMS.filter(item => {
     return !!post[`${item}_id`]
   })
 }

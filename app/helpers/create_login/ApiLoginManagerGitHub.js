@@ -1,9 +1,10 @@
 import React from 'react'
 import ApiLoginManager from './ApiLoginManager'
 import * as DataUtils from '../client_data'
+import {SUPPORT_PLATFORM_MAP} from '../../helpers/const'
 
-const PLATFORM_NAME = 'github'
-const PLATFORM_LABEL = 'GitHub'
+const PLATFORM_NAME = SUPPORT_PLATFORM_MAP.github.name
+const PLATFORM_LABEL = SUPPORT_PLATFORM_MAP.github.label
 
 function updateAccount(name, formData, serverJson) {
   DataUtils.updateAccount(name, formData)

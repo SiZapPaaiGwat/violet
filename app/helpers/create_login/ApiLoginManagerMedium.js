@@ -1,9 +1,10 @@
 import React from 'react'
 import ApiLoginManager from './ApiLoginManager'
 import * as DataUtils from '../client_data'
+import {SUPPORT_PLATFORM_MAP} from '../../helpers/const'
 
-const PLATFORM_NAME = 'medium'
-const PLATFORM_LABEL = 'Medium'
+const PLATFORM_NAME = SUPPORT_PLATFORM_MAP.medium.name
+const PLATFORM_LABEL = SUPPORT_PLATFORM_MAP.medium.label
 
 function updateAccount(name, clientData, serverData) {
   let account = Object.assign({}, clientData, serverData.data)
