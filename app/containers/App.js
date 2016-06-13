@@ -4,8 +4,6 @@ import BottomSettings from '../components/BottomSettings'
 import MarkdownArea from '../components/MarkdownArea'
 import * as DbUtils from '../helpers/database'
 import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
-import {getLoginStatus} from '../helpers/sync'
-import {detectLoginStatus} from '../../electron/ipc_render'
 import createLoginPage from '../helpers/create_login/CreateLogin'
 import Alert from 'sweetalert2'
 
@@ -43,27 +41,20 @@ export default React.createClass({
   },
 
   loadLoginStatus() {
-    let account = this.props.states.account
-    if (Object.keys(account).length === 0) {
-      this.enableSync()
-      return
-    }
-
-    detectLoginStatus(account).then(result => {
-      let status = getLoginStatus(result)
-      Object.keys(result).forEach(platform => {
-        this.props.actions.statusUpdate({
-          platform,
-          value: status[platform]
-        })
+    let account = this.props.states.account || {}
+    /**
+     * NOTE
+     * 启动时不验证上次登录是否有效，直接认定为已经登录
+     * 用户同步时跟据同步结果直接反馈信息
+     */
+    Object.keys(account).forEach(platform => {
+      this.props.actions.statusUpdate({
+        platform,
+        value: true
       })
-
-      // 现在可以同步了
-      this.enableSync()
-    }).catch(err => {
-      console.log(err)
-      App.alert('获取帐号信息出错', err.message)
     })
+
+    this.enableSync()
   },
 
   loadPostList() {
