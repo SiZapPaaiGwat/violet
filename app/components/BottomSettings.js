@@ -3,8 +3,10 @@ import * as DbUtils from '../helpers/database'
 import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
 import styles from './BottomSettings.css'
 import globalStyles from '../css/global.css'
+// TODO move to const config
 import zhihuIcon from '../imgs/zhihu.ico'
 import githubIcon from '../imgs/github.ico'
+import mediumIcon from '../imgs/medium.ico'
 
 export default React.createClass({
   propTypes: {
@@ -84,7 +86,7 @@ export default React.createClass({
             title={!status.medium ? '设置Medium帐号' : account.medium.username}
             className={status.medium ? '' : styles.disabled}
           >
-            <img src={githubIcon} alt="medium" className={styles.img} />
+            <img src={mediumIcon} alt="medium" className={styles.img} />
           </a>
         </div>
 

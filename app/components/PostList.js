@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react'
-import sync, {getDatabaseUpdates, getSyncablePlatforms} from '../helpers/sync'
+import {syncPostByAccounts, getDatabaseUpdates, getSyncablePlatforms} from '../helpers/sync'
 import styles from './PostList.css'
 import globalStyles from '../css/global.css'
 import * as DbUtils from '../helpers/database'
@@ -30,9 +30,9 @@ export default React.createClass({
     }
 
     // 这里的平台登录态都已经验证
-    let account = getSyncablePlatforms(states.account, states.status)
+    let account = getSyncablePlatforms(states.account, states.status, post)
     if (Object.keys(account).length === 0) {
-      App.alert('没有可以同步的平台', '请至少添加一个平台帐号信息')
+      App.alert('没有可以同步的平台', '请至少添加一个平台帐号信息（Medium平台暂不支持编辑）')
       return
     }
 
@@ -43,7 +43,7 @@ export default React.createClass({
 
     let syncedPlatforms = []
 
-    sync({
+    syncPostByAccounts({
       post,
       account
     }).then(result => {

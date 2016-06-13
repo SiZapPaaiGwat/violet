@@ -11,7 +11,7 @@ function updateAccount(name, clientData, serverData) {
   return account
 }
 
-function transfromUsername(account) {
+function getUsername(account) {
   return `${account.username}`
 }
 
@@ -28,7 +28,7 @@ export default function(props) {
       name: 'proxy',
       type: 'text',
       label: '代理地址',
-      placeholder: '支持Shadowsocks代理，格式：socks://127.0.0.1:1080',
+      placeholder: '支持常用的HTTP代理以及Shadowsocks代理，格式：socks://127.0.0.1:1080',
       required: true,
       value: 'socks://127.0.0.1:1080'
     }
@@ -40,7 +40,7 @@ export default function(props) {
       platformName={PLATFORM_NAME}
       platformLabel={PLATFORM_LABEL}
       updateAccount={updateAccount}
-      transfromUsername={transfromUsername}
+      getUsername={getUsername}
     />
   )
 }

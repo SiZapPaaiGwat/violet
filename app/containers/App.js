@@ -24,6 +24,9 @@ export default React.createClass({
 
       return Alert(title)
     }
+    App.stopAllLoading = () => {
+      // TODO
+    }
     App.mountTime = Date.now()
 
     this.loadLoginStatus()

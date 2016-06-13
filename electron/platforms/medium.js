@@ -32,8 +32,8 @@ export default class MediumHandler extends PlatformHandler {
   }
 
   publish() {
-    let {accessToken, title, content, key, proxy, userId} = this
-    if (!accessToken || !title || !userId) {
+    let {accessToken, title, content, key, proxy, id} = this
+    if (!accessToken || !title || !id) {
       return Promise.resolve(null)
     }
 
@@ -43,7 +43,7 @@ export default class MediumHandler extends PlatformHandler {
     }
 
     return request({
-      url: `https://api.medium.com/v1/users/${userId}/posts`,
+      url: `https://api.medium.com/v1/users/${id}/posts`,
       method: 'post',
       headers: {
         Accept: 'application/json',
@@ -54,8 +54,9 @@ export default class MediumHandler extends PlatformHandler {
         title,
         content,
         contentFormat: 'markdown',
-        tags: [],
-        publishStatus: 'publish'
+        tags: []
+        // NOTE 这里不能填public，不然服务端400。不填表示public，WTF！
+        // publishStatus: 'draft'
       },
       proxy
     }).then(json => {

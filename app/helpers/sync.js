@@ -6,7 +6,7 @@ import {syncPost} from '../../electron/ipc_render'
  * 同步作品
  * 只同步登录态已经验证的平台
  */
-export default function({account, post}) {
+export function syncPostByAccounts({account, post}) {
   let args = Object.assign({
     title: utils.getMarkdownTitle(post.content),
     content: utils.normalizeMarkdownContent(post.content)
@@ -27,8 +27,6 @@ export default function({account, post}) {
   if (Object.keys(args).length === 2) {
     return Promise.reject(new Error('没有设置任何写作平台的帐号信息'))
   }
-
-  console.log('同步作品：', args)
 
   return syncPost(args)
 }
@@ -71,10 +69,15 @@ export function getLoginStatus(json) {
 /**
  * 获取可以同步的平台
  */
-export function getSyncablePlatforms(account, status) {
+export function getSyncablePlatforms(account, status, post) {
   let result = {}
   for (let key in account) {
     if (status[key]) {
+      // medium不支持编辑
+      if (key === 'medium' && post.medium_id) {
+        continue
+      }
+
       result[key] = account[key]
     }
   }

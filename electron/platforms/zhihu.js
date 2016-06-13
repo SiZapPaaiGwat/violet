@@ -1,3 +1,4 @@
+import marked from 'marked'
 import request from '../request'
 import PlatformHandler from './handler'
 import {ZHIHU_XSRF_TOKEN_NAME} from '../../app/helpers/const'
@@ -135,6 +136,8 @@ export default class ZhihuHandler extends PlatformHandler {
     if (!cookie || !token || !title) {
       return Promise.resolve(null)
     }
+
+    content = marked(content).trim()
 
     let task = key ?
       updatePostContent({cookie, token, title, content, key}) :
