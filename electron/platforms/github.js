@@ -1,6 +1,6 @@
 import GitHubAPI from 'github'
 import PlatformHandler from './handler'
-import {REQUEST_TIMEOUT} from '../../app/helpers/const'
+import {REQUEST_TIMEOUT} from '../const'
 
 export default class GitHubHandler extends PlatformHandler {
   static alias = 'github'

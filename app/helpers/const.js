@@ -1,34 +1,37 @@
-export let SYNC_PLATFORMS = ['zhihu', 'github', 'medium', 'jianshu']
+import zhihuIcon from '../imgs/zhihu.ico'
+import githubIcon from '../imgs/github.ico'
+import mediumIcon from '../imgs/medium.ico'
+import * as CONST from '../../electron/const'
 
-// TODO 这里需要换成数组优化
-export let PLATFORM_INFO = {
+export let SUPPORT_PLATFORM_MAP = {
   zhihu: {
-    name: '知乎',
-    site: 'https://www.zhihu.com/',
-    icon: 'https://static.zhihu.com/static/favicon.ico'
-  },
-  github: {
-    name: 'GitHub',
-    site: 'https://github.com/',
-    icon: 'https://assets-cdn.github.com/favicon.ico'
+    name: 'zhihu',
+    label: '知乎',
+    icon: zhihuIcon
   },
   medium: {
-    name: 'Medium',
-    site: 'https://www.zhihu.com/',
-    icon: 'https://static.zhihu.com/static/favicon.ico'
+    name: 'medium',
+    label: 'Medium',
+    icon: mediumIcon
   },
-  jianshu: {
-    name: '简书',
-    site: 'https://github.com/',
-    icon: 'https://assets-cdn.github.com/favicon.ico'
+  github: {
+    name: 'github',
+    label: 'GitHub',
+    icon: githubIcon
   }
 }
+
+export const SYNC_PLATFORMS = Object.keys(SUPPORT_PLATFORM_MAP)
+
+export const SUPPORT_PLATFORM_LIST = SYNC_PLATFORMS.map(key => {
+  return SUPPORT_PLATFORM_MAP[key]
+})
 
 export const DEFAULT_TITLE = '无标题文档'
 
 export const DEFAULT_CONTENT = '# 无标题文档 \n\n开动起来吧...'
 
-export const ZHIHU_XSRF_TOKEN_NAME = 'XSRF-TOKEN'
+export const ZHIHU_XSRF_TOKEN_NAME = CONST.ZHIHU_XSRF_TOKEN_NAME
 
 export const ZHUANLAN_URL = 'https://zhuanlan.zhihu.com/'
 
@@ -42,4 +45,4 @@ export const AUTO_SAVING_STORE_PERIOD = 250
 
 export const AUTO_SAVING_DATABASE_PERIOD = 3000
 
-export const REQUEST_TIMEOUT = 15000
+export const REQUEST_TIMEOUT = CONST.REQUEST_TIMEOUT

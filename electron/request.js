@@ -1,6 +1,6 @@
 import request from 'superagent'
 import proxilize from 'superagent-proxy'
-import {REQUEST_TIMEOUT} from '../app/helpers/const'
+import {REQUEST_TIMEOUT} from './const'
 
 proxilize(request)
 

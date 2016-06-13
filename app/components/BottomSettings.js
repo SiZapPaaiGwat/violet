@@ -1,12 +1,8 @@
 import React, {PropTypes} from 'react'
 import * as DbUtils from '../helpers/database'
-import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
+import {DEFAULT_TITLE, DEFAULT_CONTENT, SUPPORT_PLATFORM_LIST} from '../helpers/const'
 import styles from './BottomSettings.css'
 import globalStyles from '../css/global.css'
-// TODO move to const config
-import zhihuIcon from '../imgs/zhihu.ico'
-import githubIcon from '../imgs/github.ico'
-import mediumIcon from '../imgs/medium.ico'
 
 export default React.createClass({
   propTypes: {
@@ -38,56 +34,36 @@ export default React.createClass({
     })
   },
 
-  showZhihu() {
-    if (this.props.states.settings.name !== 'zhihu') {
-      this.props.actions.settingsShow({name: 'zhihu'})
-    }
-  },
+  renderPlatforms() {
+    return SUPPORT_PLATFORM_LIST.map(plat => {
+      let platformName = plat.name
+      let handleClick = () => {
+        if (this.props.states.settings.name !== platformName) {
+          this.props.actions.settingsShow({name: platformName})
+        }
+      }
 
-  showGitHub() {
-    if (this.props.states.settings.name !== 'github') {
-      this.props.actions.settingsShow({name: 'github'})
-    }
-  },
-
-  showMedium() {
-    if (this.props.states.settings.name !== 'medium') {
-      this.props.actions.settingsShow({name: 'medium'})
-    }
+      return (
+        <a
+          href="javascript:;"
+          key={platformName}
+          onClick={handleClick}
+          title={plat.label}
+          className={status[platformName] ? '' : styles.disabled}
+          disabled={!status[platformName]}
+        >
+          <img src={plat.icon} alt={plat.name} className={styles.img} />
+        </a>
+      )
+    })
   },
 
   render() {
     let status = this.props.states.status
-    let account = this.props.states.account
     return (
       <div className={styles.bottomSettingsContainer}>
         <div style={{cssFloat: 'left'}}>
-          <a
-            href="javascript:;"
-            onClick={this.showZhihu}
-            title={!status.zhihu ? '设置知乎帐号' : account.zhihu.username}
-            className={status.zhihu ? '' : styles.disabled}
-            disabled={!status.zhihu}
-          >
-            <img src={zhihuIcon} alt="zhihu" className={styles.img} />
-          </a>
-          <a
-            href="javascript:;"
-            onClick={this.showGitHub}
-            title={!status.github ? '设置GitHub帐号' : account.github.username}
-            className={status.github ? '' : styles.disabled}
-          >
-            <img src={githubIcon} alt="github" className={styles.img} />
-          </a>
-
-          <a
-            href="javascript:;"
-            onClick={this.showMedium}
-            title={!status.medium ? '设置Medium帐号' : account.medium.username}
-            className={status.medium ? '' : styles.disabled}
-          >
-            <img src={mediumIcon} alt="medium" className={styles.img} />
-          </a>
+          {this.renderPlatforms()}
         </div>
 
         <div style={{cssFloat: 'right'}}>

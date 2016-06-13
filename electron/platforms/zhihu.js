@@ -1,7 +1,7 @@
 import marked from 'marked'
 import request from '../request'
 import PlatformHandler from './handler'
-import {ZHIHU_XSRF_TOKEN_NAME} from '../../app/helpers/const'
+import {ZHIHU_XSRF_TOKEN_NAME} from '../const'
 // import {getCookieByName, cookieTokenUtil} from '../../app/helpers/utils'
 
 function httpRequest({url, method = 'post', cookie, token, formData}) {
