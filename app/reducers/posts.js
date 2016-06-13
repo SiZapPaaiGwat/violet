@@ -50,14 +50,15 @@ export default function(state = State.posts, action) {
   }
 
   if (action.type === 'set_post_loading_status') {
+    // id不传停止所有的loading
     let {id, isLoading} = action.payload
     let loadingStatus = state.loadingStatus
     return {
       ...state,
-      loadingStatus: {
+      loadingStatus: id ? {
         ...loadingStatus,
         [id]: isLoading
-      }
+      } : {}
     }
   }
 

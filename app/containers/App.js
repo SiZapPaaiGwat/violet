@@ -24,8 +24,10 @@ export default React.createClass({
 
       return Alert(title)
     }
-    App.stopAllLoading = () => {
-      // TODO
+    App.stopLoading = () => {
+      this.props.actions.postsLoading({
+        isLoading: false
+      })
     }
     App.mountTime = Date.now()
 
