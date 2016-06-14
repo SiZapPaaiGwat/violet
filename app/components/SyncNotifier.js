@@ -13,6 +13,7 @@ const SYNC_TASK_STATUS_MAP = {
 export default React.createClass({
   propTypes: {
     children: PropTypes.any,
+    actions: PropTypes.object.isRequired,
     tasks: PropTypes.array.isRequired
   },
 
@@ -26,6 +27,11 @@ export default React.createClass({
     this.setState({
       minimized: !this.state.minimized
     })
+  },
+
+  handleClose(e) {
+    e.stopPropagation()
+    this.props.actions.notifierSet([])
   },
 
   renderList() {
@@ -58,6 +64,13 @@ export default React.createClass({
     let finished = tasks.filter(task => {
       return task.status === 'success'
     })
+    let isJobDone = !tasks.some(task => {
+      return task.status === 'waiting'
+    })
+    let closeBtn = isJobDone && (
+      <a href="javascript:;" className={styles.close} onClick={this.handleClose}>关闭</a>
+    )
+
     return (
       <div className={`${styles.container} ${this.state.minimized ? styles.minimized : ''}`}>
         <div className={`${styles.taskWrapper} ${this.state.minimized ? styles.minimized : ''}`}>
@@ -67,12 +80,15 @@ export default React.createClass({
               onClick={this.hanldeMinimize}
               title="点击展开/折叠当前面板"
             >
+              {closeBtn}
+
               <h2>
                 作品同步进度
                 <small className={styles.taskReport}>
                   <span className={styles.taskRemain}>{finished.length}</span> / {tasks.length}
                 </small>
               </h2>
+
             </div>
             {!this.state.minimized && (
               <ul className={styles.taskList}>

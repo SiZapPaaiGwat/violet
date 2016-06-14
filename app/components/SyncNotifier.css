@@ -33,6 +33,10 @@
   font-weight: normal;
 }
 
+.close {
+  float: right;
+}
+
 .taskReport {
   font-size: 0.9em;
   color: #8d8d8d;
