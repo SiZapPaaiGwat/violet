@@ -20,7 +20,9 @@ export let SUPPORT_PLATFORM_MAP = {
 
 export const SYNC_PLATFORMS = CONST.SYNC_PLATFORMS
 
-export const SUPPORT_PLATFORM_LIST = CONST.SUPPORT_PLATFORM_LIST
+export const SUPPORT_PLATFORM_LIST = SYNC_PLATFORMS.map(key => {
+  return SUPPORT_PLATFORM_MAP[key]
+})
 
 export const DEFAULT_TITLE = '无标题文档'
 
