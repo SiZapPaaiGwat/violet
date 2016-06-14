@@ -1,12 +1,18 @@
 import _ from 'lodash'
 import * as utils from './utils'
-import {syncPost} from '../../electron/ipc_render'
+import {SUPPORT_PLATFORM_MAP} from './const'
+import {SyncFactory} from '../../electron/ipc_render'
 
 /**
  * 同步作品
  * 只同步登录态已经验证的平台
  */
-export function syncPostByAccounts({account, post}) {
+export function syncPostByAccount({account, post}) {
+  if (Object.keys(account).length !== 1) {
+    console.error(account)
+    throw new Error('一次只能同步一个平台的数据')
+  }
+
   let args = Object.assign({
     title: utils.getMarkdownTitle(post.content),
     content: utils.normalizeMarkdownContent(post.content)
@@ -28,7 +34,9 @@ export function syncPostByAccounts({account, post}) {
     return Promise.reject(new Error('没有设置任何写作平台的帐号信息'))
   }
 
-  return syncPost(args)
+  let platform = Object.keys(account)[0]
+
+  return SyncFactory[platform](args)
 }
 
 /**
@@ -73,14 +81,45 @@ export function getSyncablePlatforms(account, status, post) {
   let result = {}
   for (let key in account) {
     if (status[key]) {
-      // medium不支持编辑
-      if (key === 'medium' && post.medium_id) {
-        continue
-      }
-
       result[key] = account[key]
     }
   }
 
   return result
+}
+
+/**
+ * 检查是否有同步任务正在进行
+ */
+export function isNotifierRunning(tasks) {
+  return tasks.some(task => {
+    return task.status === 'waiting'
+  })
+}
+
+export function getNotifierInitialTasks(account) {
+  return Object.keys(account).map(key => {
+    return {
+      name: key,
+      label: SUPPORT_PLATFORM_MAP[key].label,
+      status: 'waiting'
+    }
+  })
+}
+
+export function syncPostWithNotifier({account, post, onSuccess, onError}) {
+  for (let platform in account) {
+    syncPostByAccount({
+      post,
+      account: {
+        [platform]: account[platform]
+      }
+    })
+    .then(function(result) {
+      onSuccess(result, platform)
+    })
+    .catch(function(err) {
+      onError(err, platform)
+    })
+  }
 }

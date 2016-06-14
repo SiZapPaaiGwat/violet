@@ -94,23 +94,26 @@ export default React.createClass({
   },
 
   render() {
-    let devTools
-    if (process.env.NODE_ENV !== 'production') {
-      // import 有提升的副作用，这里需要在需要时引入
-      const DevTools = require('./DevTools')
-      devTools = <DevTools />
-    }
+    // let devTools
+    // if (process.env.NODE_ENV !== 'production') {
+    //   // import 有提升的副作用，这里需要在需要时引入
+    //   const DevTools = require('./DevTools')
+    //   devTools = <DevTools />
+    // }
 
     let states = this.props.states
     let DynamicComponent = createLoginPage(states.settings.name) || MarkdownArea
+    let notifier = states.notifier
 
     return (
       <div>
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
         <DynamicComponent {...this.props} />
-        <SyncNotifier />
-        {//devTools
+        {notifier.length && <SyncNotifier tasks={notifier} />}
+
+        {
+          //devTools
         }
       </div>
     )

@@ -15,7 +15,11 @@ export default class PlatformHandler {
 
   static map(items = Object.keys(subClassLinkMap)) {
     return items.map(name => {
-      return subClassLinkMap[name] || PlatformHandler
+      if (!subClassLinkMap[name]) {
+        throw new Error(`PlatformHandler.map faild for alias ${name}`)
+      }
+
+      return subClassLinkMap[name]
     })
   }
 

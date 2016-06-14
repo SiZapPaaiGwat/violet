@@ -1,4 +1,6 @@
 import {ipcRenderer} from 'electron'
+import _ from 'lodash'
+import {SYNC_PLATFORMS} from './const'
 
 function registerEvent(name, details) {
   return function(args) {
@@ -12,19 +14,23 @@ function registerEvent(name, details) {
       ipcRenderer.on(`${name}-finish`, function(e, arg) {
         resolve(arg)
       })
+      ipcRenderer.on(`${name}-error`, function(e, arg) {
+        reject(arg)
+      })
       ipcRenderer.send(`${name}-start`, args)
     })
   }
 }
 
-ipcRenderer.on('user-action-error', (e, {text, title = '未知错误', error}) => {
-  console.log('#Main process error')
-  console.error(error)
-  App.alert(title, error.status === 404 ? '可能作品已经删除' : text)
-  App.stopLoading()
-})
-
-export let syncPost = registerEvent('sync-post', 'Syncing post')
+/**
+ * NOTE
+ * 这里需要针对每个平台绑定一次事件
+ * electron ipcMain的事件机制决定
+ * 如果共用一个事件，一个请求失败其它都失败
+ */
+export let SyncFactory = _.zipObject(SYNC_PLATFORMS, SYNC_PLATFORMS.map(key => {
+  return registerEvent(`sync-post-${key}`, 'Syncing post for ${key}')
+}))
 
 export let detectLoginStatus = registerEvent('detect-login-status', 'Detecting login status')
 

@@ -1,10 +1,13 @@
 import React, {PropTypes} from 'react'
-import {syncPostByAccounts, getDatabaseUpdates, getSyncablePlatforms} from '../helpers/sync'
+import {
+  getDatabaseUpdates, getSyncablePlatforms,
+  getNotifierInitialTasks, syncPostWithNotifier, isNotifierRunning
+} from '../helpers/sync'
 import styles from './PostList.css'
 import globalStyles from '../css/global.css'
 import * as DbUtils from '../helpers/database'
 import Spinner from './Spinner'
-import {SYNC_PLATFORMS} from '../helpers/const'
+import {SYNC_PLATFORMS, SUPPORT_PLATFORM_MAP} from '../helpers/const'
 
 function getSyncedPlatforms(post) {
   return SYNC_PLATFORMS.filter(item => {
@@ -35,29 +38,43 @@ export default React.createClass({
       return
     }
 
+    if (isNotifierRunning(states.notifier)) {
+      App.alert('同步任务正在进行', '请等待此任务完成后再尝试')
+      return
+    }
+
     this.props.actions.postsLoading({
       id: post.id,
       isLoading: true
     })
 
-    let syncedPlatforms = []
+    this.props.actions.notifierSet(getNotifierInitialTasks(account))
 
-    syncPostByAccounts({
+    syncPostWithNotifier({
+      account,
       post,
-      account
-    }).then(result => {
-      // 更新记录 redux以及数据库
-      let updates = getDatabaseUpdates(post.id, result)
-      this.props.actions.postsUpdate(updates)
-      syncedPlatforms = Object.keys(result)
-      return DbUtils.updatePost(post.id, updates)
-    }).then(updated => {
-      let msg = `作品成功同步到${syncedPlatforms.join(', ')}等${syncedPlatforms.length}个平台`
-      this.stopLoading(post.id)
-      App.alert('同步成功', msg, 'success')
-    }).catch(err => {
-      this.stopLoading(post.id)
-      App.alert('同步失败', err.message)
+      onSuccess: (result, platform) => {
+        this.stopLoading(post.id)
+        this.props.actions.notifierUpdate({
+          name: platform,
+          label: SUPPORT_PLATFORM_MAP[platform].label,
+          status: 'success'
+        })
+
+        let updates = getDatabaseUpdates(post.id, result)
+        this.props.actions.postsUpdate(updates)
+        return DbUtils.updatePost(post.id, updates)
+      },
+      onError: (err, platform) => {
+        this.stopLoading(post.id)
+        let status = err.status ? `(HTTP status: ${err.status})` : ''
+        this.props.actions.notifierUpdate({
+          name: platform,
+          label: SUPPORT_PLATFORM_MAP[platform].label,
+          status: 'failed',
+          details: `${err.message} ${status}`
+        })
+      }
     })
   },
 

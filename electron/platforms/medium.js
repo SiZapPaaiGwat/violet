@@ -39,7 +39,7 @@ export default class MediumHandler extends PlatformHandler {
 
     if (key) {
       // medium api 暂时不支持编辑，web页面请求参数比较变态
-      return Promise.resolve(null)
+      return Promise.reject(new Error('Medium平台作品暂时不支持编辑'))
     }
 
     return request({

@@ -3,12 +3,14 @@ import * as settings from './settings'
 import * as posts from './posts'
 import * as account from './account'
 import * as status from './status'
+import * as notifier from './notifier'
 
 const actions = {
   settings,
   posts,
   account,
-  status
+  status,
+  notifier
 }
 
 function convert(actionCreators) {

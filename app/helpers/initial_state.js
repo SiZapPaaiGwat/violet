@@ -22,5 +22,7 @@ export default {
     list: false,
     create: false,
     sync: false
-  }
+  },
+  // 作品同步进度通知队列
+  notifier: []
 }

@@ -115,6 +115,21 @@ export default class ZhihuHandler extends PlatformHandler {
       return Promise.resolve(null)
     }
 
+    /**
+     * 发布文章到各个写作平台
+    知乎参考格式
+    <b>加粗</b><p><i>斜体</i></p><p><u>下划线</u></p><h2>标题</h2>
+    <blockquote>引用</blockquote><p></p>
+    <ol><li><span style=\"line-height: 1.7;\">1</span><br></li>
+    <li><span style=\"line-height: 1.7;\">2</span><br></li>
+    <li><span style=\"line-height: 1.7;\">3</span><br></li>
+    </ol><p></p>
+    <ul><li><span style=\"line-height: 1.7;\">ol</span><br></li>
+    <li><span style=\"line-height: 1.7;\">ol</span><br></li>
+    <li><span style=\"line-height: 1.7;\">ol</span></li>
+    </ul><br><p></p><br><p></p>
+    <pre lang=\"\">var a = 1;\nfunction A() {\n    console.log(123)\n}\n</pre><p></p>
+     */
     content = marked(content).trim()
 
     let task = key ?

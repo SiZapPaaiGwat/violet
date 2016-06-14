@@ -5,27 +5,22 @@ import * as CONST from '../../electron/const'
 
 export let SUPPORT_PLATFORM_MAP = {
   zhihu: {
-    name: 'zhihu',
-    label: '知乎',
+    ...CONST.SUPPORT_PLATFORM_MAP.zhihu,
     icon: zhihuIcon
   },
   medium: {
-    name: 'medium',
-    label: 'Medium',
+    ...CONST.SUPPORT_PLATFORM_MAP.medium,
     icon: mediumIcon
   },
   github: {
-    name: 'github',
-    label: 'GitHub',
+    ...CONST.SUPPORT_PLATFORM_MAP.github,
     icon: githubIcon
   }
 }
 
-export const SYNC_PLATFORMS = Object.keys(SUPPORT_PLATFORM_MAP)
+export const SYNC_PLATFORMS = CONST.SYNC_PLATFORMS
 
-export const SUPPORT_PLATFORM_LIST = SYNC_PLATFORMS.map(key => {
-  return SUPPORT_PLATFORM_MAP[key]
-})
+export const SUPPORT_PLATFORM_LIST = CONST.SUPPORT_PLATFORM_LIST
 
 export const DEFAULT_TITLE = '无标题文档'
 

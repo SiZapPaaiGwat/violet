@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import styles from './SyncNotifier.css'
 
 const SYNC_TASK_STATUS_MAP = {
-  waiting: '等待中',
+  waiting: '同步中',
   failed: '已失败',
   success: '已成功'
 }
@@ -19,29 +19,6 @@ export default React.createClass({
   getInitialState() {
     return {
       minimized: false
-    }
-  },
-
-  getDefaultProps() {
-    return {
-      tasks: [
-        {
-          name: 'medium',
-          label: 'Medium',
-          status: 'waiting'
-        },
-        {
-          name: 'github',
-          label: 'GitHub',
-          status: 'failed',
-          details: '身份验证失败'
-        },
-        {
-          name: 'zhihu',
-          label: '知乎',
-          status: 'success'
-        }
-      ]
     }
   },
 
@@ -77,6 +54,10 @@ export default React.createClass({
   },
 
   render() {
+    let tasks = this.props.tasks
+    let finished = tasks.filter(task => {
+      return task.status === 'success'
+    })
     return (
       <div className={`${styles.container} ${this.state.minimized ? styles.minimized : ''}`}>
         <div className={`${styles.taskWrapper} ${this.state.minimized ? styles.minimized : ''}`}>
@@ -89,7 +70,7 @@ export default React.createClass({
               <h2>
                 作品同步进度
                 <small className={styles.taskReport}>
-                  <span className={styles.taskRemain}>1</span> / 3
+                  <span className={styles.taskRemain}>{finished.length}</span> / {tasks.length}
                 </small>
               </h2>
             </div>

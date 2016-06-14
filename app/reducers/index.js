@@ -4,13 +4,15 @@ import settings from './settings'
 import posts from './posts'
 import account from './account'
 import status from './status'
+import notifier from './notifier'
 
 const rootReducer = combineReducers({
   settings,
   posts,
   routing,
   account,
-  status
+  status,
+  notifier
 })
 
 export default rootReducer

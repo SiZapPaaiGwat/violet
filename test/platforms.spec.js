@@ -49,7 +49,9 @@ describe('PlatformHandler', function() {
     expect(PlatformHandler.map(['medium'])[0]).to.equal(MediumHandler)
   })
 
-  it('should link to default handler when alias is not registered', function() {
-    expect(PlatformHandler.map(['jianshu'])[0]).to.equal(PlatformHandler)
+  it('should throw an error when alias is not registered', function() {
+    expect(function() {
+      PlatformHandler.map(['jianshu'])
+    }).to.throw(Error)
   })
 })
