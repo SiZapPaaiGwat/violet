@@ -5,11 +5,20 @@ export let SUPPORT_PLATFORM_MAP = {
   },
   medium: {
     name: 'medium',
-    label: 'Medium'
+    label: 'Medium',
   },
   github: {
     name: 'github',
     label: 'GitHub'
+  },
+  jianshu: {
+    name: 'jianshu',
+    label: '简书',
+    loginUrl: 'http://www.jianshu.com/sign_in',
+    logoutUrl: 'http://www.jianshu.com/sign_out',
+    loggedInUrl: 'http://www.jianshu.com/',
+    domain: 'jianshu.com',
+    csrfTokenName: 'X-CSRF-Token'
   }
 }
 
