@@ -33,7 +33,8 @@ export default React.createClass({
 
     // 这里的平台登录态都已经验证
     let account = getSyncablePlatforms(states.account, states.status, post)
-    if (Object.keys(account).length === 0) {
+    let taskNum = Object.keys(account).length
+    if (taskNum === 0) {
       App.alert('没有可以同步的平台', '请至少添加一个平台帐号信息（Medium平台暂不支持编辑）')
       return
     }
@@ -50,11 +51,15 @@ export default React.createClass({
 
     this.props.actions.notifierSet(getNotifierInitialTasks(account))
 
+    let taskDone = 0
     syncPostWithNotifier({
       account,
       post,
       onSuccess: (result, platform) => {
-        this.stopLoading(post.id)
+        taskDone += 1
+        if (taskNum === taskDone) {
+          this.stopLoading(post.id)
+        }
         this.props.actions.notifierUpdate({
           name: platform,
           label: SUPPORT_PLATFORM_MAP[platform].label,
@@ -66,7 +71,10 @@ export default React.createClass({
         return DbUtils.updatePost(post.id, updates)
       },
       onError: (err, platform) => {
-        this.stopLoading(post.id)
+        taskDone += 1
+        if (taskNum === taskDone) {
+          this.stopLoading(post.id)
+        }
         let status = err.status ? `(HTTP status: ${err.status})` : ''
         this.props.actions.notifierUpdate({
           name: platform,
