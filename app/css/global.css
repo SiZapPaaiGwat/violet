@@ -1,3 +1,5 @@
+@import "../css/var.css";
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -22,8 +24,12 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
+html {
+	background-color: var(--baseBgColor);
+}
 body {
 	line-height: 1;
+  color: var(--baseTextColor);
 }
 ol, ul {
 	list-style: none;
@@ -74,10 +80,6 @@ a {
 .icon-eye:before { content: "\e640"; }
 .icon-download:before { content: "\e638"; }
 .icon-heart:before { content: "\e64b"; }
-
-html {
-	background-color: #fefefe;
-}
 
 .clearfix {
   overflow: auto;

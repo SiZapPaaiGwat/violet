@@ -7,3 +7,9 @@
   left: var(--markdownMarginLeft);
   bottom: 0;
 }
+
+/* 加大权重，不然被默认样式覆盖 */
+.markdownContainer .aceEditor {
+  color: var(--baseTextColor);
+  background-color: #f5f5f5;
+}

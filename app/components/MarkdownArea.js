@@ -8,7 +8,7 @@ import * as DbUtils from '../helpers/database'
 import _ from 'lodash'
 import 'brace'
 import 'brace/mode/markdown'
-import 'brace/theme/monokai'
+import 'brace/theme/dreamweaver'
 import styles from './MarkdownArea.css'
 
 export default React.createClass({
@@ -58,6 +58,17 @@ export default React.createClass({
   render() {
     let post = this.props.states.posts.selected
     let editorValue = post ? post.content : ''
+    let options = {
+      enableMultiselect: true,
+      animatedScroll: true,
+      enableEmmet: true,
+      enableBasicAutocompletion: true,
+      useElasticTabstops: true,
+      fontSize: 16,
+      wrap: true,
+      displayIndentGuides: true,
+      cursorStyle: 'slim'
+    }
 
     return (
       <div ref="container" className={styles.markdownContainer}>
@@ -68,11 +79,11 @@ export default React.createClass({
           width="100%"
           height="100%"
           mode="markdown"
-          theme="monokai"
+          theme="dreamweaver"
           value={editorValue}
           name="editor"
           showGutter={false}
-          setOptions={{fontSize: 16, wrap: true}}
+          setOptions={options}
         />
       </div>
     )

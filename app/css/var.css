@@ -8,6 +8,8 @@
 @value webviewMarginTop: 15px;
 @value emTextColor: #454545;
 @value textColor: #696969;
+@value baseTextColor: rgba(0, 0, 0, 0.8);
+@value baseBgColor: #f5f5f5;
 
 :root {
   --bottomHeight: bottomHeight;
@@ -19,6 +21,8 @@
   --webviewMarginTop: webviewMarginTop;
   --emTextColor: emTextColor;
   --textColor: textColor;
+  --baseTextColor: baseTextColor;
+  --baseBgColor: baseBgColor;
   --postListWidth: markdownMarginLeft;
   --markdownMarginLeft: markdownMarginLeft;
   --markdownMarginRight: markdownMarginRight;
