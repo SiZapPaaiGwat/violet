@@ -115,16 +115,39 @@ function getSeqAndCid({cookie, token, version, notebookId}) {
   })
 }
 
+function getVerAndToken({cookie}) {
+  return request({
+    url: 'http://www.jianshu.com/writer',
+    method: 'get',
+    headers: {
+      ...HUMAN_HEADERS,
+      Cookie: cookie
+    }
+  }).then(res => {
+    try {
+      let html = res.text
+      let versionReg = / data-writer-version=['"]{0,1}(\d+)['"]{0,1}/
+      let tokenReg = /<meta +name=['"]{0,1}csrf-token['"]{0,1} +content=['"]{0,1}(.+)['"]{0,1}/
+      return Promise.resolve({
+        version: html.match(versionReg)[1],
+        token: html.match(tokenReg)[1]
+      })
+    } catch (err) {
+      return Promise.reject(new Error('正则解析出错'))
+    }
+  })
+}
+
 export default class JianshuHandler extends PlatformHandler {
   static alias = 'jianshu'
 
   checkIdentity() {
-    let {cookie, token} = this
-    if (!cookie || !token) {
+    let {cookie} = this
+    if (!cookie) {
       return Promise.reject(new Error('身份验证失败，请设置平台帐号或者注销重新登录'))
     }
 
-    return Promise.resolve({cookie, token})
+    return Promise.resolve({cookie})
   }
 
   whoAmI() {
@@ -170,21 +193,25 @@ export default class JianshuHandler extends PlatformHandler {
   }
 
   publish() {
-    let {cookie, token, title, content, key, notebookId, version} = this
-    if (!cookie || !token) {
+    let {cookie, title, content, key, notebookId} = this
+    if (!cookie) {
       return Promise.reject(new Error('身份验证失败，请设置平台帐号或者注销重新登录'))
     }
     if (!content || !title) {
       return Promise.reject(new Error('标题和内容均不能为空'))
     }
 
-    let baseSettings = {cookie, token, version}
+    let baseSettings = {cookie}
 
     if (!key) {
       let post
-      return getSeqAndCid({
-        ...baseSettings,
-        notebookId
+      return getVerAndToken({cookie}).then(json => {
+        Object.assign(baseSettings, json)
+        console.log('version token is ', json)
+        return getSeqAndCid({
+          ...baseSettings,
+          notebookId
+        })
       }).then(json => {
         console.log('preparing')
         return createDraft({
@@ -223,34 +250,17 @@ export default class JianshuHandler extends PlatformHandler {
   }
 }
 
-// node -r babel-register ./electron/test
-// let instance = new JianshuHandler({
-//   title: 'vilolet11111',
-//   content: '## violet alpha now \n > hello violet!',
-//   cookie: 'read_mode=day; default_font=font2; remember_user_token=W1szNDk3OF0sIiQyYSQxMCRCRlVoLlB4RlVjSFpxM0Uvb00vb0R1IiwiMTQ2NTU1NTU1MS40MzIyNzE3Il0%3D--7bc8ab304ae5462f0ca5d8b56a6b6edfb2bf4e3b; Hm_lvt_0c0e9d9b1e7d617b3e6842e85b9fb068=1465555513,1465917077; Hm_lpvt_0c0e9d9b1e7d617b3e6842e85b9fb068=1465917077; __utmt=1; __utma=194070582.799925090.1461696699.1465917081.1465922712.8; __utmb=194070582.7.10.1465922712; __utmc=194070582; __utmz=194070582.1465917081.7.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); __utmv=194070582.|2=User%20Type=Member=1; _session_id=cnhaQi84RjdoYXVFcGMrL0dGbkVaWmlob0ViY3pWTUVtMlp0cGNKenc4ekhpUWZBSHJoTCtFcE56dkpyc1JpUnpoZEQwejc2V2svTzJGeUIzbmw0cGlqME5pQlhmK3JZUU1tbVYwNWdxbVVrSXFiSVZxaTFHQlY4bEprOXVvaVpVSEhjWlpvWktrVUVLMkc0SmdYZXB3UGNxTTFJdDlsd3oyT0ZxeVJoc2xyb0FnZ2lzV3BHSGVjSnNpdFRPN2lGb051czYyUEZPclo4MXRYS1gvM093OUNtdG51Q1Y5QXNuajN3TzFDUkF1cFJVYUplQTQvdVMxQUdUK0RFaGxjUHZSbjBOdXhCV3JyazJNU04zVmZQRkNESFNhb1cvSFFLdzVEUEZZbHJCY2h6WmJyYW1vOVVUckd4ODdES09IQTNXSUgyenpKSXVnc01sSUM0VjFOeFFpVERwVkQrbFFFekgwc2xycXdQcEZGczh1THZLY3g3SmFpNkVMVlN1QlpFY2tMUWRMb1lVbFljTFh2N0RuWXNwUE5CWmRaWDl1Nm95NFp1b05oN1lTUFpoZ2Q3UEhDcjkrbjAzRGJteVVHdVlVNUxJblB4eFRScjR5QkZ1N00wSFNGK0U1U2dHcm1iRldMaGdBaWkwUVE9LS1pWUUwMUhJUjRQdzliUDRydVR2T3RBPT0%3D--d370960afb20408e4042a39ec4afcab01042ba1e',
-//   token: 'J5i/O+UR78kTk3L6qFhzvmkErSoaqfMxXvNti3drX5yELD7yC4V7n1qiGpHY54AVb+N9wT3+Sf+D9cfVogmAcQ==',
-//   notebookId: 4677726,
-//   version: 75
-// })
-// instance.publish().then(() => {
-//   console.log('DONE')
-// }).catch(err => {
-//   console.log(err.status)
-//   console.log(err.response.text)
-//   console.log(err.message)
-// })
-
-request({
-  url: 'http://www.jianshu.com/writer',
-  method: 'get',
-  headers: {
-    ...HUMAN_HEADERS,
-    Cookie: instance.cookie
-  }
-}).then(res => {
-  let html = res.text
-  console.log(html)
-  console.log(html.indexOf('data-writer-version'))
+// node -r babel-register ./electron/platforms/jianshu
+let instance = new JianshuHandler({
+  title: 'vilolet11111',
+  content: '## violet alpha now \n > hello violet!',
+  cookie: '',
+  notebookId: 4677726,
+})
+instance.publish().then(() => {
+  console.log('DONE')
 }).catch(err => {
-  console.log(err)
+  console.log(err.status)
+  console.log(err.response.text)
+  console.log(err.message)
 })
