@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react'
 import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import MarkdownArea from '../components/MarkdownArea'
+import SyncNotifier from '../components/SyncNotifier'
 import * as DbUtils from '../helpers/database'
 import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
 import createLoginPage from '../helpers/create_login/CreateLogin'
@@ -16,11 +17,16 @@ export default React.createClass({
   componentDidMount() {
     App.alert = (title = 'oops', text = '遇到了一点问题', type = 'error') => {
       if (typeof title === 'string') {
-        Alert(title, text, type)
+        Alert({
+          title,
+          text,
+          type,
+          allowOutsideClick: false
+        })
         return Promise.resolve(null)
       }
 
-      return Alert(title)
+      return Alert(Object.assign({}, title, {allowOutsideClick: false}))
     }
     App.stopLoading = () => {
       this.props.actions.postsLoading({
@@ -103,7 +109,9 @@ export default React.createClass({
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
         <DynamicComponent {...this.props} />
-        {devTools}
+        <SyncNotifier />
+        {//devTools
+        }
       </div>
     )
   }
