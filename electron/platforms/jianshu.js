@@ -2,6 +2,14 @@ import request from '../request'
 import PlatformHandler from './handler'
 // import * as CONST from '../const'
 
+const HUMAN_HEADERS = {
+  Accept: '*/*',
+  'Accept-Encoding': 'gzip, deflate',
+  'Accept-Language': 'zh-CN,zh;q=0.8',
+  Connection: 'keep-alive',
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36',
+}
+
 function httpRequest({url, method = 'post', cookie, token, formData, version}) {
   if (!url) {
     return Promise.reject(new Error('Request url is empty'))
@@ -20,16 +28,13 @@ function httpRequest({url, method = 'post', cookie, token, formData, version}) {
     method,
     formData,
     headers: {
-      Accept: 'application/json, text/javascript, */*; q=0.01',
-      'Accept-Encoding': 'gzip, deflate',
-      'Accept-Language': 'zh-CN,zh;q=0.8',
-      Connection: 'keep-alive',
+      ...HUMAN_HEADERS,
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       Cookie: cookie,
-      Host: 'www.jianshu.com',
-      Origin: 'http://www.jianshu.com',
-      Referer: 'http://www.jianshu.com/writer',
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36',
+      // Host: 'www.jianshu.com',
+      // Origin: 'http://www.jianshu.com',
+      // Referer: 'http://www.jianshu.com/writer',
       'X-CSRF-Token': token,
       'X-Requested-With': 'XMLHttpRequest',
       'x-writer-version': version
@@ -96,6 +101,7 @@ function getSeqAndCid({cookie, token, version, notebookId}) {
     token,
     version
   }).then(json => {
+    console.log(json)
     // 最后一条记录的
     let notes = json.filter(item => {
       return item.notebook_id === notebookId
@@ -180,6 +186,7 @@ export default class JianshuHandler extends PlatformHandler {
         ...baseSettings,
         notebookId
       }).then(json => {
+        console.log('preparing')
         return createDraft({
           ...json,
           ...baseSettings,
@@ -207,6 +214,8 @@ export default class JianshuHandler extends PlatformHandler {
           url: `http://www.jianshu.com/writer/notes/${json.id}/publicize`,
           method: 'post'
         })
+      }).catch(err => {
+        console.log(err)
       })
     }
 
@@ -215,18 +224,33 @@ export default class JianshuHandler extends PlatformHandler {
 }
 
 // node -r babel-register ./electron/test
-let instance = new JianshuHandler({
-  title: 'vilolet',
-  content: '## violet alpha now \n > hello violet!',
-  cookie: 'read_mode=day; default_font=font2; remember_user_token=W1szNDk3OF0sIiQyYSQxMCRCRlVoLlB4RlVjSFpxM0Uvb00vb0R1IiwiMTQ2NTU1NTU1MS40MzIyNzE3Il0%3D--7bc8ab304ae5462f0ca5d8b56a6b6edfb2bf4e3b; Hm_lvt_0c0e9d9b1e7d617b3e6842e85b9fb068=1465555513,1465917077; Hm_lpvt_0c0e9d9b1e7d617b3e6842e85b9fb068=1465917077; __utmt=1; __utma=194070582.799925090.1461696699.1465917081.1465922712.8; __utmb=194070582.7.10.1465922712; __utmc=194070582; __utmz=194070582.1465917081.7.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); __utmv=194070582.|2=User%20Type=Member=1; _session_id=cnhaQi84RjdoYXVFcGMrL0dGbkVaWmlob0ViY3pWTUVtMlp0cGNKenc4ekhpUWZBSHJoTCtFcE56dkpyc1JpUnpoZEQwejc2V2svTzJGeUIzbmw0cGlqME5pQlhmK3JZUU1tbVYwNWdxbVVrSXFiSVZxaTFHQlY4bEprOXVvaVpVSEhjWlpvWktrVUVLMkc0SmdYZXB3UGNxTTFJdDlsd3oyT0ZxeVJoc2xyb0FnZ2lzV3BHSGVjSnNpdFRPN2lGb051czYyUEZPclo4MXRYS1gvM093OUNtdG51Q1Y5QXNuajN3TzFDUkF1cFJVYUplQTQvdVMxQUdUK0RFaGxjUHZSbjBOdXhCV3JyazJNU04zVmZQRkNESFNhb1cvSFFLdzVEUEZZbHJCY2h6WmJyYW1vOVVUckd4ODdES09IQTNXSUgyenpKSXVnc01sSUM0VjFOeFFpVERwVkQrbFFFekgwc2xycXdQcEZGczh1THZLY3g3SmFpNkVMVlN1QlpFY2tMUWRMb1lVbFljTFh2N0RuWXNwUE5CWmRaWDl1Nm95NFp1b05oN1lTUFpoZ2Q3UEhDcjkrbjAzRGJteVVHdVlVNUxJblB4eFRScjR5QkZ1N00wSFNGK0U1U2dHcm1iRldMaGdBaWkwUVE9LS1pWUUwMUhJUjRQdzliUDRydVR2T3RBPT0%3D--d370960afb20408e4042a39ec4afcab01042ba1e',
-  token: 'J5i/O+UR78kTk3L6qFhzvmkErSoaqfMxXvNti3drX5yELD7yC4V7n1qiGpHY54AVb+N9wT3+Sf+D9cfVogmAcQ==',
-  notebookId: 4677726,
-  version: 67
-})
-instance.publish().then(() => {
-  console.log('DONE')
+// let instance = new JianshuHandler({
+//   title: 'vilolet11111',
+//   content: '## violet alpha now \n > hello violet!',
+//   cookie: 'read_mode=day; default_font=font2; remember_user_token=W1szNDk3OF0sIiQyYSQxMCRCRlVoLlB4RlVjSFpxM0Uvb00vb0R1IiwiMTQ2NTU1NTU1MS40MzIyNzE3Il0%3D--7bc8ab304ae5462f0ca5d8b56a6b6edfb2bf4e3b; Hm_lvt_0c0e9d9b1e7d617b3e6842e85b9fb068=1465555513,1465917077; Hm_lpvt_0c0e9d9b1e7d617b3e6842e85b9fb068=1465917077; __utmt=1; __utma=194070582.799925090.1461696699.1465917081.1465922712.8; __utmb=194070582.7.10.1465922712; __utmc=194070582; __utmz=194070582.1465917081.7.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); __utmv=194070582.|2=User%20Type=Member=1; _session_id=cnhaQi84RjdoYXVFcGMrL0dGbkVaWmlob0ViY3pWTUVtMlp0cGNKenc4ekhpUWZBSHJoTCtFcE56dkpyc1JpUnpoZEQwejc2V2svTzJGeUIzbmw0cGlqME5pQlhmK3JZUU1tbVYwNWdxbVVrSXFiSVZxaTFHQlY4bEprOXVvaVpVSEhjWlpvWktrVUVLMkc0SmdYZXB3UGNxTTFJdDlsd3oyT0ZxeVJoc2xyb0FnZ2lzV3BHSGVjSnNpdFRPN2lGb051czYyUEZPclo4MXRYS1gvM093OUNtdG51Q1Y5QXNuajN3TzFDUkF1cFJVYUplQTQvdVMxQUdUK0RFaGxjUHZSbjBOdXhCV3JyazJNU04zVmZQRkNESFNhb1cvSFFLdzVEUEZZbHJCY2h6WmJyYW1vOVVUckd4ODdES09IQTNXSUgyenpKSXVnc01sSUM0VjFOeFFpVERwVkQrbFFFekgwc2xycXdQcEZGczh1THZLY3g3SmFpNkVMVlN1QlpFY2tMUWRMb1lVbFljTFh2N0RuWXNwUE5CWmRaWDl1Nm95NFp1b05oN1lTUFpoZ2Q3UEhDcjkrbjAzRGJteVVHdVlVNUxJblB4eFRScjR5QkZ1N00wSFNGK0U1U2dHcm1iRldMaGdBaWkwUVE9LS1pWUUwMUhJUjRQdzliUDRydVR2T3RBPT0%3D--d370960afb20408e4042a39ec4afcab01042ba1e',
+//   token: 'J5i/O+UR78kTk3L6qFhzvmkErSoaqfMxXvNti3drX5yELD7yC4V7n1qiGpHY54AVb+N9wT3+Sf+D9cfVogmAcQ==',
+//   notebookId: 4677726,
+//   version: 75
+// })
+// instance.publish().then(() => {
+//   console.log('DONE')
+// }).catch(err => {
+//   console.log(err.status)
+//   console.log(err.response.text)
+//   console.log(err.message)
+// })
+
+request({
+  url: 'http://www.jianshu.com/writer',
+  method: 'get',
+  headers: {
+    ...HUMAN_HEADERS,
+    Cookie: instance.cookie
+  }
+}).then(res => {
+  let html = res.text
+  console.log(html)
+  console.log(html.indexOf('data-writer-version'))
 }).catch(err => {
-  console.log(err.status)
-  console.log(err.response.text)
-  console.log(err.message)
+  console.log(err)
 })
