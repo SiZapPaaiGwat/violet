@@ -1,9 +1,10 @@
 import zhihuIcon from '../imgs/zhihu.ico'
 import githubIcon from '../imgs/github.ico'
 import mediumIcon from '../imgs/medium.ico'
+import jianshuIcon from '../imgs/jianshu.ico'
 import * as CONST from '../../electron/const'
 
-export let SUPPORT_PLATFORM_MAP = {
+export const SUPPORT_PLATFORM_MAP = {
   zhihu: {
     ...CONST.SUPPORT_PLATFORM_MAP.zhihu,
     icon: zhihuIcon
@@ -15,6 +16,10 @@ export let SUPPORT_PLATFORM_MAP = {
   github: {
     ...CONST.SUPPORT_PLATFORM_MAP.github,
     icon: githubIcon
+  },
+  jianshu: {
+    ...CONST.SUPPORT_PLATFORM_MAP.jianshu,
+    icon: jianshuIcon
   }
 }
 

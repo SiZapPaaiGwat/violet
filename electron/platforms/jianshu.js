@@ -1,16 +1,16 @@
 import request from '../request'
 import PlatformHandler from './handler'
-// import * as CONST from '../const'
+import {UA} from '../const'
 
 const HUMAN_HEADERS = {
   Accept: '*/*',
   'Accept-Encoding': 'gzip, deflate',
   'Accept-Language': 'zh-CN,zh;q=0.8',
   Connection: 'keep-alive',
-  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36',
+  'User-Agent': UA,
 }
 
-function httpRequest({url, method = 'post', cookie, token, formData, version}) {
+function httpRequest({url, method = 'post', cookie, token = null, formData, version, xhr = true}) {
   if (!url) {
     return Promise.reject(new Error('Request url is empty'))
   }
@@ -19,32 +19,32 @@ function httpRequest({url, method = 'post', cookie, token, formData, version}) {
     return Promise.reject(new Error(`Request header cookie is empty.\nURL is ${url}`))
   }
 
-  if (!token) {
-    return Promise.reject(new Error(`Request header token is empty and your cookie is ${cookie}`))
+  let headers = {
+    ...HUMAN_HEADERS,
+    Cookie: cookie
+  }
+
+  if (xhr) {
+    if (!token || !version) {
+      return Promise.reject(new Error('Token and version are required arguments'))
+    }
+
+    Object.assign(headers, {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': token,
+      'X-Requested-With': 'XMLHttpRequest',
+      'x-writer-version': version
+    })
   }
 
   return request({
     url,
     method,
     formData,
-    headers: {
-      ...HUMAN_HEADERS,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Cookie: cookie,
-      // Host: 'www.jianshu.com',
-      // Origin: 'http://www.jianshu.com',
-      // Referer: 'http://www.jianshu.com/writer',
-      'X-CSRF-Token': token,
-      'X-Requested-With': 'XMLHttpRequest',
-      'x-writer-version': version
-    }
+    headers
   })
 }
-
-// NOTE
-// <div id="writer" class="container-fluid" data-writer-version=38>
-// <meta name="csrf-token" content="XyKtaupu6qLb7A/LuwM0MAAIZAzTqVByRr6o+u4w==" />
 
 function createDraft({cookie, token, notebookId, seq, cid, version}) {
   return httpRequest({
@@ -101,7 +101,6 @@ function getSeqAndCid({cookie, token, version, notebookId}) {
     token,
     version
   }).then(json => {
-    console.log(json)
     // 最后一条记录的
     let notes = json.filter(item => {
       return item.notebook_id === notebookId
@@ -122,7 +121,8 @@ function getVerAndToken({cookie}) {
     headers: {
       ...HUMAN_HEADERS,
       Cookie: cookie
-    }
+    },
+    xhr: false
   }).then(res => {
     try {
       let html = res.text
@@ -151,43 +151,31 @@ export default class JianshuHandler extends PlatformHandler {
   }
 
   whoAmI() {
-    // {
-    //     "id": 34978,
-    //     "preferred_note_type": "markdown",
-    //     "nickname": "高梵梵高",
-    //     "slug": "3a1021e6c75f",
-    //     "avatar": "",
-    //     "read_mode": "day",
-    //     "default_font": "font1",
-    //     "is_internal_user": false
-    // }
-    return this.checkIdentity().then((cookie, token) => {
+    let {cookie} = this
+    return this.checkIdentity().then(() => {
+      return getVerAndToken({cookie})
+    }).then(({token, version}) => {
       return httpRequest({
         url: 'http://www.jianshu.com/writer/users',
         method: 'get',
         cookie,
-        token
+        token,
+        version
       })
     })
   }
 
   listColumns() {
-    //     "id": 66305,
-    //     "name": "草稿",
-    //     "user_id": 34978,
-    //     "created_at": "2014-03-04T14:14:59.000+08:00",
-    //     "updated_at": "2014-03-04T14:14:59.000+08:00",
-    //     "seq": null,
-    //     "has_update_at": 0,
-    //     "likes_count": 0,
-    //     "deleted_at": null,
-    //     "last_published_at": null
-    return this.checkIdentity().then((cookie, token) => {
+    let {cookie} = this
+    return this.checkIdentity().then(() => {
+      return getVerAndToken({cookie})
+    }).then(({token, version}) => {
       return httpRequest({
         url: 'http://www.jianshu.com/writer/notebooks',
         method: 'get',
         cookie,
-        token
+        token,
+        version
       })
     })
   }
@@ -250,17 +238,19 @@ export default class JianshuHandler extends PlatformHandler {
   }
 }
 
+PlatformHandler.link(JianshuHandler.alias, JianshuHandler)
+
 // node -r babel-register ./electron/platforms/jianshu
-let instance = new JianshuHandler({
-  title: 'vilolet11111',
-  content: '## violet alpha now \n > hello violet!',
-  cookie: '',
-  notebookId: 4677726,
-})
-instance.publish().then(() => {
-  console.log('DONE')
-}).catch(err => {
-  console.log(err.status)
-  console.log(err.response.text)
-  console.log(err.message)
-})
+// let instance = new JianshuHandler({
+//   title: 'vilolet11111',
+//   content: '## violet alpha now \n > hello violet!',
+//   cookie: '',
+//   notebookId: 4677726,
+// })
+// instance.publish().then(() => {
+//   console.log('DONE')
+// }).catch(err => {
+//   console.log(err.status)
+//   console.log(err.response.text)
+//   console.log(err.message)
+// })

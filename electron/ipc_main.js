@@ -4,6 +4,7 @@ import PlatformHandler from './platforms/handler'
 import './platforms/zhihu'
 import './platforms/github'
 import './platforms/medium'
+import './platforms/jianshu'
 
 function zipObject(keys = [], values = []) {
   let obj = {}

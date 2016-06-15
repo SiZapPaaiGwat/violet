@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react'
 import LoginManager from './LoginManager'
 import * as DataUtils from '../client_data'
-// import {getCookieByName} from '../utils'
 import {detectLoginStatus} from '../../../electron/ipc_render'
 import {
   SUPPORT_PLATFORM_MAP
@@ -18,24 +17,20 @@ function transformCookie(cookie) {
 }
 
 function getUsername(account) {
-  return account.email
+  return account.nickname
 }
 
-function onLoggedIn(props, {cookie, token, email, columns}) {
-  let account = {cookie, token, email}
+function onLoggedIn(props, {cookie, nickname}) {
+  let account = {cookie, nickname}
   DataUtils.updateAccount(PLATFORM_NAME, account)
   props.actions.accountUpdate({
     platform: PLATFORM_NAME,
     value: account
   })
 
-  let hasColumns = columns && columns.length > 0
   props.actions.statusUpdate({
     platform: PLATFORM_NAME,
-    // TODO 这里直接false，登录态根据本地数据，这里表示是否可以同步
-    value: {
-      writable: hasColumns
-    }
+    value: true
   })
 }
 
