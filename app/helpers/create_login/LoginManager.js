@@ -40,7 +40,7 @@ export default React.createClass({
   },
 
   componentDidUpdate(nextProps, nextState) {
-    let isLogin = this.props.states.status[this.props.platformName]
+    let isLogin = this.props.states.account[this.props.platformName]
     let isLoggingOut = this.state.isLoggingOut
     // 注销时绑定事件
     if (!isLogin && isLoggingOut === false) {
@@ -106,9 +106,8 @@ export default React.createClass({
 
   _render() {
     let accountMap = this.props.states.account
-    let status = this.props.states.status
     let name = this.props.platformName
-    if (status[name]) {
+    if (accountMap[name]) {
       let username = this.props.getUsername(accountMap[name])
       return (
         <div className={styles.formContainer}>

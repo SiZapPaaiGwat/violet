@@ -59,10 +59,10 @@ export function getDatabaseUpdates(id, serverUpsertJson) {
  * 获取可以同步的平台
  * 本地帐号信息非空就可以同步，是否成功以实际调用为准
  */
-export function getSyncablePlatforms(account, status, post) {
+export function getSyncablePlatforms(account) {
   let result = {}
   for (let key in account) {
-    if (status[key]) {
+    if (account[key]) {
       result[key] = account[key]
     }
   }

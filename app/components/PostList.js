@@ -32,7 +32,7 @@ export default React.createClass({
     }
 
     // 这里的平台登录态都已经验证
-    let account = getSyncablePlatforms(states.account, states.status, post)
+    let account = getSyncablePlatforms(states.account)
     let taskNum = Object.keys(account).length
     if (taskNum === 0) {
       App.alert('没有可以同步的平台', '请至少添加一个平台帐号信息（Medium平台暂不支持编辑）')

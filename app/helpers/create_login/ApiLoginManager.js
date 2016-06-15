@@ -49,15 +49,14 @@ export default React.createClass({
 
   render() {
     let name = this.props.platformName
-    let isLoggedIn = this.props.states.status[name]
-    let account = isLoggedIn && this.props.states.account[name]
-    let username = isLoggedIn && this.props.getUsername(account)
+    let account = this.props.states.account[name]
+    let username = account && this.props.getUsername(account)
 
     return (
       <div className={styles.container}>
         <div className={styles.formContainer}>
           <h2>{this.props.platformLabel}</h2>
-          {isLoggedIn ? (
+          {account ? (
             <LoginStatus
               username={username}
               onLogout={this.handleLogout}

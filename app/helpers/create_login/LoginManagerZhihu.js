@@ -36,13 +36,6 @@ function onLoggedIn(props, {cookie, token, email, columns}) {
 }
 
 export default function createLoginPage(props) {
-  let status = props.states.status
-  let tip = status[PLATFORM_NAME] && !status[PLATFORM_NAME].writable ? (
-    <div>
-      <em style={{color: 'red'}}>当前帐号未开通专栏，无法向此平台同步作品。请先开通专栏然后注销重新登录</em>
-    </div>
-  ) : null
-
   return (
     <LoginManager
       {...props}
@@ -56,9 +49,7 @@ export default function createLoginPage(props) {
       onLoggedIn={onLoggedIn}
       transformCookie={transformCookie}
       getUsername={getUsername}
-    >
-      {tip}
-    </LoginManager>
+    />
   )
 }
 
