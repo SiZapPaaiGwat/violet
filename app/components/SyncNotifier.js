@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react'
 import styles from './SyncNotifier.css'
+import globalStyles from '../css/var.css'
 
 const SYNC_TASK_STATUS_MAP = {
   waiting: '同步中',
@@ -70,9 +71,16 @@ export default React.createClass({
     let closeBtn = isJobDone && (
       <a href="javascript:;" className={styles.close} onClick={this.handleClose}>关闭</a>
     )
+    let height = parseInt(globalStyles.notifierHeadHeight, 10)
+    if (!this.state.minimized) {
+      height += tasks.length * 35
+    }
 
     return (
-      <div className={`${styles.container} ${this.state.minimized ? styles.minimized : ''}`}>
+      <div
+        className={`${styles.container} ${this.state.minimized ? styles.minimized : ''}`}
+        style={{height: `${height}px`}}
+      >
         <div className={`${styles.taskWrapper} ${this.state.minimized ? styles.minimized : ''}`}>
           <div className={styles.taskContent}>
             <div

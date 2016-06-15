@@ -1,6 +1,7 @@
+@import "../css/var.css";
+
 .outer {
   width: 288px;
-  height: 168px;
 }
 
 .container {
@@ -8,7 +9,6 @@
   position: fixed;
   bottom: 0;
   right: 0;
-  overflow-y: auto;
   color: #4C4646;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .container.minimized, .taskWrapper.minimized{
-  height: 63px;
+  height: var(--notifierHeadHeight);
 }
 
 .taskContentTitle {
