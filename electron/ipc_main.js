@@ -14,6 +14,16 @@ function zipObject(keys = [], values = []) {
   return obj
 }
 
+function logError({message, status, text, response}) {
+  let {req} = response || {}
+  console.log(`
+    Error message: ${message}
+    Path: ${req ? req.path : '-'}
+    Status: ${status}
+    Response Text: ${text}
+  `)
+}
+
 function registerSyncPostEvent(platform) {
   let prefix = `sync-post-${platform}`
   ipcMain.on(`${prefix}-start`, (event, {title = '', content = '', ...platforms}) => {
@@ -34,9 +44,9 @@ function registerSyncPostEvent(platform) {
     Promise.all(handlerList).then(result => {
       event.sender.send(`${prefix}-finish`, zipObject(keys, result))
     }).catch(error => {
-      let {message, status} = error
-      console.log(error)
-      event.sender.send(`${prefix}-error`, {message, status})
+      logError(error)
+      let {message, status, text} = error
+      event.sender.send(`${prefix}-error`, {message, status, text})
     })
   })
 }
@@ -61,8 +71,8 @@ ipcMain.on('detect-login-status-start', (event, platforms) => {
   Promise.all(handlerList).then(result => {
     event.sender.send('detect-login-status-finish', zipObject(keys, result))
   }).catch(error => {
-    let {message, status} = error
-    console.log(error)
-    event.sender.send('detect-login-status-error', {message, status})
+    logError(error)
+    let {message, status, text} = error
+    event.sender.send('detect-login-status-error', {message, status, text})
   })
 })

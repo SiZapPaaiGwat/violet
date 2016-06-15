@@ -62,7 +62,21 @@ function createDraft({cookie, token, notebookId, seq, cid, version}) {
   })
 }
 
+function createDraftContent({cookie, token, postId, version}) {
+  return httpRequest({
+    url: `http://www.jianshu.com/writer/notes/${postId}/content`,
+    method: 'get',
+    cookie,
+    token,
+    version
+  })
+}
+
 function updateDraft({cookie, token, post, title, content, version}) {
+  if (!post || !post.id) {
+    return Promise.reject(new Error('内部错误:作品不存在'))
+  }
+
   return httpRequest({
     url: `http://www.jianshu.com/writer/notes/${post.id}`,
     method: 'put',
@@ -73,15 +87,15 @@ function updateDraft({cookie, token, post, title, content, version}) {
       ...post,
       title,
       content,
-      autosave_control : 1,
+      autosave_control : post.autosave_control + 1,
       content_updated_at : Math.ceil(Date.now() / 1000),
     }
   })
 }
 
-function setContent({cookie, token, postId, version}) {
+function getNotes({cookie, token, version}) {
   return httpRequest({
-    url: `http://www.jianshu.com/writer/notes/${postId}/content`,
+    url: 'http://www.jianshu.com/writer/notes',
     method: 'get',
     cookie,
     token,
@@ -98,14 +112,7 @@ function getSeqAndCid({cookie, token, version, notebookId}) {
     return Promise.reject(new Error('内部错误：notebookId为空'))
   }
 
-  return httpRequest({
-    url: 'http://www.jianshu.com/writer/notes',
-    method: 'get',
-    cookie,
-    token,
-    version
-  }).then(json => {
-    // 最后一条记录的
+  return getNotes({cookie, token, version}).then(json => {
     let notes = json.filter(item => {
       return item.notebook_id === notebookId && item.seq_in_nb < 0
     }).sort((a, b) => {
@@ -139,6 +146,116 @@ function getVerAndToken({cookie}) {
     } catch (err) {
       return Promise.reject(new Error('正则解析出错'))
     }
+  })
+}
+
+function getColumns({cookie, token, version}) {
+  // http://www.jianshu.com/writer/notebooks
+  return httpRequest({
+    url: 'http://www.jianshu.com/writer/notebooks',
+    method: 'get',
+    cookie,
+    token,
+    version
+  }).then(columns => {
+    return Promise.resolve(columns[0].id)
+  })
+}
+
+// notebookId不传则发布到默认日记本
+function publichOnCreate({cookie, notebookId, title, content}) {
+  let baseSettings = {cookie}
+  let post
+  let promise
+  let columnId
+
+  return getVerAndToken({cookie}).then(json => {
+    console.log('Done getting token and version')
+    Object.assign(baseSettings, json)
+    if (notebookId) {
+      promise = Promise.resolve(notebookId)
+    } else {
+      promise = getColumns({
+        cookie,
+        token: baseSettings.token,
+        version: baseSettings.version
+      })
+    }
+
+    return promise
+  }).then(id => {
+    columnId = id
+    return getSeqAndCid({
+      ...baseSettings,
+      notebookId: columnId
+    })
+  }).then(({seq, cid}) => {
+    console.log('Done getting seq and cid')
+    return createDraft({
+      ...baseSettings,
+      seq,
+      cid,
+      notebookId: columnId
+    })
+  }).then(json => {
+    console.log('Done creating post')
+    post = json
+    return createDraftContent({
+      ...baseSettings,
+      postId: json.id
+    })
+  }).then(json => {
+    console.log('Done creating post content')
+    return updateDraft({
+      ...baseSettings,
+      post,
+      title,
+      content
+    })
+  }).then(json => {
+    console.log('Done updating post title')
+    return httpRequest({
+      ...baseSettings,
+      url: `http://www.jianshu.com/writer/notes/${json.id}/publicize`,
+      method: 'post'
+    })
+  }).then(json => {
+    console.log('Done publicizing post')
+    return Promise.resolve(json.note.id)
+  })
+}
+
+function publishOnEdit({cookie, title, content, key}) {
+  let baseSettings = {cookie}
+  return getVerAndToken({cookie}).then(json => {
+    console.log('Done getting token and version')
+    Object.assign(baseSettings, json)
+    return getNotes(baseSettings)
+  }).then(notes => {
+    console.log('Done getting posts')
+    let posts = notes.filter(item => {
+      return item.id === key
+    })
+
+    if (posts.length === 0) {
+      return Promise.reject(new Error('作品不存在，可能已经被删除'))
+    }
+
+    return updateDraft({
+      ...baseSettings,
+      post: posts[0],
+      title, content
+    })
+  }).then(json => {
+    console.log('Done updating post title and content')
+    return httpRequest({
+      ...baseSettings,
+      url: `http://www.jianshu.com/writer/notes/${json.id}/compile`,
+      method: 'post'
+    })
+  }).then(json => {
+    console.log('Done compiling post')
+    return Promise.resolve(json.id)
   })
 }
 
@@ -185,7 +302,7 @@ export default class JianshuHandler extends PlatformHandler {
   }
 
   publish() {
-    let {cookie, title, content, key, notebookId = 4677726} = this
+    let {cookie, title, content, key, notebookId} = this
     if (!cookie) {
       return Promise.reject(new Error('身份验证失败，请设置平台帐号或者注销重新登录'))
     }
@@ -193,66 +310,16 @@ export default class JianshuHandler extends PlatformHandler {
       return Promise.reject(new Error('标题和内容均不能为空'))
     }
 
-    let baseSettings = {cookie}
-
+    let params = {cookie, title, content, notebookId}
     if (!key) {
-      let post
-      return getVerAndToken({cookie}).then(json => {
-        Object.assign(baseSettings, json)
-        console.log('version token is ', json)
-        return getSeqAndCid({
-          ...baseSettings,
-          notebookId
-        })
-      }).then(json => {
-        console.log('preparing')
-        return createDraft({
-          ...json,
-          ...baseSettings,
-          notebookId
-        })
-      }).then(json => {
-        console.log('created')
-        post = json
-        return setContent({
-          ...baseSettings,
-          postId: json.id
-        })
-      }).then(json => {
-        console.log('content set')
-        return updateDraft({
-          ...baseSettings,
-          post,
-          title,
-          content
-        })
-      }).then(json => {
-        console.log('json updated')
-        return httpRequest({
-          ...baseSettings,
-          url: `http://www.jianshu.com/writer/notes/${json.id}/publicize`,
-          method: 'post'
-        })
-      })
+      return publichOnCreate(params)
     }
 
-    return console.log('TODO')
+    return publishOnEdit({
+      ...params,
+      key
+    })
   }
 }
 
 PlatformHandler.link(JianshuHandler.alias, JianshuHandler)
-
-// node -r babel-register ./electron/platforms/jianshu
-// let instance = new JianshuHandler({
-//   title: 'vilolet11111',
-//   content: '## violet alpha now \n > hello violet!',
-//   cookie: '',
-//   notebookId: 4677726,
-// })
-// instance.publish().then(() => {
-//   console.log('DONE')
-// }).catch(err => {
-//   console.log(err.status)
-//   console.log(err.response.text)
-//   console.log(err.message)
-// })
