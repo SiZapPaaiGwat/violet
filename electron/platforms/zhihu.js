@@ -1,7 +1,7 @@
 import marked from 'marked'
 import request from '../request'
 import PlatformHandler from './handler'
-import {ZHIHU_XSRF_TOKEN_NAME} from '../const'
+import {SUPPORT_PLATFORM_MAP} from '../const'
 
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -34,7 +34,7 @@ function httpRequest({url, method = 'post', cookie, token, formData}) {
     headers: {
       Accept: 'application/json',
       Cookie: cookie,
-      [`X-${ZHIHU_XSRF_TOKEN_NAME}`]: token,
+      [SUPPORT_PLATFORM_MAP.zhihu.csrfTokenName]: token,
       'Content-Type': 'application/json;charset=UTF-8'
     }
   })

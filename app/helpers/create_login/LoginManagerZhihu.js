@@ -3,18 +3,16 @@ import LoginManager from './LoginManager'
 import * as DataUtils from '../client_data'
 import {getCookieByName} from '../utils'
 import {detectLoginStatus} from '../../../electron/ipc_render'
-import {
-  ZHUANLAN_URL, LOGIN_URL, LOGOUT_URL, ZHIHU_DOMAIN, ZHIHU_XSRF_TOKEN_NAME,
-  SUPPORT_PLATFORM_MAP
-} from '../../helpers/const'
+import {SUPPORT_PLATFORM_MAP} from '../../helpers/const'
 
-const PLATFORM_NAME = SUPPORT_PLATFORM_MAP.zhihu.name
-const PLATFORM_LABEL = SUPPORT_PLATFORM_MAP.zhihu.label
+const platform = SUPPORT_PLATFORM_MAP.zhihu
+const PLATFORM_NAME = platform.name
+const PLATFORM_LABEL = platform.label
 
 function transformCookie(cookie) {
   return {
     cookie,
-    token: getCookieByName(cookie, ZHIHU_XSRF_TOKEN_NAME)
+    token: getCookieByName(cookie, platform.csrfTokenName)
   }
 }
 
@@ -53,10 +51,10 @@ export default function createZhihuLoginPage(props) {
       {...props}
       platformName={PLATFORM_NAME}
       platformLabel={PLATFORM_LABEL}
-      loginUrl={LOGIN_URL}
-      logoutUrl={LOGOUT_URL}
-      loggedInUrl={ZHUANLAN_URL}
-      domain={ZHIHU_DOMAIN}
+      loginUrl={platform.loginUrl}
+      logoutUrl={platform.logoutUrl}
+      loggedInUrl={platform.loggedInUrl}
+      domain={platform.domain}
       whoAmI={detectLoginStatus}
       onLoggedIn={onZhihuLoggedIn}
       transformCookie={transformCookie}

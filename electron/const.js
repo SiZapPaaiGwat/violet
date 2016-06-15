@@ -1,7 +1,12 @@
 export const SUPPORT_PLATFORM_MAP = {
   zhihu: {
     name: 'zhihu',
-    label: '知乎'
+    label: '知乎',
+    loginUrl: 'http://www.zhihu.com/signin?next=https://zhuanlan.zhihu.com/',
+    logoutUrl: 'https://www.zhihu.com/logout',
+    loggedInUrl: 'https://zhuanlan.zhihu.com/',
+    domain: 'zhihu.com',
+    csrfTokenName: 'X-XSRF-TOKEN'
   },
   medium: {
     name: 'medium',
@@ -29,8 +34,6 @@ export const SUPPORT_PLATFORM_LIST = SYNC_PLATFORMS.map(key => {
 })
 
 export const REQUEST_TIMEOUT = 15000
-
-export const ZHIHU_XSRF_TOKEN_NAME = 'XSRF-TOKEN'
 
 /*eslint max-len: 0*/
 export const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36'
