@@ -94,6 +94,10 @@ function setContent({cookie, token, postId, version}) {
  * cid表示文章的序号
  */
 function getSeqAndCid({cookie, token, version, notebookId}) {
+  if (!notebookId) {
+    return Promise.reject(new Error('内部错误：notebookId为空'))
+  }
+
   return httpRequest({
     url: 'http://www.jianshu.com/writer/notes',
     method: 'get',
@@ -103,13 +107,13 @@ function getSeqAndCid({cookie, token, version, notebookId}) {
   }).then(json => {
     // 最后一条记录的
     let notes = json.filter(item => {
-      return item.notebook_id === notebookId
+      return item.notebook_id === notebookId && item.seq_in_nb < 0
     }).sort((a, b) => {
-      return a.seq_in_nb > b.seq_in_nb
+      return a.seq_in_nb - b.seq_in_nb
     })
     return Promise.resolve({
       cid: `c-${json.length}`,
-      seq: notes.length ? notes[0].seq_in_nb : -1
+      seq: notes.length ? notes[0].seq_in_nb - 1 : -1
     })
   })
 }
@@ -181,7 +185,7 @@ export default class JianshuHandler extends PlatformHandler {
   }
 
   publish() {
-    let {cookie, title, content, key, notebookId} = this
+    let {cookie, title, content, key, notebookId = 4677726} = this
     if (!cookie) {
       return Promise.reject(new Error('身份验证失败，请设置平台帐号或者注销重新登录'))
     }
@@ -229,8 +233,6 @@ export default class JianshuHandler extends PlatformHandler {
           url: `http://www.jianshu.com/writer/notes/${json.id}/publicize`,
           method: 'post'
         })
-      }).catch(err => {
-        console.log(err)
       })
     }
 
