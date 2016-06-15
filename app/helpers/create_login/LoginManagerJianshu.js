@@ -27,11 +27,6 @@ function onLoggedIn(props, {cookie, nickname}) {
     platform: PLATFORM_NAME,
     value: account
   })
-
-  props.actions.statusUpdate({
-    platform: PLATFORM_NAME,
-    value: true
-  })
 }
 
 export default function createLoginPage(props) {

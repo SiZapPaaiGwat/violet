@@ -1,24 +1,23 @@
 import * as DataUtils from '../helpers/client_data'
 
 export default {
-  // 是否展示相应胡弹窗页面
+  // 打开哪些帐号设置（展示）页面，为空则展示编辑器页面
   settings: {
     // 打开哪个弹窗，zhihu,github
     name: ''
   },
   posts: {
     datasource: [],
+    // 当前选中作品
     selected: null,
+    // {id, isLoading} 哪些作品正在同步
     loadingStatus: {}
   },
   routing: {},
-  // 账户设置信息
+  // 帐号信息，用于控制底部平台工具条登录状态
   account: DataUtils.getAccountMap(),
-  // 帐号登录验证状态以及底部工具条状态控制
+  // 作品相关工具条状态是否可用
   status: {
-    // 这里不要写出现具体的平台名称
-    // zhihu: false,
-    // github: false,
     list: false,
     create: false,
     sync: false

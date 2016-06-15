@@ -21,11 +21,7 @@ export default React.createClass({
     DataUtils.removeAccountByPlatform(name)
     this.props.actions.accountUpdate({
       platform: name,
-      value: {}
-    })
-    this.props.actions.statusUpdate({
-      platform: name,
-      value: false
+      value: null
     })
   },
 
@@ -41,10 +37,6 @@ export default React.createClass({
         this.props.actions.accountUpdate({
           platform: name,
           value: accountInfo
-        })
-        this.props.actions.statusUpdate({
-          platform: name,
-          value: true
         })
       } else {
         App.alert('身份验证失败', '请重新检查表单')

@@ -30,12 +30,9 @@ function onLoggedIn(props, {cookie, token, email, columns}) {
 
   // 没有开通专栏
   let hasColumns = columns && columns.length > 0
-  props.actions.statusUpdate({
-    platform: PLATFORM_NAME,
-    value: {
-      writable: hasColumns
-    }
-  })
+  if (!hasColumns) {
+    App.alert('温馨提醒', '当前帐号还没有开通专栏，作品将无法同步请知悉')
+  }
 }
 
 export default function createLoginPage(props) {

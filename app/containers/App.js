@@ -35,32 +35,16 @@ export default React.createClass({
     }
     App.mountTime = Date.now()
 
-    this.loadLoginStatus()
     this.loadPostList()
+    this.enableSync()
   },
 
+  // 是否可以同步（目前已经没有太大必要，暂时放着为后面考虑）
   enableSync() {
     this.props.actions.statusUpdate({
       platform: 'sync',
       value: true
     })
-  },
-
-  loadLoginStatus() {
-    let account = this.props.states.account || {}
-    /**
-     * NOTE
-     * 启动时不验证上次登录是否有效，直接认定为已经登录
-     * 用户同步时跟据同步结果直接反馈信息
-     */
-    Object.keys(account).forEach(platform => {
-      this.props.actions.statusUpdate({
-        platform,
-        value: true
-      })
-    })
-
-    this.enableSync()
   },
 
   loadPostList() {

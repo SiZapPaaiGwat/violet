@@ -4,10 +4,11 @@ import {SUPPORT_PLATFORM_MAP} from './const'
 import {SyncFactory} from '../../electron/ipc_render'
 
 /**
- * 同步作品
- * 只同步登录态已经验证的平台
+ * 根据帐号信息同步作品
+ * 有帐号信息就默认已登录，实际帐号信息是否过期由接口自行返回
+ * 早先这里是支持同步多个平台，但是无法详细控制每个平台的进度所以改造为一次同步一个
  */
-export function syncPostByAccount({account, post}) {
+function syncPostByAccount({account, post}) {
   if (Object.keys(account).length !== 1) {
     console.error(account)
     throw new Error('一次只能同步一个平台的数据')
@@ -40,42 +41,23 @@ export function syncPostByAccount({account, post}) {
 }
 
 /**
- * 生成数据库需要更新的object
- * 主要是各个平台的id
+ * 同步作品(新增或更新)以后主进程会返回当前作品在各个平台的id
+ * 此接口用于生成更新到数据库部分的数据，对应各个平台的id
+ * 不过目前实际调用也是单个单个调
  */
-export function getDatabaseUpdates(id, json) {
-  // 生成数据库需要更新的数据
-  let keys = Object.keys(json)
+export function getDatabaseUpdates(id, serverUpsertJson) {
+  let keys = Object.keys(serverUpsertJson)
   let updates = _.zipObject(keys.map(key => {
     return `${key}_id`
   }), keys.map(key => {
-    return json[key]
+    return serverUpsertJson[key]
   }))
   return Object.assign(updates, {id})
 }
 
 /**
- * 获取平台登录状态
- * 知乎比较特殊登录以后还要判断是否已经申请专栏
- */
-export function getLoginStatus(json) {
-  let keys = Object.keys(json)
-  let values = keys.map(platform => {
-    let result = json[platform]
-    if (platform === 'zhihu') {
-      return result ? {
-        writable: result.columns.length > 0
-      } : false
-    }
-
-    return !!result
-  })
-
-  return _.zipObject(keys, values)
-}
-
-/**
  * 获取可以同步的平台
+ * 本地帐号信息非空就可以同步，是否成功以实际调用为准
  */
 export function getSyncablePlatforms(account, status, post) {
   let result = {}
@@ -97,6 +79,9 @@ export function isNotifierRunning(tasks) {
   })
 }
 
+/**
+ * 根据平台帐号信息获取初始平台同步进度数据
+ */
 export function getNotifierInitialTasks(account) {
   return Object.keys(account).map(key => {
     return {
@@ -107,6 +92,9 @@ export function getNotifierInitialTasks(account) {
   })
 }
 
+/**
+ * 各平台独自同步作品
+ */
 export function syncPostWithNotifier({account, post, onSuccess, onError}) {
   for (let platform in account) {
     syncPostByAccount({

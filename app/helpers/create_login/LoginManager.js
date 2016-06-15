@@ -59,9 +59,9 @@ export default React.createClass({
     }, () => {
       let webview = this.refs.webview
       webview.addEventListener('did-get-response-details', (e) => {
-        this.props.actions.statusUpdate({
+        this.props.actions.accountUpdate({
           platform: name,
-          value: false
+          value: null
         })
         DataUtils.removeAccountByPlatform(name)
         if (this.props.onLoggedout) {
