@@ -20,8 +20,6 @@ export const SUPPORT_PLATFORM_MAP = _.merge({
   }
 }, CONST.SUPPORT_PLATFORM_MAP)
 
-console.log(SUPPORT_PLATFORM_MAP)
-
 export const SYNC_PLATFORMS = Object.keys(SUPPORT_PLATFORM_MAP)
 
 export const SUPPORT_PLATFORM_LIST = SYNC_PLATFORMS.map(key => {

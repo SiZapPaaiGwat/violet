@@ -1,4 +1,4 @@
-const HEADING_REG = /^ *# +[^\n]*\n/g
+const HEADING_REG = /^ *# +[^\n]*\n*/g
 
 export function getCookieByName(cookie, name) {
   let match = cookie && cookie.match(new RegExp(`${name}=([^;]+)`, 'i'))
