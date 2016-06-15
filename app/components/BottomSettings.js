@@ -35,7 +35,7 @@ export default React.createClass({
   },
 
   renderPlatforms() {
-    let status = this.props.states.status
+    let account = this.props.states.account
     return SUPPORT_PLATFORM_LIST.map(plat => {
       let platformName = plat.name
       let handleClick = () => {
@@ -50,8 +50,7 @@ export default React.createClass({
           key={platformName}
           onClick={handleClick}
           title={plat.label}
-          className={status[platformName] ? '' : styles.disabled}
-          disabled={!status[platformName]}
+          className={account[platformName] ? '' : styles.disabled}
         >
           <img src={plat.icon} alt={plat.name} className={styles.img} />
         </a>
