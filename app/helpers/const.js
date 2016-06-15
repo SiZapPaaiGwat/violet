@@ -5,7 +5,7 @@ import mediumIcon from '../imgs/medium.ico'
 import jianshuIcon from '../imgs/jianshu.ico'
 import * as CONST from '../../electron/const'
 
-export const SUPPORT_PLATFORM_MAP = _.extend({}, CONST.SUPPORT_PLATFORM_MAP, {
+export const SUPPORT_PLATFORM_MAP = _.merge({
   zhihu: {
     icon: zhihuIcon
   },
@@ -18,7 +18,9 @@ export const SUPPORT_PLATFORM_MAP = _.extend({}, CONST.SUPPORT_PLATFORM_MAP, {
   jianshu: {
     icon: jianshuIcon
   }
-})
+}, CONST.SUPPORT_PLATFORM_MAP)
+
+console.log(SUPPORT_PLATFORM_MAP)
 
 export const SYNC_PLATFORMS = Object.keys(SUPPORT_PLATFORM_MAP)
 
