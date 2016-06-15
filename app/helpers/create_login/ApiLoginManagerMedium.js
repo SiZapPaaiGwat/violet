@@ -6,14 +6,15 @@ import {SUPPORT_PLATFORM_MAP} from '../../helpers/const'
 const PLATFORM_NAME = SUPPORT_PLATFORM_MAP.medium.name
 const PLATFORM_LABEL = SUPPORT_PLATFORM_MAP.medium.label
 
-function updateAccount(name, clientData, serverData) {
-  let account = Object.assign({}, clientData, serverData.data)
-  DataUtils.updateAccount(name, account)
-  return account
-}
+function onLoggedIn(clientData, serverData = {}) {
+  if (!serverData.data) {
+    console.error('服务端返回数据有误', serverData)
+    return null
+  }
 
-function getUsername(account) {
-  return `${account.username}`
+  let account = Object.assign({}, clientData, serverData.data)
+  DataUtils.updateAccount(PLATFORM_NAME, account)
+  return account
 }
 
 export default function(props) {
@@ -40,8 +41,7 @@ export default function(props) {
       extends={extendFields}
       platformName={PLATFORM_NAME}
       platformLabel={PLATFORM_LABEL}
-      updateAccount={updateAccount}
-      getUsername={getUsername}
+      onLoggedIn={onLoggedIn}
     />
   )
 }

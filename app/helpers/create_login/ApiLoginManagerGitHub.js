@@ -6,13 +6,9 @@ import {SUPPORT_PLATFORM_MAP} from '../../helpers/const'
 const PLATFORM_NAME = SUPPORT_PLATFORM_MAP.github.name
 const PLATFORM_LABEL = SUPPORT_PLATFORM_MAP.github.label
 
-function updateAccount(name, formData, serverJson) {
-  DataUtils.updateAccount(name, formData)
+function onLoggedIn(formData, serverJson) {
+  DataUtils.updateAccount(PLATFORM_NAME, formData)
   return formData
-}
-
-function getUsername(account) {
-  return `${account.username}/${account.repo}`
 }
 
 export default function createGitHubPage(props) {
@@ -46,8 +42,7 @@ export default function createGitHubPage(props) {
       extends={extendFields}
       platformName={PLATFORM_NAME}
       platformLabel={PLATFORM_LABEL}
-      updateAccount={updateAccount}
-      getUsername={getUsername}
+      onLoggedIn={onLoggedIn}
     />
   )
 }

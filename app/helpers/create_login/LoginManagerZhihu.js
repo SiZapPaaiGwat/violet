@@ -10,29 +10,37 @@ const PLATFORM_NAME = platform.name
 const PLATFORM_LABEL = platform.label
 
 function transformCookie(cookie) {
+  let token = getCookieByName(cookie, platform.csrfTokenName.replace('X-', ''))
+  if (!token) {
+    throw new Error('内部错误：无法获取zhihu的CSRF Token')
+  }
+
   return {
     cookie,
-    token: getCookieByName(cookie, platform.csrfTokenName)
+    token
   }
 }
 
-function getUsername(account) {
-  return account.email
-}
+function onLoggedIn({cookie, token}, serverJson) {
+  let username = serverJson.email || serverJson.name || serverJson.slug
+  if (!username) {
+    console.error('服务端json返回有误', serverJson)
+    return null
+  }
 
-function onLoggedIn(props, {cookie, token, email, columns}) {
-  let account = {cookie, token, email}
+  let account = {
+    cookie, token, username
+  }
+
   DataUtils.updateAccount(PLATFORM_NAME, account)
-  props.actions.accountUpdate({
-    platform: PLATFORM_NAME,
-    value: account
-  })
 
   // 没有开通专栏
-  let hasColumns = columns && columns.length > 0
+  let hasColumns = serverJson.columns && serverJson.columns.length > 0
   if (!hasColumns) {
     App.alert('温馨提醒', '当前帐号还没有开通专栏，作品将无法同步请知悉')
   }
+
+  return account
 }
 
 export default function createLoginPage(props) {
@@ -48,7 +56,6 @@ export default function createLoginPage(props) {
       whoAmI={checkIdentity}
       onLoggedIn={onLoggedIn}
       transformCookie={transformCookie}
-      getUsername={getUsername}
     />
   )
 }

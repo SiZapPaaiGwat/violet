@@ -16,17 +16,13 @@ function transformCookie(cookie) {
   }
 }
 
-function getUsername(account) {
-  return account.nickname
-}
+function onLoggedIn({cookie}, serverJson = {}) {
+  // 验证服务端是否正常返回数据
+  if (!serverJson.nickname) return null
 
-function onLoggedIn(props, {cookie, nickname}) {
-  let account = {cookie, nickname}
+  let account = {cookie, username: serverJson.nickname}
   DataUtils.updateAccount(PLATFORM_NAME, account)
-  props.actions.accountUpdate({
-    platform: PLATFORM_NAME,
-    value: account
-  })
+  return account
 }
 
 export default function createLoginPage(props) {
@@ -42,7 +38,6 @@ export default function createLoginPage(props) {
       whoAmI={checkIdentity}
       onLoggedIn={onLoggedIn}
       transformCookie={transformCookie}
-      getUsername={getUsername}
     />
   )
 }
