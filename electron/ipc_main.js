@@ -60,19 +60,20 @@ function registerSyncPostEvent(platform) {
 SYNC_PLATFORMS.forEach(registerSyncPostEvent)
 
 /**
- * 检测各个平台的登录情况
+ * 保存帐号时检测当前用户信息
+ * 实际使用也是单个调用
  */
-ipcMain.on('detect-login-status-start', (event, platforms) => {
+ipcMain.on('check-identity-start', (event, platforms) => {
   let keys = Object.keys(platforms)
   let handlerList = PlatformHandler.map(keys).map((instance, i) => {
     return new instance(platforms[keys[i]]).whoAmI()
   })
 
   Promise.all(handlerList).then(result => {
-    event.sender.send('detect-login-status-finish', zipObject(keys, result))
+    event.sender.send('check-identity-finish', zipObject(keys, result))
   }).catch(error => {
     logError(error)
     let {message, status, text} = error
-    event.sender.send('detect-login-status-error', {message, status, text})
+    event.sender.send('check-identity-error', {message, status, text})
   })
 })

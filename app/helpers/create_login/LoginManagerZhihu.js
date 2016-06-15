@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import LoginManager from './LoginManager'
 import * as DataUtils from '../client_data'
 import {getCookieByName} from '../utils'
-import {detectLoginStatus} from '../../../electron/ipc_render'
+import {checkIdentity} from '../../../electron/ipc_render'
 import {SUPPORT_PLATFORM_MAP} from '../../helpers/const'
 
 const platform = SUPPORT_PLATFORM_MAP.zhihu
@@ -20,7 +20,7 @@ function getUsername(account) {
   return account.email
 }
 
-function onZhihuLoggedIn(props, {cookie, token, email, columns}) {
+function onLoggedIn(props, {cookie, token, email, columns}) {
   let account = {cookie, token, email}
   DataUtils.updateAccount(PLATFORM_NAME, account)
   props.actions.accountUpdate({
@@ -28,17 +28,17 @@ function onZhihuLoggedIn(props, {cookie, token, email, columns}) {
     value: account
   })
 
+  // 没有开通专栏
   let hasColumns = columns && columns.length > 0
   props.actions.statusUpdate({
     platform: PLATFORM_NAME,
-    // TODO 这里直接false，登录态根据本地数据，这里表示是否可以同步
     value: {
       writable: hasColumns
     }
   })
 }
 
-export default function createZhihuLoginPage(props) {
+export default function createLoginPage(props) {
   let status = props.states.status
   let tip = status[PLATFORM_NAME] && !status[PLATFORM_NAME].writable ? (
     <div>
@@ -55,8 +55,8 @@ export default function createZhihuLoginPage(props) {
       logoutUrl={platform.logoutUrl}
       loggedInUrl={platform.loggedInUrl}
       domain={platform.domain}
-      whoAmI={detectLoginStatus}
-      onLoggedIn={onZhihuLoggedIn}
+      whoAmI={checkIdentity}
+      onLoggedIn={onLoggedIn}
       transformCookie={transformCookie}
       getUsername={getUsername}
     >
@@ -65,7 +65,7 @@ export default function createZhihuLoginPage(props) {
   )
 }
 
-createZhihuLoginPage.propTypes = {
+createLoginPage.propTypes = {
   states: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired
 }

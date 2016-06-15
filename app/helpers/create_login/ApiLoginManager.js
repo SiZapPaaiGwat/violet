@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react'
 import LoginStatus from '../../components/LoginStatus'
 import Form from '../../components/Form'
-import {detectLoginStatus} from '../../../electron/ipc_render'
+import {checkIdentity} from '../../../electron/ipc_render'
 import * as DataUtils from '../client_data'
 import styles from './CreateLogin.css'
 
@@ -31,7 +31,7 @@ export default React.createClass({
 
   saveAccount(formData) {
     let name = this.props.platformName
-    detectLoginStatus({
+    checkIdentity({
       [name]: formData
     }).then((result) => {
       if (result[name]) {

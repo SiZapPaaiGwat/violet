@@ -1,9 +1,10 @@
 import Database from 'dexie'
+import {SYNC_PLATFORMS} from './const'
 
 export let db = new Database('violet')
 
 db.version(1).stores({
-  posts: '++id, title, content, create_on, zhihu_id, github_id'
+  posts: `++id, title, content, create_on, ${SYNC_PLATFORMS.join(', ')}`
 })
 
 export function createPost(title, content) {

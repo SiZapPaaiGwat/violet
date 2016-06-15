@@ -32,7 +32,7 @@ export let SyncFactory = _.zipObject(SYNC_PLATFORMS, SYNC_PLATFORMS.map(key => {
   return registerEvent(`sync-post-${key}`, 'Syncing post for ${key}')
 }))
 
-export let detectLoginStatus = registerEvent('detect-login-status', 'Detecting login status')
+export let checkIdentity = registerEvent('check-identity', 'Checking identity ...')
 
 /**
  * 获取站点cookie

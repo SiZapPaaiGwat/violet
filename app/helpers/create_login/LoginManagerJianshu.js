@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react'
 import LoginManager from './LoginManager'
 import * as DataUtils from '../client_data'
-import {detectLoginStatus} from '../../../electron/ipc_render'
+import {checkIdentity} from '../../../electron/ipc_render'
 import {
   SUPPORT_PLATFORM_MAP
 } from '../../helpers/const'
@@ -44,7 +44,7 @@ export default function createLoginPage(props) {
       logoutUrl={platform.logoutUrl}
       loggedInUrl={platform.loggedInUrl}
       domain={platform.domain}
-      whoAmI={detectLoginStatus}
+      whoAmI={checkIdentity}
       onLoggedIn={onLoggedIn}
       transformCookie={transformCookie}
       getUsername={getUsername}
