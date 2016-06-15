@@ -22,7 +22,7 @@ export default function(props) {
       name: 'accessToken',
       type: 'text',
       label: 'ACCESS TOKEN',
-      placeholder: '请输入ACCESS TOKEN',
+      placeholder: '前往 https://medium.com/me/settings 底部Integration tokens添加',
       required: true,
       value: ''
     }, {
@@ -31,7 +31,7 @@ export default function(props) {
       label: '代理地址',
       placeholder: '支持常用的HTTP代理以及Shadowsocks代理，格式：socks://127.0.0.1:1080',
       required: true,
-      value: 'socks://127.0.0.1:1080'
+      value: ''
     }
   ]
   return (
