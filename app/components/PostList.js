@@ -102,10 +102,8 @@ export default React.createClass({
        * 点击展示当前作品编辑器内容
        */
       let handleClick = () => {
-        if (selected.id !== post.id) {
-          this.props.actions.postsSelect(post)
-          this.props.actions.settingsShow({name: ''})
-        }
+        this.props.actions.postsSelect(post)
+        this.props.actions.settingsShow({name: ''})
       }
       let handleSync = (e) => {
         e.stopPropagation()
