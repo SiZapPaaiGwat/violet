@@ -89,17 +89,17 @@ export default function(mainWindow) {
     submenu: [{
       label: '官网',
       click() {
-        shell.openExternal('https://github.com/simongfxu/violet?source=client')
+        shell.openExternal('https://github.com/simongfxu/violet?utm_source=mac_client')
       }
     }, {
       label: '反馈建议',
       click() {
-        shell.openExternal('https://jinshuju.net/f/2yctZ5?x_field_1=client')
+        shell.openExternal('https://violet.kf5.com/hc/request/guest/?utm_source=mac_client')
       }
     }, {
-      label: '联系开发者',
+      label: '开发者',
       click() {
-        shell.openExternal('http://www.weibo.com/xugaofan?source=client')
+        shell.openExternal('http://www.weibo.com/xugaofan?utm_source=mac_client')
       }
     }]
   }]
