@@ -1,9 +1,10 @@
 import appdmg from 'appdmg'
 import path from 'path'
+import pkg from '../package.json'
 
 let task = appdmg({
   basepath: path.resolve(__dirname, '..'),
-  target: path.resolve(__dirname, '..', 'release/violet.dmg'),
+  target: path.resolve(__dirname, '..', `release/violet-v${pkg.version}.dmg`),
   // https://github.com/LinusU/node-appdmg/blob/master/README.md#specification
   specification: {
     title: 'violet',
