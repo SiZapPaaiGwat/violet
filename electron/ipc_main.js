@@ -14,8 +14,9 @@ function zipObject(keys = [], values = []) {
   return obj
 }
 
-function logError({message, status, text, response}) {
+function logError({message, status, text, response, stack}) {
   let {req} = response || {}
+  console.log(stack)
   console.log(`
     Error message: ${message}
     Path: ${req ? req.path : '-'}
