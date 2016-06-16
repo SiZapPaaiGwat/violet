@@ -8,7 +8,6 @@ export default React.createClass({
   propTypes: {
     states: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-    children: PropTypes.any,
     platformName: PropTypes.string.isRequired,
     platformLabel: PropTypes.string.isRequired,
     loginUrl: PropTypes.string.isRequired,
@@ -110,6 +109,7 @@ export default React.createClass({
   _render() {
     let accountMap = this.props.states.account
     let name = this.props.platformName
+
     if (accountMap[name]) {
       return (
         <div className={styles.formContainer}>
@@ -118,8 +118,6 @@ export default React.createClass({
             username={accountMap[name].username}
             onLogout={this.handleLogout}
           />
-
-          {this.props.children}
 
           {
             this.state.isLoggingOut && (
