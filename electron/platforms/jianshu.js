@@ -1,14 +1,8 @@
+import 'babel-polyfill'
 import request from '../request'
 import PlatformHandler from './handler'
-import {UA} from '../const'
-
-const HUMAN_HEADERS = {
-  Accept: '*/*',
-  'Accept-Encoding': 'gzip, deflate',
-  'Accept-Language': 'zh-CN,zh;q=0.8',
-  Connection: 'keep-alive',
-  'User-Agent': UA,
-}
+import {HUMAN_HEADERS} from '../const'
+import co from 'co'
 
 function httpRequest({url, method = 'post', cookie, token = null, formData, version, xhr = true}) {
   if (!url) {
@@ -149,7 +143,7 @@ function getVerAndToken({cookie}) {
   })
 }
 
-function getColumns({cookie, token, version}) {
+function getDefaultColumnId({cookie, token, version}) {
   // http://www.jianshu.com/writer/notebooks
   return httpRequest({
     url: 'http://www.jianshu.com/writer/notebooks',
@@ -163,100 +157,90 @@ function getColumns({cookie, token, version}) {
 }
 
 // notebookId不传则发布到默认日记本
-function publichOnCreate({cookie, notebookId, title, content}) {
-  let baseSettings = {cookie}
-  let post
-  let promise
-  let columnId
+function* publichOnCreate({cookie, notebookId, title, content}) {
+  let verAndToken = yield getVerAndToken({cookie})
+  console.log('Done getting token and version')
 
-  return getVerAndToken({cookie}).then(json => {
-    console.log('Done getting token and version')
-    Object.assign(baseSettings, json)
-    if (notebookId) {
-      promise = Promise.resolve(notebookId)
-    } else {
-      promise = getColumns({
-        cookie,
-        token: baseSettings.token,
-        version: baseSettings.version
-      })
-    }
+  let columnId = notebookId
+  let baseSettings = Object.assign({cookie}, verAndToken)
 
-    return promise
-  }).then(id => {
-    columnId = id
-    return getSeqAndCid({
-      ...baseSettings,
-      notebookId: columnId
+  if (!notebookId) {
+    columnId = yield getDefaultColumnId({
+      cookie,
+      token: baseSettings.token,
+      version: baseSettings.version
     })
-  }).then(({seq, cid}) => {
-    console.log('Done getting seq and cid')
-    return createDraft({
-      ...baseSettings,
-      seq,
-      cid,
-      notebookId: columnId
-    })
-  }).then(json => {
-    console.log('Done creating post')
-    post = json
-    return createDraftContent({
-      ...baseSettings,
-      postId: json.id
-    })
-  }).then(json => {
-    console.log('Done creating post content')
-    return updateDraft({
-      ...baseSettings,
-      post,
-      title,
-      content
-    })
-  }).then(json => {
-    console.log('Done updating post title')
-    return httpRequest({
-      ...baseSettings,
-      url: `http://www.jianshu.com/writer/notes/${json.id}/publicize`,
-      method: 'post'
-    })
-  }).then(json => {
-    console.log('Done publicizing post')
-    return Promise.resolve(json.note.id)
+    console.log('Done getting default column id')
+  }
+
+  let seqAndCid = yield getSeqAndCid({
+    ...baseSettings,
+    notebookId: columnId
   })
+  console.log('Done getting seq and cid')
+
+  let post = yield createDraft({
+    ...baseSettings,
+    ...seqAndCid,
+    notebookId: columnId
+  })
+  console.log('Done creating post with default title')
+
+  yield createDraftContent({
+    ...baseSettings,
+    postId: post.id
+  })
+  console.log('Done creating post content')
+
+  yield updateDraft({
+    ...baseSettings,
+    post,
+    title,
+    content
+  })
+  console.log('Done updating post title')
+
+  let json = yield httpRequest({
+    ...baseSettings,
+    url: `http://www.jianshu.com/writer/notes/${post.id}/publicize`,
+    method: 'post'
+  })
+  console.log('Done publicizing post')
+
+  return yield Promise.resolve(json.note.id)
 }
 
-function publishOnEdit({cookie, title, content, key}) {
-  let baseSettings = {cookie}
-  return getVerAndToken({cookie}).then(json => {
-    console.log('Done getting token and version')
-    Object.assign(baseSettings, json)
-    return getNotes(baseSettings)
-  }).then(notes => {
-    console.log('Done getting posts')
-    let posts = notes.filter(item => {
-      return item.id === key
-    })
+function* publishOnEdit({cookie, title, content, key}) {
+  let verAndToken = yield getVerAndToken({cookie})
+  let baseSettings = Object.assign({cookie}, verAndToken)
+  console.log('Done getting token and version')
 
-    if (posts.length === 0) {
-      return Promise.reject(new Error('作品不存在，可能已经被删除'))
-    }
+  let notes = yield getNotes(baseSettings)
+  console.log('Done getting posts')
 
-    return updateDraft({
-      ...baseSettings,
-      post: posts[0],
-      title, content
-    })
-  }).then(json => {
-    console.log('Done updating post title and content')
-    return httpRequest({
-      ...baseSettings,
-      url: `http://www.jianshu.com/writer/notes/${json.id}/compile`,
-      method: 'post'
-    })
-  }).then(json => {
-    console.log('Done compiling post')
-    return Promise.resolve(json.id)
+  let posts = notes.filter(item => {
+    return item.id === key
   })
+  let post = posts[0]
+  if (!post) {
+    return Promise.reject(new Error('作品不存在，可能已经被删除'))
+  }
+
+  yield updateDraft({
+    ...baseSettings,
+    post: posts[0],
+    title, content
+  })
+  console.log('Done updating post title and content')
+
+  yield httpRequest({
+    ...baseSettings,
+    url: `http://www.jianshu.com/writer/notes/${post.id}/compile`,
+    method: 'post'
+  })
+  console.log('Done compiling post')
+
+  return yield Promise.resolve(post.id)
 }
 
 export default class JianshuHandler extends PlatformHandler {
@@ -310,14 +294,16 @@ export default class JianshuHandler extends PlatformHandler {
       return Promise.reject(new Error('标题和内容均不能为空'))
     }
 
-    let params = {cookie, title, content, notebookId}
-    if (!key) {
-      return publichOnCreate(params)
-    }
+    return co(function* () {
+      let params = {cookie, title, content, notebookId}
+      if (!key) {
+        return yield publichOnCreate(params)
+      }
 
-    return publishOnEdit({
-      ...params,
-      key
+      return yield publishOnEdit({
+        ...params,
+        key
+      })
     })
   }
 }

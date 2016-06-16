@@ -29,7 +29,7 @@ function registerEvent(name, details) {
  * 如果共用一个事件，一个请求失败其它都失败
  */
 export let SyncFactory = _.zipObject(SYNC_PLATFORMS, SYNC_PLATFORMS.map(key => {
-  return registerEvent(`sync-post-${key}`, 'Syncing post for ${key}')
+  return registerEvent(`sync-post-${key}`, `Syncing post for ${key}`)
 }))
 
 export let checkIdentity = registerEvent('check-identity', 'Checking identity ...')

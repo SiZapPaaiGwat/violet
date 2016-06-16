@@ -39,6 +39,7 @@ export default {
     'github',
     'superagent',
     'marked',
-    'superagent-proxy'
+    'superagent-proxy',
+    'co'
   ]
 }
