@@ -1,19 +1,15 @@
 import React, {PropTypes} from 'react'
+import ReactTooltip from 'react-tooltip'
 import {
   getDatabaseUpdates, getSyncablePlatforms,
+  getSyncedPlatforms, getSyncedTooltip,
   getNotifierInitialTasks, syncPostWithNotifier, isNotifierRunning
 } from '../helpers/sync'
 import styles from './PostList.css'
 import globalStyles from '../css/global.css'
 import * as DbUtils from '../helpers/database'
 import Spinner from './Spinner'
-import {SYNC_PLATFORMS, SUPPORT_PLATFORM_MAP} from '../helpers/const'
-
-function getSyncedPlatforms(post) {
-  return SYNC_PLATFORMS.filter(item => {
-    return !!post[`${item}_id`]
-  })
-}
+import {SUPPORT_PLATFORM_MAP} from '../helpers/const'
 
 export default React.createClass({
   propTypes: {
@@ -110,7 +106,7 @@ export default React.createClass({
         this.syncPost(post)
       }
       let syncedPlatforms = getSyncedPlatforms(post)
-      let tip = syncedPlatforms.length ? `已同步平台:${syncedPlatforms.join(', ')}` : '作品还未同步'
+      let tooltip = getSyncedTooltip(post)
       let anchor = loadingStatus[post.id] ? <Spinner /> : (
         <a
           onClick={handleSync}
@@ -125,14 +121,24 @@ export default React.createClass({
 
       return (
         <div
-          title={tip}
           key={post.id}
           onClick={handleClick}
           className={syncedPlatforms.length ? styles.calloutSuccess : styles.calloutInfo}
         >
-          <span className={styles.postTitle}>{post.title}</span>
+          <span
+            data-tip
+            data-for={post.id.toString()}
+            className={styles.postTitle}
+          >
+            {post.title}
+          </span>
+          <ReactTooltip id={post.id.toString()} place="bottom" type="dark" effect="float">
+            {tooltip}
+          </ReactTooltip>
           <br />
-          <small className={styles.postPubDate}>{new Date(post.create_on).toLocaleString()}</small>
+          <small className={styles.postPubDate}>
+            {new Date(post.create_on).toLocaleString()}
+          </small>
           {anchor}
         </div>
       )

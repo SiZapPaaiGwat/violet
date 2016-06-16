@@ -94,11 +94,7 @@ export default React.createClass({
         <PostList {...this.props} />
         <BottomSettings {...this.props} />
         <DynamicComponent {...this.props} />
-        {notifier.length && <SyncNotifier tasks={notifier} {...this.props} />}
-
-        {
-          //devTools
-        }
+        {notifier.length ? <SyncNotifier tasks={notifier} {...this.props} /> : null}
       </div>
     )
   }

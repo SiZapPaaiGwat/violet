@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import * as utils from './utils'
-import {SUPPORT_PLATFORM_MAP} from './const'
+import {SUPPORT_PLATFORM_MAP, SYNC_PLATFORMS} from './const'
 import {SyncFactory} from '../../electron/ipc_render'
 
 /**
@@ -68,6 +68,25 @@ export function getSyncablePlatforms(account) {
   }
 
   return result
+}
+
+export function getSyncedPlatforms(post) {
+  return SYNC_PLATFORMS.filter(item => {
+    return !!post[`${item}_id`]
+  })
+}
+
+export function getSyncedTooltip(post) {
+  let syncList = getSyncedPlatforms(post)
+  if (syncList.length === 0) {
+    return '作品尚未同步'
+  }
+
+  let labels = syncList.map(item => {
+    return SUPPORT_PLATFORM_MAP[item].label
+  })
+
+  return `${labels.join(',')}已同步`
 }
 
 /**
