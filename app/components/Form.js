@@ -43,7 +43,11 @@ export default React.createClass({
       <form action="#" method="POST" className={styles.forms} onSubmit={this.handleSubmit}>
         {extra}
         <section>
-          <button type="submit" className={styles.primary}>立即保存</button>
+          <button type="submit"
+            className={`${styles.btn} ${styles.btnBorderOpen} ${styles.btnPurple}`}
+          >
+            立即保存
+          </button>
         </section>
       </form>
     )

@@ -16,7 +16,12 @@ export default React.createClass({
         </section>
 
         <section>
-          <button onClick={this.props.onLogout}>注销</button>
+          <button
+            onClick={this.props.onLogout}
+            className={`${styles.btn} ${styles.btnBorderOpen} ${styles.btnPurple}`}
+          >
+            注销
+          </button>
         </section>
       </div>
     )
