@@ -1,8 +1,7 @@
 import React, {PropTypes} from 'react'
 import ReactTooltip from 'react-tooltip'
 import {
-  getDatabaseUpdates, getSyncablePlatforms,
-  getSyncedPlatforms, getSyncedTooltip,
+  getDatabaseUpdates, getSyncablePlatforms, getSyncedTooltip,
   getNotifierInitialTasks, syncPostWithNotifier, isNotifierRunning
 } from '../helpers/sync'
 import styles from './PostList.css'
