@@ -6,6 +6,8 @@
   right: var(--markdownMarginRight);
   left: var(--markdownMarginLeft);
   bottom: 0;
+  box-sizing: border-box;
+  border-left: 1px solid #DDD;
 }
 
 /* 加大权重，不然被默认样式覆盖 */
