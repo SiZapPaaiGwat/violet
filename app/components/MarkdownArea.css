@@ -7,7 +7,7 @@
   left: var(--markdownMarginLeft);
   bottom: 0;
   box-sizing: border-box;
-  border-left: 1px solid #DDD;
+  border-left: var(--splitLine);
 }
 
 /* 加大权重，不然被默认样式覆盖 */

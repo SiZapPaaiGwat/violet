@@ -29,4 +29,5 @@
   --markdownMarginRight: markdownMarginRight;
   --bottomClientHeight: calc(var(--bottomHeight) + var(--bottomPadding) * 2);
   --notifierHeadHeight: notifierHeadHeight;
+  --splitLine: 1px solid #DDD;
 }
