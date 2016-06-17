@@ -1,8 +1,9 @@
 import React, {PropTypes} from 'react'
 import LoginStatus from '../../components/LoginStatus'
-import {parseWebviewCookiesByDomain} from '../../../electron/ipc_render'
+import {parseWebviewCookiesByDomain, destroySiteSession} from '../../../electron/ipc_render'
 import * as DataUtils from '../client_data'
 import styles from './CreateLogin.css'
+import {SUPPORT_PLATFORM_MAP} from '../const'
 
 export default React.createClass({
   propTypes: {
@@ -50,25 +51,30 @@ export default React.createClass({
     this.onWebviewMounted()
   },
 
+  clearSession(session, url, name) {
+    return destroySiteSession(session, url, name).then(() => {
+      this.props.actions.accountUpdate({
+        platform: this.props.platformName,
+        value: null
+      })
+      DataUtils.removeAccountByPlatform(this.props.platformName)
+      this.setState({
+        isLoggingOut: false
+      })
+    })
+  },
+
   handleLogout() {
-    let name = this.props.platformName
     this.setState({
       isLoggingOut: true
     }, () => {
       let webview = this.refs.webview
-      webview.addEventListener('did-get-response-details', (e) => {
-        this.props.actions.accountUpdate({
-          platform: name,
-          value: null
-        })
-        DataUtils.removeAccountByPlatform(name)
-        if (this.props.onLoggedout) {
-          this.props.onLoggedout(this.props)
-        }
 
-        this.setState({
-          isLoggingOut: false
-        })
+      let platform = SUPPORT_PLATFORM_MAP[this.props.platformName]
+      webview.addEventListener('did-get-response-details', (e) => {
+        webview.openDevTools()
+        let session = webview.getWebContents().session
+        this.clearSession(session, platform.url, platform.cookieName)
       })
     })
   },
@@ -81,10 +87,12 @@ export default React.createClass({
     }
 
     webview.addEventListener('did-navigate', (e) => {
+      // 未开通专栏不会进入这个逻辑，直接跳到主页
+      let platformName = this.props.platformName
+      let platform = SUPPORT_PLATFORM_MAP[platformName]
+      let session = webview.getWebContents().session
       if (e.url === this.props.loggedInUrl) {
-        let platformName = this.props.platformName
         let clientData
-        let session = webview.getWebContents().session
         parseWebviewCookiesByDomain(session, this.props.domain)
         .then(cookie => {
           // 需要从cookie中提取一些数据比如token
@@ -102,6 +110,8 @@ export default React.createClass({
           console.log(err)
           App.alert('登录出错', err.message)
         })
+      } else {
+        this.clearSession(session, platform.url, platform.cookieName)
       }
     })
   },

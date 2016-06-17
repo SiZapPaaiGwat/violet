@@ -58,3 +58,23 @@ export function parseWebviewCookiesByDomain(session, domain) {
     })
   })
 }
+
+function removeCookie(session, url, name) {
+  return new Promise(function(resolve, reject) {
+    session.cookies.remove(url, name, (err, result) => {
+      if (err) {
+        console.error(err)
+        reject(new Error('注销失败'))
+        return
+      }
+
+      resolve()
+    })
+  })
+}
+
+export function destroySiteSession(session, url, name) {
+  return Promise.all(name.split(',').map(item => {
+    return removeCookie(session, url, item)
+  }))
+}
