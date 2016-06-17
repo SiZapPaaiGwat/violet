@@ -7,27 +7,27 @@
 const createWindowsInstaller = require('electron-winstaller').createWindowsInstaller
 const path = require('path')
 const rimraf = require('rimraf')
+const pkg = require('../package.json')
 const rootPath = path.join(__dirname, '..')
 const outPath = path.join(rootPath, 'release')
-// TODO 更换应用icon
 const setupIcon = path.join(rootPath, 'electron', 'icons', 'win', 'app.ico')
-// TODO 更好loading图片
-const loadingGif = path.join(rootPath, 'assets', 'imgs', 'loading.gif')
+const loadingGif = path.join(rootPath, 'app', 'imgs', 'loading.gif')
+const installFolder = path.join(rootPath, 'release', 'windows-installer')
 
 const config = {
   appDirectory: path.join(outPath, 'violet-win32-ia32'),
-  outputDirectory: path.join(outPath, 'windows-installer'),
+  outputDirectory: installFolder,
   iconUrl: setupIcon,
   loadingGif,
   setupIcon,
-  setupExe: 'violet.exe',
+  setupExe: `violet-v${pkg.version}.exe`,
   noMsi: true,
   skipUpdateIcon: true
 }
 
 function deleteOutputFolder() {
   return new Promise((resolve, reject) => {
-    rimraf(path.join(__dirname, '..', 'release', 'windows-installer'), (error) => {
+    rimraf(installFolder, (error) => {
       if (error) {
         reject(error)
         return
@@ -38,8 +38,9 @@ function deleteOutputFolder() {
 }
 
 deleteOutputFolder()
-.then(() => createWindowsInstaller(config))
-.catch((error) => {
+.then(() => {
+  createWindowsInstaller(config)
+}).catch(error => {
   console.error(error.message || error)
   process.exit(1)
 })
