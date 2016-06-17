@@ -15,14 +15,15 @@ const loadingGif = path.join(rootPath, 'app', 'imgs', 'loading.gif')
 const installFolder = path.join(rootPath, 'release', 'windows-installer')
 
 const config = {
-  appDirectory: path.join(outPath, 'violet-win32-ia32'),
+  appDirectory: path.join(outPath, 'violet-win32-x64'),
   outputDirectory: installFolder,
   iconUrl: setupIcon,
   loadingGif,
   setupIcon,
   setupExe: `violet-v${pkg.version}.exe`,
   noMsi: true,
-  skipUpdateIcon: true
+  skipUpdateIcon: true,
+  description: pkg.description
 }
 
 function deleteOutputFolder() {
@@ -40,6 +41,8 @@ function deleteOutputFolder() {
 deleteOutputFolder()
 .then(() => {
   createWindowsInstaller(config)
+}).then(() => {
+  console.log('Done making windows installer')
 }).catch(error => {
   console.error(error.message || error)
   process.exit(1)

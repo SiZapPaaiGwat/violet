@@ -1,6 +1,7 @@
 {
   "name": "violet",
   "productName": "violet",
+  "description": "violet - 写作爱好者的同步工具",
   "version": "0.0.3",
   "electronVersion": "1.2.2",
   "main": "main.js",
@@ -17,7 +18,8 @@
     "build": "npm run build-main & npm run build-renderer",
     "pack": "cross-env NODE_ENV=production node -r babel-register scripts/package.js",
     "pack-all": "cross-env NODE_ENV=production node -r babel-register scripts/package.js --all",
-    "dist:mac": "cross-env NODE_ENV=production node -r babel-register scripts/dmg.js"
+    "dist:mac": "cross-env NODE_ENV=production node -r babel-register scripts/dmg.js",
+    "dist:win": "cross-env NODE_ENV=production node -r babel-register scripts/installer.js"
   },
   "repository": {
     "type": "git",
