@@ -46,11 +46,20 @@ const finallyIncludedFiles = [
   'index.html', 'main.js', 'package.json', 'dist', 'node_modules'
 ]
 const ignoreFiles = fs.readdirSync(basePath).concat(['release'])
-  .filter(item => !finallyIncludedFiles.includes(item))
-  .map(item => `^/${item.replace('.', '\\.')}($|/)`)
-  .concat(devDeps.map(name => `/node_modules/${name}($|/)`))
-  .concat(deps.filter(name => !electronCfg.externals.includes(name))
-    .map(name => `/node_modules/${name}($|/)`))
+  .filter(item => {
+    return !finallyIncludedFiles.includes(item)
+  }).map(item => {
+    return `^/${item.replace('.', '\\.')}($|/)`
+  })
+  .concat(devDeps.map(name => {
+    return `/node_modules/${name}($|/)`
+  }))
+  .concat(deps.filter(name => {
+    return !electronCfg.externals.includes(name)
+  })
+  .map(name => {
+    return `/node_modules/${name}($|/)`
+  }))
 // 通用打包配置
 const DEFAULT_OPTS = {
   dir: basePath,
@@ -112,8 +121,9 @@ function startPack() {
   }
 
   build(electronCfg)
-  .then(() => build(cfg))
-  .then(paths => {
+  .then(() => {
+    return build(cfg)
+  }).then(paths => {
     let tasks = []
     if (shouldBuildAll) {
       platforms.forEach(plat => {

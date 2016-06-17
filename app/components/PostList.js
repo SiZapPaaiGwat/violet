@@ -1,8 +1,7 @@
 import React, {PropTypes} from 'react'
 import ReactTooltip from 'react-tooltip'
 import {
-  getDatabaseUpdates, getSyncablePlatforms,
-  getSyncedPlatforms, getSyncedTooltip,
+  getDatabaseUpdates, getSyncablePlatforms, getSyncedTooltip,
   getNotifierInitialTasks, syncPostWithNotifier, isNotifierRunning
 } from '../helpers/sync'
 import styles from './PostList.css'
@@ -105,7 +104,6 @@ export default React.createClass({
         e.stopPropagation()
         this.syncPost(post)
       }
-      let syncedPlatforms = getSyncedPlatforms(post)
       let tooltip = getSyncedTooltip(post)
       let anchor = loadingStatus[post.id] ? <Spinner /> : (
         <a
@@ -123,7 +121,7 @@ export default React.createClass({
         <div
           key={post.id}
           onClick={handleClick}
-          className={syncedPlatforms.length ? styles.calloutSuccess : styles.calloutInfo}
+          className={selected.id === post.id ? styles.calloutSuccess : styles.callout}
         >
           <span
             data-tip
