@@ -12,7 +12,16 @@ export default React.createClass({
     platformName: PropTypes.string.isRequired,
     platformLabel: PropTypes.string.isRequired,
     onLoggedIn: PropTypes.func.isRequired,
-    extends: PropTypes.array.isRequired
+    extends: PropTypes.array.isRequired,
+    getDisplayUsername: PropTypes.func
+  },
+
+  getDefaultProps() {
+    return {
+      getDisplayUsername(account) {
+        return account.username
+      }
+    }
   },
 
   handleLogout() {
@@ -43,14 +52,14 @@ export default React.createClass({
   render() {
     let name = this.props.platformName
     let account = this.props.states.account[name]
-
+    let username = account && this.props.getDisplayUsername(account)
     return (
       <div className={styles.container}>
         <div className={styles.formContainer}>
           <h2>{this.props.platformLabel}</h2>
           {account ? (
             <LoginStatus
-              username={account.username}
+              username={username}
               onLogout={this.handleLogout}
             />
           ) : <Form onSubmit={this.saveAccount} extends={this.props.extends} />}

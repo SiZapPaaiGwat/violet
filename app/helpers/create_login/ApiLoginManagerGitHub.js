@@ -11,7 +11,11 @@ function onLoggedIn(formData, serverJson) {
   return formData
 }
 
-export default function createGitHubPage(props) {
+function getDisplayUsername(account) {
+  return `${account.username}/${account.repo}`
+}
+
+export default function(props) {
   let extendFields = [
     {
       name: 'username',
@@ -43,6 +47,7 @@ export default function createGitHubPage(props) {
       platformName={PLATFORM_NAME}
       platformLabel={PLATFORM_LABEL}
       onLoggedIn={onLoggedIn}
+      getDisplayUsername={getDisplayUsername}
     />
   )
 }

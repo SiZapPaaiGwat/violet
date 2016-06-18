@@ -25,29 +25,26 @@ function logError({message, status, text, response, stack}) {
   `)
 }
 
-function registerSyncPostEvent(platform) {
-  let prefix = `sync-post-${platform}`
-  ipcMain.on(`${prefix}-start`, (event, {title = '', content = '', ...platforms}) => {
+function registerEvent(eventName, methodName, allowParallel = false) {
+  ipcMain.on(`${eventName}-start`, (event, platforms) => {
     let keys = Object.keys(platforms)
-    if (keys.length > 1) {
-      console.error(platforms)
-      throw new Error('platforms应该只包含一个平台的作品信息')
+    if (!allowParallel) {
+      if (keys.length > 1) {
+        console.error(platforms)
+        throw new Error(`Parallel is not allowed for event ${eventName}`)
+      }
     }
 
     let handlerList = PlatformHandler.map(keys).map((instance, i) => {
-      return new instance({
-        ...platforms[keys[i]],
-        title: title.trim(),
-        content: content.trim()
-      }).publish()
+      return new instance(platforms[keys[i]])[methodName]()
     })
 
     Promise.all(handlerList).then(result => {
-      event.sender.send(`${prefix}-finish`, zipObject(keys, result))
+      event.sender.send(`${eventName}-finish`, zipObject(keys, result))
     }).catch(error => {
       logError(error)
       let {message, status, text} = error
-      event.sender.send(`${prefix}-error`, {message, status, text})
+      event.sender.send(`${eventName}-error`, {message, status, text})
     })
   })
 }
@@ -58,23 +55,8 @@ function registerSyncPostEvent(platform) {
  * electron ipcMain的事件机制决定
  * 如果共用一个事件，一个请求失败其它都失败
  */
-SYNC_PLATFORMS.forEach(registerSyncPostEvent)
-
-/**
- * 保存帐号时检测当前用户信息
- * 实际使用也是单个调用
- */
-ipcMain.on('check-identity-start', (event, platforms) => {
-  let keys = Object.keys(platforms)
-  let handlerList = PlatformHandler.map(keys).map((instance, i) => {
-    return new instance(platforms[keys[i]]).whoAmI()
-  })
-
-  Promise.all(handlerList).then(result => {
-    event.sender.send('check-identity-finish', zipObject(keys, result))
-  }).catch(error => {
-    logError(error)
-    let {message, status, text} = error
-    event.sender.send('check-identity-error', {message, status, text})
-  })
+SYNC_PLATFORMS.forEach(platform => {
+  registerEvent(`sync-post-${platform}`, 'publish', false)
 })
+
+registerEvent('check-identity', 'whoAmI', false)

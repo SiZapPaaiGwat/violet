@@ -9,35 +9,29 @@ import {SyncFactory} from '../../electron/ipc_render'
  * 早先这里是支持同步多个平台，但是无法详细控制每个平台的进度所以改造为一次同步一个
  */
 function syncPostByAccount({account, post}) {
-  if (Object.keys(account).length !== 1) {
-    console.error(account)
+  let keys = Object.keys(account)
+  if (keys.length > 1) {
     throw new Error('一次只能同步一个平台的数据')
   }
 
-  let args = Object.assign({
-    title: utils.getMarkdownTitle(post.content),
-    content: utils.normalizeMarkdownContent(post.content)
-  }, account)
+  let title = utils.getMarkdownTitle(post.content)
+  let content = utils.normalizeMarkdownContent(post.content)
 
-  if (!args.title) {
+  if (!title) {
     return Promise.reject(new Error('标题不能为空（格式参考：# 我的标题）'))
   }
 
-  if (!args.content) {
+  if (!content) {
     return Promise.reject(new Error('内容不能为空'))
   }
 
+  let args = {}
   for (let key in account) {
-    args[key].key = post[`${key}_id`]
+    args[key] = {title, content}
   }
 
-  if (Object.keys(args).length === 2) {
-    return Promise.reject(new Error('没有设置任何写作平台的帐号信息'))
-  }
-
-  let platform = Object.keys(account)[0]
-
-  return SyncFactory[platform](args)
+  let platform = keys[0]
+  return SyncFactory[platform](_.merge({}, account, args))
 }
 
 /**
