@@ -71,8 +71,7 @@ export default React.createClass({
       let webview = this.refs.webview
 
       let platform = SUPPORT_PLATFORM_MAP[this.props.platformName]
-      webview.addEventListener('did-get-response-details', (e) => {
-        webview.openDevTools()
+      webview.addEventListener('dom-ready', (e) => {
         let session = webview.getWebContents().session
         this.clearSession(session, platform.url, platform.cookieName)
       })
@@ -87,11 +86,10 @@ export default React.createClass({
     }
 
     webview.addEventListener('did-navigate', (e) => {
-      // 未开通专栏不会进入这个逻辑，直接跳到主页
-      let platformName = this.props.platformName
-      let platform = SUPPORT_PLATFORM_MAP[platformName]
-      let session = webview.getWebContents().session
       if (e.url === this.props.loggedInUrl) {
+        // 未开通专栏不会进入这个逻辑，直接跳到主页
+        let platformName = this.props.platformName
+        let session = webview.getWebContents().session
         let clientData
         parseWebviewCookiesByDomain(session, this.props.domain)
         .then(cookie => {
@@ -110,8 +108,6 @@ export default React.createClass({
           console.log(err)
           App.alert('登录出错', err.message)
         })
-      } else {
-        this.clearSession(session, platform.url, platform.cookieName)
       }
     })
   },

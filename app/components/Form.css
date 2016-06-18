@@ -49,6 +49,7 @@
   border-radius: 3px;
   cursor: pointer;
   min-width: 86px;
+  outline: none;
 }
 
 .btnBorderOpen {
