@@ -26,8 +26,11 @@ function syncPostByAccount({account, post}) {
   }
 
   let args = {}
-  for (let key in account) {
-    args[key] = {title, content}
+  for (let field in account) {
+    args[field] = {
+      title, content,
+      key: post[`${field}_id`]
+    }
   }
 
   let platform = keys[0]

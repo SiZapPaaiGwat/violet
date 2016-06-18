@@ -11,10 +11,10 @@ function registerEvent(name, details) {
     console.log(`${details} :`, args)
 
     return new Promise(function(resolve, reject) {
-      ipcRenderer.on(`${name}-finish`, function(e, arg) {
+      ipcRenderer.once(`${name}-finish`, function(e, arg) {
         resolve(arg)
       })
-      ipcRenderer.on(`${name}-error`, function(e, arg) {
+      ipcRenderer.once(`${name}-error`, function(e, arg) {
         reject(arg)
       })
       ipcRenderer.send(`${name}-start`, args)
