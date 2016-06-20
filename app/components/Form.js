@@ -5,7 +5,8 @@ import _ from 'lodash'
 export default React.createClass({
   propTypes: {
     onSubmit: PropTypes.func,
-    extends: PropTypes.array.isRequired
+    extends: PropTypes.array.isRequired,
+    isLoading: PropTypes.bool.isRequired
   },
 
   handleSubmit(e) {
@@ -43,7 +44,9 @@ export default React.createClass({
       <form action="#" method="POST" className={styles.forms} onSubmit={this.handleSubmit}>
         {extra}
         <section>
-          <button type="submit" className={styles.primary}>立即保存</button>
+          <button type="submit" className={styles.primary} disabled={this.props.isLoading}>
+            {this.props.isLoading ? '正在保存...' : '立即保存'}
+          </button>
         </section>
       </form>
     )
