@@ -44,7 +44,10 @@ export default React.createClass({
       <form action="#" method="POST" className={styles.forms} onSubmit={this.handleSubmit}>
         {extra}
         <section>
-          <button type="submit" className={styles.primary} disabled={this.props.isLoading}>
+          <button type="submit"
+            disabled={this.props.isLoading}
+            className={`${styles.btn} ${styles.btnBorderOpen} ${styles.btnPurple}`}
+          >
             {this.props.isLoading ? '正在保存...' : '立即保存'}
           </button>
         </section>

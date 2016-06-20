@@ -50,11 +50,11 @@ export default React.createClass({
         platform: name,
         value: accountInfo
       })
-      this.setState({isLoading: true})
+      this.setState({isLoading: false})
     }).catch(err => {
       console.log(err)
       App.alert('身份验证失败', err.message)
-      this.setState({isLoading: true})
+      this.setState({isLoading: false})
     })
   },
 

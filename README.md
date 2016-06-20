@@ -45,11 +45,28 @@
  * GitHub
  * 其它(敬请期待)
 
+## 下载地址
+
+[http://pan.baidu.com/disk/home#list/path=%2Fviolet](http://pan.baidu.com/disk/home#list/path=%2Fviolet)
+
 ## 功能支持
 
 功能支持请前往：[violet需求调查](https://jinshuju.net/f/2yctZ5?x_field_1=github)
 
 产品论坛和意见反馈请前往：[violet客户支持服务平台](https://violet.kf5.com/hc/)
+
+## DEMO
+
+本文链接：
+
+- [知乎](https://zhuanlan.zhihu.com/p/21376171?refer=reduxis)
+- [简书](http://www.jianshu.com/p/d93ca8b61355)
+- [GitHub](https://github.com/simongfxu/simongfxu.github.com/issues/101)
+- [Medium](https://medium.com/@damngoto/violet-%E5%80%BC%E5%BE%97%E4%B8%80%E8%AF%95%E7%9A%84%E5%86%99%E4%BD%9C%E5%90%8C%E6%AD%A5%E5%B0%8F%E5%8A%A9%E6%89%8B-2fbd2799cea4)
+
+截图：
+
+![Linux](https://pic2.zhimg.com/153f8d8cda1d4b7b95e53e3375c26fc3_r.png)
 
 ## 名称来源
 
