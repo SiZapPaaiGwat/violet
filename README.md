@@ -49,9 +49,16 @@
 
 [https://pan.baidu.com/](https://pan.baidu.com/s/1c20pWha#path=%252Fviolet)
 
-## 功能支持
+## 开发路线图
 
-功能支持请前往：[violet需求调查](https://jinshuju.net/f/2yctZ5?x_field_1=github)
+- 支持多端数据同步
+- 支持删除功能（同步删除各个写作平台）
+- 增加媒体中心用于上传图片，引用图片
+- 支持切换到Medium-Editor（需考虑图片引用问题）
+
+## 反馈渠道
+
+请求功能支持请前往：[violet需求调查](https://jinshuju.net/f/2yctZ5?x_field_1=github)
 
 产品论坛和意见反馈请前往：[violet客户支持服务平台](https://violet.kf5.com/hc/)
 
