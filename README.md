@@ -47,7 +47,7 @@
 
 ## 下载地址
 
-[http://pan.baidu.com/disk/home#list/path=%2Fviolet](http://pan.baidu.com/disk/home#list/path=%2Fviolet)
+[https://pan.baidu.com/](https://pan.baidu.com/s/1c20pWha#path=%252Fviolet)
 
 ## 功能支持
 
