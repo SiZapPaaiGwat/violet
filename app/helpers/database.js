@@ -4,14 +4,14 @@ import {SYNC_PLATFORMS} from './const'
 export let db = new Database('violet')
 
 db.version(1).stores({
-  posts: `++id, title, content, create_on, update_on, ${SYNC_PLATFORMS.join(', ')}`
+  posts: `++id, object_id, title, content, create_on, update_on, ${SYNC_PLATFORMS.join(', ')}`
 })
 
-export function createPost(title, content) {
-  let now = Date.now()
+export function createPost(title, content, params = {}, now = Date.now()) {
   return db.posts.add({
     title,
     content,
+    ...params,
     create_on: now,
     update_on: now
   })
