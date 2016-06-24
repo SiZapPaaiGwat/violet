@@ -135,7 +135,7 @@ describe('CloudStorage', function() {
       jianshu_id: 4,
       medium_id: 5
     }
-    let post = CloudStorage.getLocalInsert(cloudPost)
+    let post = CloudStorage.getLocalUpsert(cloudPost)
     expect(post.id).to.not.exist
     expect(post.object_id).to.exist
   })
@@ -160,7 +160,7 @@ describe('CloudStorage', function() {
       zhihu_id: 2,
       github_id: 3
     }
-    let post = CloudStorage.getLocalUpdate(cloudPost, localPost)
+    let post = CloudStorage.getLocalUpsert(cloudPost, localPost)
     expect(post).to.deep.equal({
       id: 1,
       object_id: cloudPost.id,
@@ -195,7 +195,7 @@ describe('CloudStorage', function() {
       jianshu_id: 4,
       medium_id: 5
     }
-    let post = CloudStorage.getLocalUpdate(cloudPost, localPost)
+    let post = CloudStorage.getLocalUpsert(cloudPost, localPost)
     expect(post).to.deep.equal({
       id: 1,
       object_id: cloudPost.id,

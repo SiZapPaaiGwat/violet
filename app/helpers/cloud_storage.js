@@ -77,32 +77,29 @@ export function getCloudUpsert(cloudPost, post) {
 }
 
 /**
- * 从云端作品插入到本地
- */
-export function getLocalInsert(cloudPost) {
-  return {
-    ...cloudPost,
-    object_id: cloudPost.id,
-    id: null
-  }
-}
-
-/**
- * 从云端作品更新本地作品
+ * 从云端作品更新/插入本地作品
  * NOTE
  * title/content/update_on/object_id可以直接使用云端数据覆盖
  * 平台作品id因为涉及到帐号切换问题可能两端不一致
  * 还有本地平台作品id数据可能比云端丰富是否需要更新？
  */
-export function getLocalUpdate(cloudPost, localPost) {
+export function getLocalUpsert(cloudPost, localPost) {
+  if (localPost) {
+    return {
+      id: localPost.id,
+      object_id: cloudPost.id,
+      title: cloudPost.title,
+      content: cloudPost.content,
+      create_on: cloudPost.create_on,
+      update_on: cloudPost.update_on,
+      ...mergePlatformInfo(cloudPost, localPost)
+    }
+  }
+
   return {
-    id: localPost.id,
+    ...cloudPost,
     object_id: cloudPost.id,
-    title: cloudPost.title,
-    content: cloudPost.content,
-    create_on: cloudPost.create_on,
-    update_on: cloudPost.update_on,
-    ...mergePlatformInfo(cloudPost, localPost)
+    id: null
   }
 }
 
@@ -154,7 +151,7 @@ export function compare(cloudPosts = [], localPosts = []) {
 
     // 服务端新，需要更新本地作品
     if (cloudPost.update_on >= item.update_on) {
-      let post = getLocalUpdate(cloudPost, item)
+      let post = getLocalUpsert(cloudPost, item)
       local.update.push(post)
       if (isEqual(cloudPost, post)) {
         return
@@ -173,14 +170,14 @@ export function compare(cloudPosts = [], localPosts = []) {
       content: item.content
     }, upsert)
     if (!isEqual(post, item)) {
-      local.update.push(getLocalUpdate(post, item))
+      local.update.push(getLocalUpsert(post, item))
     }
   })
 
   local.insert = cloudPosts.filter(post => {
     return localObjectIdList.indexOf(post.id) === -1
   }).map(post => {
-    return getLocalInsert(post)
+    return getLocalUpsert(post)
   })
 
   return {cloud, local}
