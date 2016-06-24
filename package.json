@@ -7,7 +7,7 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "test": "nyc --all --require babel-register mocha",
+    "test": "cross-env NODE_ENV=test nyc --require babel-register mocha test/cloud_storage.spec.js",
     "cover": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "lint": "eslint app/** electron/**",
     "serve": "node -r babel-register node_modules/webpack-dev-server/bin/webpack-dev-server --config=webpack.config.development.js --port=3000 --watch-poll",

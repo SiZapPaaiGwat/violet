@@ -33,15 +33,23 @@ export function query(platform, username) {
 }
 
 export function isEqual(cloudPost, localPost) {
-  return _.every(SYNC_PLATFORMS.concat('title', 'content', 'update_on'), key => {
+  let keys = SYNC_PLATFORMS.map(key => {
+    return `${key}_id`
+  })
+  return _.every(keys.concat('title', 'content', 'update_on'), key => {
     return localPost[key] === cloudPost[key]
   })
 }
 
 export function mergePlatformInfo(cloudPost, localPost) {
   let info = {}
-  SYNC_PLATFORMS.forEach(key => {
-    info[key] = cloudPost[key] || localPost[key]
+  SYNC_PLATFORMS.map(key => {
+    return `${key}_id`
+  }).forEach(key => {
+    let value = cloudPost[key] || localPost[key]
+    if (value) {
+      info[key] = value
+    }
   })
   return info
 }
@@ -51,16 +59,19 @@ export function mergePlatformInfo(cloudPost, localPost) {
  * 可能更新也可能插入
  * NOTE 云端数据同步时始终不删除，由特定删除操作触发才删除
  */
-export function getCloudUpsert(post, cloudPost) {
+export function getCloudUpsert(cloudPost, post) {
   let item = {
     ...mergePlatformInfo(post, cloudPost),
     title: post.title,
-    content: post.content,
-    create_on: cloudPost.create_on,
-    update_on: cloudPost ? post.update_on : Date.now()
+    create_on: cloudPost ? cloudPost.create_on : post.create_on,
+    update_on: post.update_on
   }
   if (cloudPost) {
     item.id = cloudPost.id
+  }
+  // content数据量可能比较大，能不更新就不更新
+  if (!cloudPost || cloudPost.content !== post.content) {
+    item.content = post.content
   }
   return item
 }
@@ -71,27 +82,28 @@ export function getCloudUpsert(post, cloudPost) {
 export function getLocalInsert(cloudPost) {
   return {
     ...cloudPost,
+    object_id: cloudPost.id,
     id: null
   }
 }
 
 /**
  * 从云端作品更新本地作品
+ * NOTE
+ * title/content/update_on/object_id可以直接使用云端数据覆盖
+ * 平台作品id因为涉及到帐号切换问题可能两端不一致
+ * 还有本地平台作品id数据可能比云端丰富是否需要更新？
  */
-export function getLocalUpdateParams(cloudPost, localPost) {
-  let params = {
-    id: localPost.id
+export function getLocalUpdate(cloudPost, localPost) {
+  return {
+    id: localPost.id,
+    object_id: cloudPost.id,
+    title: cloudPost.title,
+    content: cloudPost.content,
+    create_on: cloudPost.create_on,
+    update_on: cloudPost.update_on,
+    ...mergePlatformInfo(cloudPost, localPost)
   }
-  for (let key in localPost) {
-    if (key === 'id' || key === 'object_id') {
-      continue
-    }
-
-    if (cloudPost[key] !== localPost[key]) {
-      params[key] = cloudPost[key]
-    }
-  }
-  return params
 }
 
 /**
@@ -121,7 +133,7 @@ export function compare(cloudPosts = [], localPosts = []) {
   localPosts.forEach(item => {
     // 未同步，云端插入
     if (!item.object_id) {
-      cloud.push(getCloudUpsert(item))
+      cloud.push(getCloudUpsert(null, item))
       return
     }
 
@@ -142,12 +154,19 @@ export function compare(cloudPosts = [], localPosts = []) {
 
     // 服务端新，需要更新本地作品
     if (cloudPost.update_on >= item.update_on) {
-      local.update.push(getLocalUpdateParams(cloudPost, item))
+      let post = getLocalUpdate(cloudPost, item)
+      local.update.push(post)
+      if (isEqual(cloudPost, post)) {
+        return
+      }
+
+      // 云端也需要更新
+      cloud.push(getCloudUpsert(cloudPost, post))
       return
     }
 
     // 本地较新，更新云端
-    cloud.push(getCloudUpsert(item, cloudPost))
+    cloud.push(getCloudUpsert(cloudPost, item))
   })
 
   local.insert = cloudPosts.filter(post => {

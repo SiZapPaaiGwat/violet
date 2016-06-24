@@ -1,22 +1,18 @@
 import _ from 'lodash'
-import zhihuIcon from '../imgs/zhihu.ico'
-import githubIcon from '../imgs/github.ico'
-import mediumIcon from '../imgs/medium.ico'
-import jianshuIcon from '../imgs/jianshu.ico'
 import * as CONST from '../../electron/const'
 
 export const SUPPORT_PLATFORM_MAP = _.merge({
   zhihu: {
-    icon: zhihuIcon
+    icon: process.env.NODE_ENV !== 'test' && require('../imgs/zhihu.ico')
   },
   medium: {
-    icon: mediumIcon
+    icon: process.env.NODE_ENV !== 'test' && require('../imgs/medium.ico')
   },
   github: {
-    icon: githubIcon
+    icon: process.env.NODE_ENV !== 'test' && require('../imgs/github.ico')
   },
   jianshu: {
-    icon: jianshuIcon
+    icon: process.env.NODE_ENV !== 'test' && require('../imgs/jianshu.ico')
   }
 }, CONST.SUPPORT_PLATFORM_MAP)
 
