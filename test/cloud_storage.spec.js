@@ -4,7 +4,7 @@ import {expect} from 'chai'
 import * as CloudStorage from '../app/helpers/cloud_storage'
 
 describe('CloudStorage', function() {
-  it('should equal when title/content/{platform_id}/update_on are the same', function() {
+  it('should equal when local post and cloud post\'s main fields are identical', function() {
     let localPost = {
       id: 1,
       object_id: null,
@@ -26,7 +26,7 @@ describe('CloudStorage', function() {
     expect(CloudStorage.isEqual(localPost, cloudPost)).to.equal(true)
   })
 
-  it('should merge platform information', function() {
+  it('should merge platform info when no intersection', function() {
     let cloudPost = {
       zhihu_id: 1,
       jianshu_id: 2
@@ -36,25 +36,37 @@ describe('CloudStorage', function() {
       medium_id: 4
     }
     let merged = CloudStorage.mergePlatformInfo(cloudPost, localPost)
-    expect(merged).to.deep.equal(Object.assign({}, cloudPost, localPost))
+    expect(merged).to.deep.equal({
+      zhihu_id: 1,
+      jianshu_id: 2,
+      github_id: 3,
+      medium_id: 4
+    })
   })
 
-  it('should using cloud post platform when id conflicts', function() {
+  it('should merge platform info based on update time when intersects', function() {
     let cloudPost = {
+      update_on: 100,
       zhihu_id: 1,
       jianshu_id: 2
     }
     let localPost = {
-      zhihu_id: 3,
+      update_on: 110,
+      zhihu_id: 2,
+      github_id: 3,
       medium_id: 4
     }
     let merged = CloudStorage.mergePlatformInfo(cloudPost, localPost)
-    expect(merged.zhihu_id).to.equal(1)
+    expect(merged).to.deep.equal({
+      zhihu_id: 2,
+      jianshu_id: 2,
+      github_id: 3,
+      medium_id: 4
+    })
   })
 
-  it('should contain required fields when inserting into cloud', function() {
+  it('should contain all local post\'s fields when inserting to cloud', function() {
     let localPost = {
-      id: 1,
       title: 'insert',
       content: 'insert into cloud',
       create_on: 1466734907559,
@@ -65,7 +77,6 @@ describe('CloudStorage', function() {
       medium_id: 5
     }
     let post = CloudStorage.getCloudUpsert(null, localPost)
-    delete localPost.id
     expect(post).to.deep.equal(localPost)
   })
 
@@ -85,7 +96,7 @@ describe('CloudStorage', function() {
       title: 'insert',
       content: 'insert into cloud',
       create_on: 1466734907559,
-      update_on: 1466734908559,
+      update_on: 1466734907559,
       jianshu_id: 4,
       medium_id: 5
     }
@@ -99,30 +110,6 @@ describe('CloudStorage', function() {
     expect(post.github_id).to.equal(localPost.github_id)
     expect(post.jianshu_id).to.equal(cloudPost.jianshu_id)
     expect(post.medium_id).to.equal(cloudPost.medium_id)
-  })
-
-  it('should not contain content when there is no change in content field', function() {
-    let localPost = {
-      id: 1,
-      object_id: 'xyz',
-      title: 'insert2',
-      content: 'insert into cloud',
-      create_on: 1466734907559,
-      update_on: Date.now(),
-      zhihu_id: 2,
-      github_id: 3
-    }
-    let cloudPost = {
-      id: 'xyz',
-      title: 'insert',
-      content: 'insert into cloud',
-      create_on: 1466734907559,
-      update_on: 1466734908559,
-      jianshu_id: 4,
-      medium_id: 5
-    }
-    let post = CloudStorage.getCloudUpsert(cloudPost, localPost)
-    expect(post.content).to.not.exist
   })
 
   it('should contain cloud object id when inserting into local', function() {
@@ -209,5 +196,229 @@ describe('CloudStorage', function() {
       github_id: 3
     })
     expect(CloudStorage.isEqual(cloudPost, post)).to.be.false
+  })
+
+  it('should get empty array when comparing nothing', function() {
+    let result = CloudStorage.compare()
+    expect(result.cloud).to.be.empty
+    expect(result.local.insert).to.be.empty
+    expect(result.local.update).to.be.empty
+    expect(result.local.remove).to.be.empty
+  })
+
+  it('should get empty array when two clients are the same', function() {
+    let cloudPosts = [
+      {
+        id: 'xyz',
+        title: 'insert2',
+        content: 'insert into cloud2',
+        create_on: 1466734907559,
+        update_on: 1466734907559
+      }
+    ]
+    let localPosts = [
+      {
+        id: 1,
+        object_id: 'xyz',
+        title: 'insert2',
+        content: 'insert into cloud2',
+        create_on: 1466734907559,
+        update_on: 1466734907559
+      }
+    ]
+    let result = CloudStorage.compare(cloudPosts, localPosts)
+    expect(result.cloud).to.be.empty
+    expect(result.local.insert).to.be.empty
+    expect(result.local.update).to.be.empty
+    expect(result.local.remove).to.be.empty
+  })
+
+  it('should get an insert post when cloud do not own this post', function() {
+    let cloudPosts = []
+    let localPosts = [
+      {
+        id: 1,
+        title: 'insert2',
+        content: 'insert into cloud2',
+        create_on: 1466734907559,
+        update_on: 1466734907559
+      }
+    ]
+    let result = CloudStorage.compare(cloudPosts, localPosts)
+    expect(result.cloud.length).to.equal(1)
+    expect(result.cloud[0]).to.deep.equal({
+      title: 'insert2',
+      content: 'insert into cloud2',
+      create_on: 1466734907559,
+      update_on: 1466734907559
+    })
+    expect(result.local.insert).to.be.empty
+    expect(result.local.update).to.be.empty
+    expect(result.local.remove).to.be.empty
+  })
+
+  it('should get an update doc when two posts are not the same', function() {
+    let cloudPosts = [
+      {
+        id: 'xyz',
+        title: 'insert2',
+        content: 'insert into cloud2',
+        create_on: 1466734906559,
+        update_on: 1466734907559
+      }
+    ]
+    // 本地较旧
+    let localPosts = [
+      {
+        id: 1,
+        object_id: 'xyz',
+        title: 'insert2',
+        content: 'insert into cloud2',
+        create_on: 1466734906559,
+        update_on: 1466734906559
+      }
+    ]
+    let result = CloudStorage.compare(cloudPosts, localPosts)
+    expect(result.cloud).to.be.empty
+    expect(result.local.insert).to.be.empty
+    expect(result.local.update.length).to.equal(1)
+    expect(result.local.remove).to.be.empty
+    // 本地较新
+    localPosts[0].update_on = Date.now()
+    result = CloudStorage.compare(cloudPosts, localPosts)
+    expect(result.cloud.length).to.equal(1)
+    expect(result.local.insert).to.be.empty
+    expect(result.local.update).to.be.empty
+    expect(result.local.remove).to.be.empty
+  })
+
+  it('should update cloud platform info even cloud post is the newest', function() {
+    let cloudPosts = [
+      {
+        id: 'xyz',
+        title: 'insert2',
+        content: 'insert into cloud2',
+        create_on: 1466734906559,
+        update_on: 1466734907559,
+        zhihu_id: 2,
+        jianshu_id: 3
+      }
+    ]
+    // 本地较旧
+    let localPosts = [
+      {
+        id: 1,
+        object_id: 'xyz',
+        title: 'insert',
+        content: 'insert into cloud',
+        create_on: 1466734906559,
+        update_on: 1466734906559,
+        zhihu_id: 1,
+        medium_id: 4
+      }
+    ]
+    let result = CloudStorage.compare(cloudPosts, localPosts)
+    expect(result.cloud.length).to.equal(1)
+    expect(result.local.insert).to.be.empty
+    expect(result.local.update.length).to.equal(1)
+    expect(result.local.remove).to.be.empty
+    let cloud = result.cloud[0]
+    let local = result.local.update[0]
+    expect(cloud).to.deep.equal({
+      id: 'xyz',
+      title: 'insert2',
+      content: 'insert into cloud2',
+      create_on: 1466734906559,
+      update_on: 1466734907559,
+      zhihu_id: 2,
+      jianshu_id: 3,
+      medium_id: 4
+    })
+    expect(local).to.deep.equal({
+      id: 1,
+      object_id: 'xyz',
+      title: 'insert2',
+      content: 'insert into cloud2',
+      create_on: 1466734906559,
+      update_on: 1466734907559,
+      zhihu_id: 2,
+      jianshu_id: 3,
+      medium_id: 4
+    })
+  })
+
+  it('should update local platform info even local post is the newest', function() {
+    let cloudPosts = [
+      {
+        id: 'xyz',
+        title: 'insert',
+        content: 'insert into cloud',
+        create_on: 1466734906559,
+        update_on: 1466734906559,
+        zhihu_id: 2,
+        jianshu_id: 3
+      }
+    ]
+    // 本地较新
+    let localPosts = [
+      {
+        id: 1,
+        object_id: 'xyz',
+        title: 'insert2',
+        content: 'insert into cloud2',
+        create_on: 1466734906559,
+        update_on: 1466734907559,
+        zhihu_id: 1,
+        medium_id: 4
+      }
+    ]
+    let result = CloudStorage.compare(cloudPosts, localPosts)
+    expect(result.cloud.length).to.equal(1)
+    expect(result.local.insert).to.be.empty
+    expect(result.local.update.length).to.equal(1)
+    expect(result.local.remove).to.be.empty
+    let cloud = result.cloud[0]
+    let local = result.local.update[0]
+    expect(cloud).to.deep.equal({
+      id: 'xyz',
+      title: 'insert2',
+      content: 'insert into cloud2',
+      create_on: 1466734906559,
+      update_on: 1466734907559,
+      zhihu_id: 1,
+      jianshu_id: 3,
+      medium_id: 4
+    })
+    expect(local).to.deep.equal({
+      id: 1,
+      object_id: 'xyz',
+      title: 'insert2',
+      content: 'insert into cloud2',
+      create_on: 1466734906559,
+      update_on: 1466734907559,
+      zhihu_id: 1,
+      jianshu_id: 3,
+      medium_id: 4
+    })
+  })
+
+  it('should insert into local when cloud post not found', function() {
+    let cloudPosts = [
+      {
+        id: 'xyz',
+        title: 'insert',
+        content: 'insert into cloud',
+        create_on: 1466734906559,
+        update_on: 1466734906559,
+        zhihu_id: 2,
+        jianshu_id: 3
+      }
+    ]
+    let localPosts = []
+    let result = CloudStorage.compare(cloudPosts, localPosts)
+    expect(result.cloud.length).to.equal(0)
+    expect(result.local.insert.length).to.equal(1)
+    expect(result.local.update).to.be.empty
+    expect(result.local.remove).to.be.empty
   })
 })

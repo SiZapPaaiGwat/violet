@@ -46,22 +46,31 @@ export function mergePlatformInfo(cloudPost, localPost) {
   SYNC_PLATFORMS.map(key => {
     return `${key}_id`
   }).forEach(key => {
-    let value = cloudPost[key] || localPost[key]
-    if (value) {
-      info[key] = value
+    // 如果有冲突
+    if (cloudPost && cloudPost[key] && localPost[key]) {
+      if (cloudPost.update_on >= localPost.update_on) {
+        info[key] = cloudPost[key]
+      } else {
+        info[key] = localPost[key]
+      }
+    } else {
+      let value = (cloudPost && cloudPost[key]) || localPost[key]
+      if (value) {
+        info[key] = value
+      }
     }
   })
   return info
 }
 
 /**
- * 获取云端更新对象
+ * 获取云端更新对象（post较新）
  * 可能更新也可能插入
  * NOTE 云端数据同步时始终不删除，由特定删除操作触发才删除
  */
 export function getCloudUpsert(cloudPost, post) {
   let item = {
-    ...mergePlatformInfo(post, cloudPost),
+    ...mergePlatformInfo(cloudPost, post),
     title: post.title,
     create_on: cloudPost ? cloudPost.create_on : post.create_on,
     update_on: post.update_on
@@ -69,10 +78,16 @@ export function getCloudUpsert(cloudPost, post) {
   if (cloudPost) {
     item.id = cloudPost.id
   }
-  // content数据量可能比较大，能不更新就不更新
-  if (!cloudPost || cloudPost.content !== post.content) {
+  // reducing request payload in non-test env
+  if (process.env.NODE_ENV === 'test') {
     item.content = post.content
+  } else {
+    // content数据量可能比较大，能不更新就不更新
+    if (!cloudPost || cloudPost.content !== post.content) {
+      item.content = post.content
+    }
   }
+
   return item
 }
 
@@ -165,7 +180,7 @@ export function compare(cloudPosts = [], localPosts = []) {
     // 本地较新，更新云端（平台不一致本地也更新）
     let upsert = getCloudUpsert(cloudPost, item)
     cloud.push(upsert)
-    // 如果更新到云端的数据不完全和本地一直，也更新本地数据
+    // 云端content默认无差别不更新（减少payload）
     let post = Object.assign({
       content: item.content
     }, upsert)
