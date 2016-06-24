@@ -31,3 +31,5 @@ export const AUTO_SAVING_STORE_PERIOD = 250
 export const AUTO_SAVING_DATABASE_PERIOD = 3000
 
 export const REQUEST_TIMEOUT = CONST.REQUEST_TIMEOUT
+
+export const UID = 'uid'

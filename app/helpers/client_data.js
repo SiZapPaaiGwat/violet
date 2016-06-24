@@ -1,5 +1,5 @@
 import {encrypt, decrypt} from './aes'
-import {SYNC_PLATFORMS} from '../helpers/const'
+import {SYNC_PLATFORMS, UID} from '../helpers/const'
 
 // 获取帐号配置信息
 export function getAccountMap() {
@@ -30,4 +30,17 @@ export function updateAccount(platform, account) {
 
 export function removeAccountByPlatform(platform) {
   localStorage.removeItem(platform)
+}
+
+export function getUid() {
+  let uid = localStorage.getItem(UID)
+  try {
+    return uid && decrypt(uid)
+  } catch (err) {
+    return uid
+  }
+}
+
+export function setUid(uid) {
+  localStorage.setItem(UID, encrypt(uid))
 }

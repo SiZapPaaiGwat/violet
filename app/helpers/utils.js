@@ -17,3 +17,8 @@ export function getMarkdownTitle(text = '') {
 export function normalizeMarkdownContent(text) {
   return text.trim().replace(HEADING_REG, '').trim()
 }
+
+// TODO
+export function generateUUID() {
+  return ''
+}

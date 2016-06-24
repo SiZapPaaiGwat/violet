@@ -6,7 +6,7 @@
 import AV from 'leancloud-storage'
 import _ from 'lodash'
 import {SYNC_PLATFORMS} from './const'
-
+// TODO store in env
 const APP_ID = 'NvXAKPjls3var5LvgsMtYCn3-gzGzoHsz'
 
 const APP_KEY = 'mJNhQagXGiO2Yjj59ixEVKYR'
@@ -18,17 +18,14 @@ export function init() {
   })
 }
 
-export function query(platform, username) {
+export function query(key, value) {
   let q = new AV.query('posts')
-  if (!platform || !username) {
+  if (!key || !value) {
     return Promise.reject(new Error('查询参数错误'))
   }
 
-  if (SYNC_PLATFORMS.indexOf(platform) === -1) {
-    return Promise.reject(new Error('查询平台参数错误'))
-  }
-
-  q.equalTo(platform, username)
+  q.equalTo(key, value)
+  q.limit(256)
   return q.find()
 }
 
