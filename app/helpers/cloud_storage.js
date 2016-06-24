@@ -165,8 +165,16 @@ export function compare(cloudPosts = [], localPosts = []) {
       return
     }
 
-    // 本地较新，更新云端
-    cloud.push(getCloudUpsert(cloudPost, item))
+    // 本地较新，更新云端（平台不一致本地也更新）
+    let upsert = getCloudUpsert(cloudPost, item)
+    cloud.push(upsert)
+    // 如果更新到云端的数据不完全和本地一直，也更新本地数据
+    let post = Object.assign({
+      content: item.content
+    }, upsert)
+    if (!isEqual(post, item)) {
+      local.update.push(getLocalUpdate(post, item))
+    }
   })
 
   local.insert = cloudPosts.filter(post => {
