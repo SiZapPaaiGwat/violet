@@ -23,10 +23,15 @@ export function listPosts() {
   })
 }
 
+// 调用者自己判断更新时间是否大于创建时间
 export function updatePost(id, params) {
+  let {updateOn} = params
+  if (!updateOn) {
+    updateOn = Date.now()
+  }
   return db.posts.update(id, {
     ...params,
-    update_on: Date.now()
+    update_on: updateOn
   })
 }
 

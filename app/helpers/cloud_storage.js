@@ -33,7 +33,7 @@ export function query(platform, username) {
 }
 
 export function isEqual(cloudPost, localPost) {
-  return _.every(['title', 'content'], key => {
+  return _.every(SYNC_PLATFORMS.concat('title', 'content', 'update_on'), key => {
     return localPost[key] === cloudPost[key]
   })
 }
@@ -47,37 +47,91 @@ export function mergePlatformInfo(cloudPost, localPost) {
 }
 
 /**
- * 获取需要同步到云端作品
- * 只有两种情况：
- * 1)本地还没有同步到云端，直接到云端插入
- * 2)本地已经同步到云端，当与云端内容不一致且更新时间比云端大，直接更新云端
+ * 获取云端更新对象
+ * 可能更新也可能插入
+ * NOTE 云端数据同步时始终不删除，由特定删除操作触发才删除
  */
-export function getCloudUpsertPosts(cloudPosts = [], localPosts = []) {
-  // 还没有上传的作品
-  let upsertPosts = []
-  let updateOn = Date.now()
-  let push = (post) => {
-    let item = {
-      ...post,
-      update_on: updateOn
+export function getCloudUpsert(post, cloudPost) {
+  let item = {
+    ...mergePlatformInfo(post, cloudPost),
+    title: post.title,
+    content: post.content,
+    create_on: cloudPost.create_on,
+    update_on: cloudPost ? post.update_on : Date.now()
+  }
+  if (cloudPost) {
+    item.id = cloudPost.id
+  }
+  return item
+}
+
+/**
+ * 从云端作品插入到本地
+ */
+export function getLocalInsert(cloudPost) {
+  return {
+    ...cloudPost,
+    id: null
+  }
+}
+
+/**
+ * 从云端作品更新本地作品
+ */
+export function getLocalUpdateParams(cloudPost, localPost) {
+  let params = {
+    id: localPost.id
+  }
+  for (let key in localPost) {
+    if (key === 'id' || key === 'object_id') {
+      continue
     }
-    delete item.id
-    delete item.object_id
-    upsertPosts.push(item)
-    return item
+
+    if (cloudPost[key] !== localPost[key]) {
+      params[key] = cloudPost[key]
+    }
+  }
+  return params
+}
+
+/**
+ * 云端更新
+ * 两种情况：
+ * 1)本地未同步的直接插入
+ * 2)本地已同步的更新时间大于云端时间
+ *
+ * 本地更新
+ * 三种情况：
+ * 1) 本地已同步的更新时间小于云端时间
+ * 2) 本地已同步，但云端已经删除
+ * 3) 本地还没有此记录
+ *
+ * @return {Object} {cloud: [], local: {remove, insert, update}}
+ */
+export function compare(cloudPosts = [], localPosts = []) {
+  // 还没有上传的作品
+  let cloud = []
+  let local = {
+    remove: [],
+    insert: [],
+    update: []
   }
 
+  let localObjectIdList = []
   localPosts.forEach(item => {
-    // 本地作品还没同步过
+    // 未同步，云端插入
     if (!item.object_id) {
-      push(item)
+      cloud.push(getCloudUpsert(item))
       return
     }
+
+    localObjectIdList.push(item.object_id)
 
     let cloudPost = _.find(cloudPosts, {id: item.object_id})
 
     // 云端作品已经被删除，此时需要删除本地作品
     if (!cloudPost) {
+      local.remove.push(item.id)
       return
     }
 
@@ -88,24 +142,19 @@ export function getCloudUpsertPosts(cloudPosts = [], localPosts = []) {
 
     // 服务端新，需要更新本地作品
     if (cloudPost.update_on >= item.update_on) {
+      local.update.push(getLocalUpdateParams(cloudPost, item))
       return
     }
 
     // 本地较新，更新云端
-    let post = push(item)
-    post.id = item.object_id
+    cloud.push(getCloudUpsert(item, cloudPost))
   })
 
-  return upsertPosts
-}
+  local.insert = cloudPosts.filter(post => {
+    return localObjectIdList.indexOf(post.id) === -1
+  }).map(post => {
+    return getLocalInsert(post)
+  })
 
-/**
- * 获取本地需要更新的数据
- * 本地数据更新有三种情况：
- * 1) 作品已经同步，需要更新本地信息
- * 2) 作品已经同步，云端已经删除，需要删除本地
- * 3) 需要在本地插入数据
- */
-export function getLocalUpsertPosts() {
-
+  return {cloud, local}
 }
