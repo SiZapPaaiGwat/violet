@@ -421,4 +421,57 @@ describe('CloudStorage', function() {
     expect(result.local.update).to.be.empty
     expect(result.local.remove).to.be.empty
   })
+
+  it('should tell us local posts that insert into cloud must update field object_id', function() {
+    let cloudPosts = [
+      {
+        id: 'xyz',
+        title: 'insert',
+        content: 'insert into cloud',
+        create_on: 1466734906559,
+        update_on: 1466734906559,
+        zhihu_id: 2,
+        jianshu_id: 3
+      }
+    ]
+    let localPosts = [
+      {
+        id: 1,
+        title: 'insert1',
+        content: 'insert into cloud1',
+        create_on: 1466734906559,
+        update_on: 1466734906559,
+        zhihu_id: 2,
+        jianshu_id: 3
+      },
+      {
+        id: 2,
+        object_id: 'xyz',
+        title: 'insert2',
+        content: 'insert into cloud2',
+        create_on: 1466734906559,
+        update_on: 1466734907559,
+        zhihu_id: 2,
+        jianshu_id: 3
+      }, {
+        id: 3,
+        title: 'insert3',
+        content: 'insert into cloud3',
+        create_on: 1466734906559,
+        update_on: 1466734906559,
+        zhihu_id: 2,
+        jianshu_id: 3
+      }
+    ]
+    let {cloud, local, indexes} = CloudStorage.compare(cloudPosts, localPosts)
+    let {insert, update, remove} = local
+    expect(cloud.length).to.equal(3)
+    expect(insert).to.be.empty
+    expect(update).to.be.empty
+    expect(remove).to.be.empty
+    expect(indexes).to.deep.equal({
+      0: 1,
+      2: 3
+    })
+  })
 })

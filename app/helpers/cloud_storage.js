@@ -50,6 +50,9 @@ export function signin({email, password}) {
   return AV.User.logIn(email, password)
 }
 
+/**
+ * 对比两个作品的关键字段，看是否需要更新
+ */
 export function isEqual(cloudPost, localPost) {
   let keys = SYNC_PLATFORMS.map(key => {
     return `${key}_id`
@@ -59,6 +62,11 @@ export function isEqual(cloudPost, localPost) {
   })
 }
 
+/**
+ * 合并平台信息
+ * 平台信息不能简单覆盖，能合并则合并
+ * 有冲突取更新时间最近的
+ */
 export function mergePlatformInfo(cloudPost, localPost) {
   let info = {}
   SYNC_PLATFORMS.map(key => {
@@ -82,9 +90,8 @@ export function mergePlatformInfo(cloudPost, localPost) {
 }
 
 /**
- * 获取云端更新对象（post较新）
- * 可能更新也可能插入
- * NOTE 云端数据同步时始终不删除，由特定删除操作触发才删除
+ * 本地数据较新，更新到云端（插入或者更新）
+ * 云端数据同步过程中不执行删除操作
  */
 export function getCloudUpsert(cloudPost, post) {
   let item = {
@@ -96,11 +103,11 @@ export function getCloudUpsert(cloudPost, post) {
   if (cloudPost) {
     item.id = cloudPost.id
   }
-  // reducing request payload in non-test env
+  // content数据量可能比较大，能不更新就不更新
+  // 测试环境始终填上避免测试失败
   if (process.env.NODE_ENV === 'test') {
     item.content = post.content
   } else {
-    // content数据量可能比较大，能不更新就不更新
     if (!cloudPost || cloudPost.content !== post.content) {
       item.content = post.content
     }
@@ -111,10 +118,8 @@ export function getCloudUpsert(cloudPost, post) {
 
 /**
  * 从云端作品更新/插入本地作品
- * NOTE
  * title/content/update_on/object_id可以直接使用云端数据覆盖
- * 平台作品id因为涉及到帐号切换问题可能两端不一致
- * 还有本地平台作品id数据可能比云端丰富是否需要更新？
+ * 这里需要返回全部字段，因为可能调用dexie的bulkPut
  */
 export function getLocalUpsert(cloudPost, localPost) {
   if (localPost) {
@@ -219,6 +224,9 @@ export function compare(cloudPosts = [], localPosts = []) {
   return {cloud, local, indexes: cloudInsertIndexMap}
 }
 
+/**
+ * 将云端数据净化为普通对象便于对比
+ */
 export function purify(originalCloudPost) {
   let post = {}
   DATABASE_FIELD_LIST.forEach(key => {
@@ -235,6 +243,9 @@ export function purify(originalCloudPost) {
   return post
 }
 
+/**
+ * 批量执行更新或插入
+ */
 export function sync(cloudPosts = []) {
   let posts = cloudPosts.map(item => {
     let post = new Post()
