@@ -1,9 +1,11 @@
 import * as DataUtils from '../helpers/client_data'
 
 export default {
-  // 打开哪些帐号设置（展示）页面，为空则展示编辑器页面
+  /**
+   * 这里用于右侧面板展示内容控制，为空表示展示Markdown编辑器
+   * github/medium/zhihu/jianshu/register/user_center对应各自的组件
+   */
   settings: {
-    // 打开哪个弹窗，zhihu,github
     name: ''
   },
   posts: {

@@ -3,7 +3,7 @@
  *
  */
 
-import AV from 'leancloud-storage'
+import AV from 'leancloud-storage/dist/av-es6'
 import _ from 'lodash'
 import {SYNC_PLATFORMS} from './const'
 // TODO store in env
@@ -11,12 +11,10 @@ const APP_ID = 'NvXAKPjls3var5LvgsMtYCn3-gzGzoHsz'
 
 const APP_KEY = 'mJNhQagXGiO2Yjj59ixEVKYR'
 
-export function init() {
-  AV.init({
-    appId: APP_ID,
-    appKey: APP_KEY
-  })
-}
+AV.init({
+  appId: APP_ID,
+  appKey: APP_KEY
+})
 
 export function query(key, value) {
   let q = new AV.query('posts')
@@ -27,6 +25,18 @@ export function query(key, value) {
   q.equalTo(key, value)
   q.limit(256)
   return q.find()
+}
+
+export function getCurrentUser() {
+  return AV.User.current()
+}
+
+export function signup({email, password}) {
+  let user = new AV.User()
+  user.setUsername(email)
+  user.setPassword(password)
+  user.setEmail(email)
+  return user.signUp()
 }
 
 export function isEqual(cloudPost, localPost) {
@@ -193,4 +203,9 @@ export function compare(cloudPosts = [], localPosts = []) {
   })
 
   return {cloud, local}
+}
+
+export function syncNow(cloudPosts, localPosts) {
+  let task = compare(cloudPosts, localPosts)
+  return task
 }

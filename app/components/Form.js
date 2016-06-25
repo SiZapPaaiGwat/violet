@@ -5,8 +5,15 @@ import _ from 'lodash'
 export default React.createClass({
   propTypes: {
     onSubmit: PropTypes.func,
+    btnText: PropTypes.string,
     extends: PropTypes.array.isRequired,
     isLoading: PropTypes.bool.isRequired
+  },
+
+  getDefaultProps() {
+    return {
+      btnText: '立即保存'
+    }
   },
 
   handleSubmit(e) {
@@ -48,7 +55,7 @@ export default React.createClass({
             disabled={this.props.isLoading}
             className={`${styles.btn} ${styles.btnBorderOpen} ${styles.btnPurple}`}
           >
-            {this.props.isLoading ? '正在保存...' : '立即保存'}
+            {this.props.isLoading ? '正在保存...' : this.props.btnText}
           </button>
         </section>
       </form>

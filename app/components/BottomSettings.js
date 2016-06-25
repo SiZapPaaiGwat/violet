@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react'
 import * as DbUtils from '../helpers/database'
+import * as CloudUtils from '../helpers/cloud_storage'
 import {DEFAULT_TITLE, DEFAULT_CONTENT, SUPPORT_PLATFORM_LIST} from '../helpers/const'
 import styles from './BottomSettings.css'
 import globalStyles from '../css/global.css'
@@ -32,6 +33,19 @@ export default React.createClass({
     }).catch(err => {
       App.alert('新建作品失败', err.message)
     })
+  },
+
+  handleSyncCloud() {
+    let user = CloudUtils.getCurrentUser()
+    if (!user) {
+      this.props.actions.settingsShow({
+        name: 'register'
+      })
+    } else {
+      this.props.actions.settingsShow({
+        name: 'user_center'
+      })
+    }
   },
 
   renderPlatforms() {
@@ -67,6 +81,9 @@ export default React.createClass({
         </div>
 
         <div style={{cssFloat: 'right'}}>
+          <a href="javascript:;" onClick={this.handleSyncCloud}>
+            <i className={globalStyles.iconfont}>&#xe692;</i>
+          </a>
           <a
             onClick={this.handleCreate}
             className={status.create ? '' : styles.clickableless}

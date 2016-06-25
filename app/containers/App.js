@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react'
 import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
+import Register from '../components/Register'
 import MarkdownArea from '../components/MarkdownArea'
 import SyncNotifier from '../components/SyncNotifier'
 import * as DbUtils from '../helpers/database'
@@ -86,7 +87,16 @@ export default React.createClass({
     // }
 
     let states = this.props.states
-    let DynamicComponent = createLoginPage(states.settings.name) || MarkdownArea
+    let DynamicComponent = createLoginPage(states.settings.name)
+    if (!DynamicComponent) {
+      if (states.settings.name === 'register') {
+        DynamicComponent = Register
+      } else if (states.settings.name === 'user_center') {
+        DynamicComponent = Register
+      } else {
+        DynamicComponent = MarkdownArea
+      }
+    }
     let notifier = states.notifier
 
     return (
