@@ -11,7 +11,7 @@ import {SyncFactory} from '../../electron/ipc_render'
 function syncPostByAccount({account, post}) {
   let keys = Object.keys(account)
   if (keys.length > 1) {
-    throw new Error('一次只能同步一个平台的数据')
+    throw new Error('一次只能发布一个平台的数据')
   }
 
   let title = utils.getMarkdownTitle(post.content)
@@ -76,14 +76,14 @@ export function getSyncedPlatforms(post) {
 export function getSyncedTooltip(post) {
   let syncList = getSyncedPlatforms(post)
   if (syncList.length === 0) {
-    return '作品尚未同步'
+    return '作品尚未发布'
   }
 
   let labels = syncList.map(item => {
     return SUPPORT_PLATFORM_MAP[item].label
   })
 
-  return `${labels.join(',')}已同步`
+  return `${labels.join(',')}已发布`
 }
 
 /**

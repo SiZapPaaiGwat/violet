@@ -30,12 +30,12 @@ export default React.createClass({
     let account = getSyncablePlatforms(states.account)
     let taskNum = Object.keys(account).length
     if (taskNum === 0) {
-      App.alert('没有可以同步的平台', '请至少添加一个平台帐号信息（Medium平台暂不支持编辑）')
+      App.alert('没有可以发布的平台', '请至少添加一个平台帐号信息（Medium平台暂不支持编辑）')
       return
     }
 
     if (isNotifierRunning(states.notifier)) {
-      App.alert('同步任务正在进行', '请等待此任务完成后再尝试')
+      App.alert('作品正在发布', '请等待此任务完成后再尝试')
       return
     }
 
@@ -111,7 +111,7 @@ export default React.createClass({
           className={styles.sync}
           style={{display: post.id === selected.id ? 'block' : 'none'}}
           href="javascript:;"
-          title="同步当前作品"
+          title="发布当前作品"
         >
           <i className={globalStyles.iconfont}>&#xe6a2;</i>
         </a>
@@ -141,7 +141,7 @@ export default React.createClass({
         </div>
       )
     })
-    let el = posts.length ? list : <div className={styles.noPost}>还没有任何作品</div>
+    let el = posts.length ? list : <div className={styles.noPost}>正在加载作品列表...</div>
     return (
       <div className={styles.postContainer}>
         {el}
