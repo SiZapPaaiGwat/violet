@@ -8,7 +8,7 @@ import * as DbUtils from '../helpers/database'
 import _ from 'lodash'
 import 'brace'
 import 'brace/mode/markdown'
-import 'brace/theme/dreamweaver'
+import 'brace/theme/crimson_editor'
 import styles from './MarkdownArea.css'
 
 export default React.createClass({
@@ -79,7 +79,7 @@ export default React.createClass({
           width="100%"
           height="100%"
           mode="markdown"
-          theme="dreamweaver"
+          theme="crimson_editor"
           value={editorValue}
           name="editor"
           showGutter={false}

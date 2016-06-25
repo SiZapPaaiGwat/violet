@@ -9,7 +9,7 @@
 @value emTextColor: #454545;
 @value textColor: #696969;
 @value baseTextColor: rgba(0, 0, 0, 0.8);
-@value baseBgColor: #f5f5f5;
+@value baseBgColor: #fff;
 @value notifierHeadHeight: 63px;
 
 :root {
