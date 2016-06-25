@@ -45,7 +45,9 @@ const config = {
     new webpack.DefinePlugin({
       __DEV__: true,
       'process.env': {
-        NODE_ENV: JSON.stringify('development')
+        NODE_ENV: JSON.stringify('development'),
+        APP_ID: JSON.stringify('NvXAKPjls3var5LvgsMtYCn3'),
+        APP_KEY: JSON.stringify('mJNhQagXGiO2Yjj59ixEVKYR')
       }
     }),
     new ExtractTextPlugin('style.css', {allChunks: true})

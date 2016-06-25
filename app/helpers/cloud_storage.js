@@ -6,15 +6,16 @@
 import AV from 'leancloud-storage/dist/av-es6'
 import _ from 'lodash'
 import {SYNC_PLATFORMS} from './const'
-// TODO store in env
-const APP_ID = 'NvXAKPjls3var5LvgsMtYCn3-gzGzoHsz'
 
-const APP_KEY = 'mJNhQagXGiO2Yjj59ixEVKYR'
+const APP_ID = process.env.APP_ID
+const APP_KEY = process.env.APP_KEY
 
-AV.init({
-  appId: APP_ID,
-  appKey: APP_KEY
-})
+export function init() {
+  AV.init({
+    appId: APP_ID,
+    appKey: APP_KEY
+  })
+}
 
 export function query(key, value) {
   let q = new AV.query('posts')

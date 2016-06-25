@@ -6,6 +6,7 @@ import UserCenter from '../components/UserCenter'
 import MarkdownArea from '../components/MarkdownArea'
 import SyncNotifier from '../components/SyncNotifier'
 import * as DbUtils from '../helpers/database'
+import * as CloudUtils from '../helpers/cloud_storage'
 import {DEFAULT_TITLE, DEFAULT_CONTENT} from '../helpers/const'
 import createLoginPage from '../helpers/create_login/CreateLogin'
 import Alert from 'sweetalert2'
@@ -17,6 +18,7 @@ export default React.createClass({
   },
 
   componentDidMount() {
+    CloudUtils.init()
     App.alert = (title = 'oops', text = '遇到了一点问题', type = 'error') => {
       if (typeof title === 'string') {
         Alert({

@@ -8,8 +8,6 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 const config = {
   ...baseConfig,
 
-  // devtool: 'source-map',
-
   entry: './app/index',
 
   output: {
@@ -39,15 +37,17 @@ const config = {
     new webpack.DefinePlugin({
       __DEV__: false,
       'process.env': {
-        NODE_ENV: JSON.stringify('production')
+        NODE_ENV: JSON.stringify('production'),
+        APP_ID: JSON.stringify(process.env.LEANCLOUD_APP_ID),
+        APP_KEY: JSON.stringify(process.env.LEANCLOUD_APP_KEY)
       }
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compressor: {
-    //     screw_ie8: true,
-    //     warnings: false
-    //   }
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        screw_ie8: true,
+        warnings: false
+      }
+    }),
     new ExtractTextPlugin('style.css', {allChunks: true})
   ],
 
