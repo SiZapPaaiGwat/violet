@@ -1,5 +1,5 @@
 import {encrypt, decrypt} from './aes'
-import {SYNC_PLATFORMS, UID} from '../helpers/const'
+import {SYNC_PLATFORMS} from '../helpers/const'
 
 // 获取帐号配置信息
 export function getAccountMap() {
