@@ -1,10 +1,10 @@
 import Database from 'dexie'
-import {SYNC_PLATFORMS} from './const'
+import {DATABASE_FIELD_LIST} from './const'
 
 export let db = new Database('violet')
 
 db.version(1).stores({
-  posts: `++id, object_id, title, content, create_on, update_on, ${SYNC_PLATFORMS.join(', ')}`
+  posts: `++${DATABASE_FIELD_LIST.join(', ')}`
 })
 
 export function createPost(title, content, params = {}, now = Date.now()) {
@@ -24,12 +24,12 @@ export function listPosts() {
 }
 
 // 调用者自己判断更新时间是否大于创建时间
-export function updatePost(id, params) {
+export function updatePost(id, params, isSilentUpdate = false) {
   let {updateOn} = params
   if (!updateOn) {
     updateOn = Date.now()
   }
-  return db.posts.update(id, {
+  return db.posts.update(id, isSilentUpdate ? params : {
     ...params,
     update_on: updateOn
   })
@@ -37,4 +37,18 @@ export function updatePost(id, params) {
 
 export function deletePost(key) {
   return db.posts.delete(key)
+}
+
+export function bulk(inserts = [], updates = [], deletes = []) {
+  let task = []
+  if (inserts.length) {
+    task.push(db.posts.bulkAdd(inserts))
+  }
+  if (updates.length) {
+    task.push(db.posts.bulkPut(updates))
+  }
+  if (deletes.length) {
+    task.push(db.posts.bulkDelete(deletes))
+  }
+  return Promise.all(task)
 }

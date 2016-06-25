@@ -5,25 +5,27 @@
 
 import AV from 'leancloud-storage/dist/av-es6'
 import _ from 'lodash'
-import {SYNC_PLATFORMS} from './const'
+import {SYNC_PLATFORMS, DATABASE_FIELD_LIST} from './const'
 
 const APP_ID = process.env.APP_ID
 const APP_KEY = process.env.APP_KEY
+
+let Post = null
 
 export function init() {
   AV.init({
     appId: APP_ID,
     appKey: APP_KEY
   })
+
+  Post = AV.Object.extend('posts')
 }
 
 export function query(key, value) {
-  let q = new AV.query('posts')
-  if (!key || !value) {
-    return Promise.reject(new Error('查询参数错误'))
+  let q = new AV.Query('posts')
+  if (key && value) {
+    q.equalTo(key, value)
   }
-
-  q.equalTo(key, value)
   q.limit(256)
   return q.find()
 }
@@ -127,11 +129,12 @@ export function getLocalUpsert(cloudPost, localPost) {
     }
   }
 
-  return {
+  let post = {
     ...cloudPost,
-    object_id: cloudPost.id,
-    id: null
+    object_id: cloudPost.id
   }
+  delete post.id
+  return post
 }
 
 /**
@@ -156,12 +159,14 @@ export function compare(cloudPosts = [], localPosts = []) {
     insert: [],
     update: []
   }
+  let cloudInsertIndexMap = {}
 
   let localObjectIdList = []
   localPosts.forEach(item => {
     // 未同步，云端插入
     if (!item.object_id) {
       cloud.push(getCloudUpsert(null, item))
+      cloudInsertIndexMap[cloud.length - 1] = item.id
       return
     }
 
@@ -211,10 +216,32 @@ export function compare(cloudPosts = [], localPosts = []) {
     return getLocalUpsert(post)
   })
 
-  return {cloud, local}
+  return {cloud, local, indexes: cloudInsertIndexMap}
 }
 
-export function syncNow(cloudPosts, localPosts) {
-  let task = compare(cloudPosts, localPosts)
-  return task
+export function purify(originalCloudPost) {
+  let post = {}
+  DATABASE_FIELD_LIST.forEach(key => {
+    if (key === 'object_id') {
+      return
+    }
+
+    let value = originalCloudPost.get(key)
+    if (value) {
+      post[key] = value
+    }
+  })
+
+  return post
+}
+
+export function sync(cloudPosts = []) {
+  let posts = cloudPosts.map(item => {
+    let post = new Post()
+    for (let key in item) {
+      post.set(key, item[key])
+    }
+    return post
+  })
+  return AV.Object.saveAll(posts)
 }
