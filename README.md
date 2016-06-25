@@ -74,6 +74,8 @@
 
 截图：
 
+![macOS](https://pic4.zhimg.com/76275ac88b0e26ab71943447b35331a5_r.jpg)
+
 ![Linux](https://pic2.zhimg.com/153f8d8cda1d4b7b95e53e3375c26fc3_r.png)
 
 ## 名称来源
