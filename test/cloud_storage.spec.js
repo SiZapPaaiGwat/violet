@@ -422,7 +422,7 @@ describe('CloudStorage', function() {
     expect(result.local.remove).to.be.empty
   })
 
-  it('should tell us local posts that insert into cloud must update field object_id', function() {
+  it('should update local post insert to cloud and get local outdated post removed', function() {
     let cloudPosts = [
       {
         id: 'xyz',
@@ -437,6 +437,7 @@ describe('CloudStorage', function() {
     let localPosts = [
       {
         id: 1,
+        object_id: 'deleted',
         title: 'insert1',
         content: 'insert into cloud1',
         create_on: 1466734906559,
@@ -465,13 +466,12 @@ describe('CloudStorage', function() {
     ]
     let {cloud, local, indexes} = CloudStorage.compare(cloudPosts, localPosts)
     let {insert, update, remove} = local
-    expect(cloud.length).to.equal(3)
+    expect(cloud.length).to.equal(2)
     expect(insert).to.be.empty
     expect(update).to.be.empty
-    expect(remove).to.be.empty
+    expect(remove.length).to.equal(1)
     expect(indexes).to.deep.equal({
-      0: 1,
-      2: 3
+      1: 3
     })
   })
 })
