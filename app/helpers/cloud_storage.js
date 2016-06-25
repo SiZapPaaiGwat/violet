@@ -39,6 +39,14 @@ export function signup({email, password}) {
   return user.signUp()
 }
 
+export function logout() {
+  AV.User.logOut()
+}
+
+export function signin({email, password}) {
+  return AV.User.logIn(email, password)
+}
+
 export function isEqual(cloudPost, localPost) {
   let keys = SYNC_PLATFORMS.map(key => {
     return `${key}_id`

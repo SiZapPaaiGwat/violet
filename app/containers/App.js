@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react'
 import PostList from '../components/PostList'
 import BottomSettings from '../components/BottomSettings'
 import Register from '../components/Register'
+import UserCenter from '../components/UserCenter'
 import MarkdownArea from '../components/MarkdownArea'
 import SyncNotifier from '../components/SyncNotifier'
 import * as DbUtils from '../helpers/database'
@@ -92,7 +93,7 @@ export default React.createClass({
       if (states.settings.name === 'register') {
         DynamicComponent = Register
       } else if (states.settings.name === 'user_center') {
-        DynamicComponent = Register
+        DynamicComponent = UserCenter
       } else {
         DynamicComponent = MarkdownArea
       }

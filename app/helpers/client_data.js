@@ -31,16 +31,3 @@ export function updateAccount(platform, account) {
 export function removeAccountByPlatform(platform) {
   localStorage.removeItem(platform)
 }
-
-export function getUid() {
-  let uid = localStorage.getItem(UID)
-  try {
-    return uid && decrypt(uid)
-  } catch (err) {
-    return uid
-  }
-}
-
-export function setUid(uid) {
-  localStorage.setItem(UID, encrypt(uid))
-}
