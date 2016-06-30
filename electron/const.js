@@ -8,9 +8,7 @@ export const SUPPORT_PLATFORM_MAP = {
     logoutUrl: 'https://www.zhihu.com/logout',
     loggedInUrl: 'https://zhuanlan.zhihu.com/',
     domain: 'zhihu.com',
-    csrfTokenName: 'X-XSRF-TOKEN',
-    // 删除此cookie即注销
-    cookieName: 'z_c0'
+    csrfTokenName: 'X-XSRF-TOKEN'
   },
   medium: {
     name: 'medium',
@@ -30,8 +28,7 @@ export const SUPPORT_PLATFORM_MAP = {
     logoutUrl: 'http://www.jianshu.com/',
     loggedInUrl: 'http://www.jianshu.com/',
     domain: 'jianshu.com',
-    csrfTokenName: 'X-CSRF-Token',
-    cookieName: '_session_id,remember_user_token'
+    csrfTokenName: 'X-CSRF-Token'
   }
 }
 

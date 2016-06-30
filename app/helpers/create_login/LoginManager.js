@@ -3,7 +3,6 @@ import LoginStatus from '../../components/LoginStatus'
 import {parseWebviewCookiesByDomain} from '../../../electron/ipc_render'
 import * as DataUtils from '../client_data'
 import styles from './CreateLogin.css'
-// import {SUPPORT_PLATFORM_MAP} from '../const'
 
 export default React.createClass({
   propTypes: {
@@ -80,7 +79,6 @@ export default React.createClass({
     let clientData
     parseWebviewCookiesByDomain(session, this.props.domain)
     .then(cookie => {
-      console.log(cookie)
       // 需要从cookie中提取一些数据比如token
       clientData = this.props.transformCookie(cookie)
       return this.props.whoAmI({
