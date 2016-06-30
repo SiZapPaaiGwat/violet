@@ -25,6 +25,8 @@ export const SUPPORT_PLATFORM_MAP = {
     name: 'jianshu',
     label: '简书',
     loginUrl: 'http://www.jianshu.com/sign_in',
+    // 登录授权页
+    authUrl: 'https://api.weibo.com/',
     logoutUrl: 'http://www.jianshu.com/',
     loggedInUrl: 'http://www.jianshu.com/',
     domain: 'jianshu.com',

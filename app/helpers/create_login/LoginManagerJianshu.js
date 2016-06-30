@@ -34,6 +34,7 @@ export default function createLoginPage(props) {
       loginUrl={platform.loginUrl}
       logoutUrl={platform.logoutUrl}
       loggedInUrl={platform.loggedInUrl}
+      authUrl={platform.authUrl}
       domain={platform.domain}
       whoAmI={checkIdentity}
       onLoggedIn={onLoggedIn}

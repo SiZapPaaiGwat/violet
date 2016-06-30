@@ -1,9 +1,9 @@
 import React, {PropTypes} from 'react'
 import LoginStatus from '../../components/LoginStatus'
-import {parseWebviewCookiesByDomain, destroySiteSession} from '../../../electron/ipc_render'
+import {parseWebviewCookiesByDomain} from '../../../electron/ipc_render'
 import * as DataUtils from '../client_data'
 import styles from './CreateLogin.css'
-import {SUPPORT_PLATFORM_MAP} from '../const'
+// import {SUPPORT_PLATFORM_MAP} from '../const'
 
 export default React.createClass({
   propTypes: {
@@ -12,6 +12,7 @@ export default React.createClass({
     platformName: PropTypes.string.isRequired,
     platformLabel: PropTypes.string.isRequired,
     loginUrl: PropTypes.string.isRequired,
+    authUrl: PropTypes.string,
     // 登录之后的目标首页
     loggedInUrl: PropTypes.string.isRequired,
     logoutUrl: PropTypes.string.isRequired,
@@ -51,30 +52,49 @@ export default React.createClass({
     this.onWebviewMounted()
   },
 
-  clearSession(session, url, name) {
-    return destroySiteSession(session, url, name).then(() => {
-      this.props.actions.accountUpdate({
-        platform: this.props.platformName,
-        value: null
-      })
-      DataUtils.removeAccountByPlatform(this.props.platformName)
-      this.setState({
-        isLoggingOut: false
-      })
-    })
-  },
-
   handleLogout() {
     this.setState({
       isLoggingOut: true
     }, () => {
       let webview = this.refs.webview
-
-      let platform = SUPPORT_PLATFORM_MAP[this.props.platformName]
       webview.addEventListener('dom-ready', (e) => {
         let session = webview.getWebContents().session
-        this.clearSession(session, platform.url, platform.cookieName)
+        session.clearStorageData(() => {
+          this.props.actions.accountUpdate({
+            platform: this.props.platformName,
+            value: null
+          })
+          DataUtils.removeAccountByPlatform(this.props.platformName)
+          this.setState({
+            isLoggingOut: false
+          })
+        })
       })
+    })
+  },
+
+  saveWebviewCookies(webview) {
+    // 未开通专栏不会进入这个逻辑，直接跳到主页
+    let platformName = this.props.platformName
+    let session = webview.getWebContents().session
+    let clientData
+    parseWebviewCookiesByDomain(session, this.props.domain)
+    .then(cookie => {
+      console.log(cookie)
+      // 需要从cookie中提取一些数据比如token
+      clientData = this.props.transformCookie(cookie)
+      return this.props.whoAmI({
+        [platformName]: clientData
+      })
+    }).then(json => {
+      let account = this.props.onLoggedIn(clientData, json[platformName])
+      this.props.actions.accountUpdate({
+        platform: platformName,
+        value: account
+      })
+    }).catch(err => {
+      console.log(err)
+      App.alert('登录出错', err.message)
     })
   },
 
@@ -85,30 +105,19 @@ export default React.createClass({
       return
     }
 
-    webview.addEventListener('did-navigate', (e) => {
-      if (e.url === this.props.loggedInUrl) {
-        // 未开通专栏不会进入这个逻辑，直接跳到主页
-        let platformName = this.props.platformName
-        let session = webview.getWebContents().session
-        let clientData
-        parseWebviewCookiesByDomain(session, this.props.domain)
-        .then(cookie => {
-          // 需要从cookie中提取一些数据比如token
-          clientData = this.props.transformCookie(cookie)
-          return this.props.whoAmI({
-            [platformName]: clientData
-          })
-        }).then(json => {
-          let account = this.props.onLoggedIn(clientData, json[platformName])
-          this.props.actions.accountUpdate({
-            platform: platformName,
-            value: account
-          })
-        }).catch(err => {
-          console.log(err)
-          App.alert('登录出错', err.message)
-        })
+    webview.addEventListener('dom-ready', (e) => {
+      let currentPageUrl = webview.getURL()
+      if (currentPageUrl === this.props.loginUrl ||
+        currentPageUrl.indexOf(this.props.authUrl) > -1) {
+        return
       }
+
+      if (currentPageUrl !== this.props.loggedInUrl) {
+        webview.loadURL(this.props.loggedInUrl)
+        return
+      }
+
+      this.saveWebviewCookies(webview)
     })
   },
 
