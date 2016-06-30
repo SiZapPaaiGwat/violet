@@ -35,4 +35,6 @@ export const REQUEST_TIMEOUT = CONST.REQUEST_TIMEOUT
 // id放在第一个
 export const DATABASE_FIELD_LIST = [
   'id', 'object_id', 'title', 'content', 'create_on', 'update_on'
-].concat(SYNC_PLATFORMS)
+].concat(SYNC_PLATFORMS.map(key => {
+  return `${key}_id`
+}))

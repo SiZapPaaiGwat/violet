@@ -1,4 +1,4 @@
-/*eslint no-unused-expressions:0 */
+/*eslint no-unused-expressions:0 no-param-reassign:0*/
 import {expect} from 'chai'
 // import sinon from 'sinon'
 import * as CloudStorage from '../app/helpers/cloud_storage'
@@ -473,5 +473,30 @@ describe('CloudStorage', function() {
     expect(indexes).to.deep.equal({
       1: 3
     })
+  })
+
+  it('should purify cloud post', function() {
+    let cloudPosts = [
+      {
+        id: 1,
+        title: 'post 1',
+        content: 'post 1 content',
+        zhihu_id: 100
+      },
+      {
+        id: 2,
+        title: 'post 1',
+        content: 'post 1 content',
+        github_id: undefined
+      }
+    ]
+    cloudPosts.forEach(item => {
+      item.get = function(key) {
+        return item[key]
+      }
+    })
+    let posts = cloudPosts.map(CloudStorage.purify)
+    expect(posts[0].zhihu_id).to.equal(100)
+    expect(posts[1].github_id).to.not.exist
   })
 })
