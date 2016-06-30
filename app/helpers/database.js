@@ -20,6 +20,11 @@ export function createPost(title, content, params = {}, now = Date.now()) {
 export function listPosts() {
   return db.open().then(() => {
     return db.posts.toArray()
+  }).then(items => {
+    return items.sort((a, b) => {
+      // component内部需要时间小的在最前面
+      return a.create_on - b.create_on
+    })
   })
 }
 
