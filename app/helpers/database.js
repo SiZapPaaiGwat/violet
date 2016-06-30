@@ -40,15 +40,17 @@ export function deletePost(key) {
 }
 
 export function bulk(inserts = [], updates = [], deletes = []) {
-  let task = []
-  if (inserts.length) {
-    task.push(db.posts.bulkAdd(inserts))
-  }
-  if (updates.length) {
-    task.push(db.posts.bulkPut(updates))
-  }
-  if (deletes.length) {
-    task.push(db.posts.bulkDelete(deletes))
-  }
-  return Promise.all(task)
+  return db.open().then(() => {
+    let task = []
+    if (inserts.length) {
+      task.push(db.posts.bulkAdd(inserts))
+    }
+    if (updates.length) {
+      task.push(db.posts.bulkPut(updates))
+    }
+    if (deletes.length) {
+      task.push(db.posts.bulkDelete(deletes))
+    }
+    return Promise.all(task)
+  })
 }
