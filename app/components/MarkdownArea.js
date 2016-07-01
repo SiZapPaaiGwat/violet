@@ -28,15 +28,17 @@ export default React.createClass({
   syncStore(value) {
     let post = this.props.states.posts.selected
     let title = utils.getMarkdownTitle(value)
+    let now = Date.now()
     this.props.actions.postsUpdate({
       id: post.id,
       title,
-      content: value
+      content: value,
+      update_on: now
     })
-    this.syncDatabase(post.id, value)
+    this.syncDatabase(post.id, value, now)
   },
 
-  syncDatabase(id, value) {
+  syncDatabase(id, value, now) {
     if (!id || !value) {
       return
     }
@@ -44,7 +46,8 @@ export default React.createClass({
     let title = utils.getMarkdownTitle(value)
     let updates = {
       title: title || DEFAULT_TITLE,
-      content: value
+      content: value,
+      update_on: now
     }
     console.log('#Updating database:')
     console.log(updates)

@@ -30,14 +30,13 @@ export function listPosts() {
 
 // 调用者自己判断更新时间是否大于创建时间
 export function updatePost(id, params, isSilentUpdate = false) {
-  let {updateOn} = params
-  if (!updateOn) {
-    updateOn = Date.now()
+  let updates = {
+    ...params
   }
-  return db.posts.update(id, isSilentUpdate ? params : {
-    ...params,
-    update_on: updateOn
-  })
+  if (!isSilentUpdate && !params.update_on) {
+    updates.update_on = Date.now()
+  }
+  return db.posts.update(id, updates)
 }
 
 export function deletePost(key) {

@@ -58,6 +58,9 @@ export function isEqual(cloudPost, localPost) {
     return `${key}_id`
   })
   return _.every(keys.concat('title', 'content', 'update_on'), key => {
+    if (localPost[key] !== cloudPost[key]) {
+      console.log(key)
+    }
     return localPost[key] === cloudPost[key]
   })
 }
@@ -191,7 +194,7 @@ export function compare(cloudPosts = [], localPosts = []) {
     }
 
     // 服务端新，需要更新本地作品
-    if (cloudPost.update_on >= item.update_on) {
+    if (cloudPost.update_on > item.update_on) {
       let post = getLocalUpsert(cloudPost, item)
       local.update.push(post)
       if (isEqual(cloudPost, post)) {
