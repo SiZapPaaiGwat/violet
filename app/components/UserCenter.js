@@ -56,7 +56,7 @@ export default React.createClass({
         return DbUtils.listPosts()
       }).then(posts => {
         this.setState({isLoading: false})
-        this.props.actions.postsList({posts: posts.reverse()})
+        this.props.actions.postsList({posts})
       })
     }).catch(err => {
       this.setState({isLoading: false})
