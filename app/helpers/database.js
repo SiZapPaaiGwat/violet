@@ -22,8 +22,7 @@ export function listPosts() {
     return db.posts.toArray()
   }).then(items => {
     return items.sort((a, b) => {
-      // component内部需要时间小的在最前面
-      return a.create_on - b.create_on
+      return b.create_on - a.create_on
     })
   })
 }

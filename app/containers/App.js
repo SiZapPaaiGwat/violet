@@ -66,7 +66,7 @@ export default React.createClass({
 
       return Promise.resolve(posts)
     }).then(posts => {
-      this.props.actions.postsList({posts: posts.reverse()})
+      this.props.actions.postsList({posts})
       this.props.actions.postsSelect(this.props.states.posts.datasource[0])
       // 现在可以使用创建按钮了
       'list,create'.split(',').forEach(item => {
