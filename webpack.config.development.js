@@ -46,8 +46,8 @@ const config = {
       __DEV__: true,
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
-        APP_ID: JSON.stringify('CpQRN3XzNwpwUBNQ1WDVyC9c-gzGzoHsz'),
-        APP_KEY: JSON.stringify('1Mgtcwt2w2AMPnvJ6C82KSEA')
+        APP_ID: JSON.stringify('7aghatkwdic2h3ksu2pcnz1z9ww3gh94zfck18s0imra4exl'),
+        APP_KEY: JSON.stringify('dezxindn3goiga770jrhtuwmeqwptua4n6ltb4kgwrxqfsp7')
       }
     }),
     new ExtractTextPlugin('style.css', {allChunks: true})
